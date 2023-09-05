@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Category {
+  id      String @id @default(uuid())
+  name    String @unique
+  color   String
+  notes   String
+  shelfId Int    @unique
+}
+
+model Company {
+  id    String @id @default(uuid())
+  name  String @unique
+  notes String
+  Item  Item[]
+}
+
+model Status {
+  id          String       @id @default(uuid())
+  name        String
+  description String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  ItemStatus  ItemStatus[]
+}
+
+model Item {
+  id             String           @id @default(uuid())
+  name           String
+  description    String
+  tooltypeId     String
+  tooltype       ItemType         @relation(fields: [itemTypeId], references: [id])
+  companyId      String
+  company        Company          @relation(fields: [companyId], references: [id])
+  placeId        Int
+  shelfId        Int
+  itemTypeId     String
+  ItemStatus     ItemStatus[]
+  AttributeValue AttributeValue[]
+}
+
+model ItemType {
+  id           String         @id @default(uuid())
+  name         String         @unique
+  Item         Item[]
+  Typettribute Typettribute[]
+}
+
+model Typettribute {
+  id             String           @id @default(uuid())
+  name           String
+  itemtypeId     String
+  itemtype       ItemType         @relation(fields: [itemtypeId], references: [id])
+  AttributeValue AttributeValue[]
+}
+
+model AttributeValue {
+  id              String       @id @default(uuid())
+  value           String
+  itemId          String
+  item            Item         @relation(fields: [itemId], references: [id])
+  typeattributeId String
+  typeattribute   Typettribute @relation(fields: [typeattributeId], references: [id])
+}
+
+model ItemStatus {
+  id       String @id @default(uuid())
+  statusId String
+  status   Status @relation(fields: [statusId], references: [id])
+  itemId   String
+  item     Item   @relation(fields: [itemId], references: [id])
+}

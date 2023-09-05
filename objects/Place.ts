@@ -1,0 +1,10 @@
+
+class Place {
+
+    constructor() {
+    }
+
+    
+
+
+}
