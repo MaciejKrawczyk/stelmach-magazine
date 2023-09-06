@@ -1,10 +1,15 @@
-import {db} from "@/lib/db";
-
+import {db} from "@/lib/db/db";
 
 export async function GET(req: Request) {
     try {
+        const url = new URL(req.url)
+        const id = url.searchParams.get("itemtypeId")
 
-        const objects = await db.typettribute.findMany()
+        const objects = await db.typettribute.findMany({
+            where: {
+                itemtypeId: id
+            }
+        })
 
         return new Response( JSON.stringify(objects))
 

@@ -23,6 +23,7 @@ CREATE TABLE `Company` (
 
 -- CreateTable
 CREATE TABLE `Status` (
+    `itemId` VARCHAR(191) NOT NULL,
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
@@ -37,10 +38,10 @@ CREATE TABLE `Item` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
-    `tooltypeId` VARCHAR(191) NOT NULL,
     `companyId` VARCHAR(191) NOT NULL,
     `placeId` INTEGER NOT NULL,
-    `shelfId` INTEGER NOT NULL,
+    `shelfId` INTEGER NULL,
+    `shelfType` VARCHAR(191) NOT NULL,
     `itemTypeId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -74,11 +75,20 @@ CREATE TABLE `AttributeValue` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateTable
-CREATE TABLE `ItemStatus` (
-    `id` VARCHAR(191) NOT NULL,
-    `statusId` VARCHAR(191) NOT NULL,
-    `itemId` VARCHAR(191) NOT NULL,
+-- AddForeignKey
+ALTER TABLE `Status` ADD CONSTRAINT `Status_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Item`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- AddForeignKey
+ALTER TABLE `Item` ADD CONSTRAINT `Item_itemTypeId_fkey` FOREIGN KEY (`itemTypeId`) REFERENCES `ItemType`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Item` ADD CONSTRAINT `Item_companyId_fkey` FOREIGN KEY (`companyId`) REFERENCES `Company`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Typettribute` ADD CONSTRAINT `Typettribute_itemtypeId_fkey` FOREIGN KEY (`itemtypeId`) REFERENCES `ItemType`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AttributeValue` ADD CONSTRAINT `AttributeValue_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Item`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AttributeValue` ADD CONSTRAINT `AttributeValue_typeattributeId_fkey` FOREIGN KEY (`typeattributeId`) REFERENCES `Typettribute`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

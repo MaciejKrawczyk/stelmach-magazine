@@ -1,4 +1,4 @@
-import {db} from "@/lib/db";
+import {db} from "@/lib/db/db";
 
 
 export async function GET(req: Request) {
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     try {
 
         const body = await req.json()
-        const { name, color, notes } = body
+        const { name, color, notes, shelfId } = body
 
         const objectExists = await db.category.findFirst({
             where: {
@@ -36,7 +36,8 @@ export async function POST(req: Request) {
             data: {
                 name: name,
                 color: color,
-                notes: notes
+                notes: notes,
+                shelfId: shelfId
             }
         })
 

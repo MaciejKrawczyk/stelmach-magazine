@@ -1,22 +1,35 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Merriweather_Sans } from 'next/font/google'
+import React from "react";
+import Navbar from "@/components/Navbar";
 
-const inter = Inter({ subsets: ['latin'] })
+
+const font = Merriweather_Sans({subsets: ["latin"]})
 
 export const metadata: Metadata = {
   title: 'Magazyn narzędzi Stelmach',
-  description: 'Magazyn narzędzi dla firmy PZ Stelmach, projekt i implementacja: Maciej Krawczyk, Fusion Foresight',
+  description: 'Magazyn narzędzi dla firmy PZ Stelmach, projekt i implementacja: Maciej Krawczyk',
 }
 
 export default function RootLayout({
-  children,
-}: {
+                                     children,
+                                   }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+      <html lang="pl">
+
+      <body className={font.className}>
+
+      <header>
+        <Navbar />
+      </header>
+
+      {children}
+
+      </body>
+
+      </html>
   )
 }

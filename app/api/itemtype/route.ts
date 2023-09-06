@@ -1,4 +1,4 @@
-import {db} from "@/lib/db";
+import {db} from "@/lib/db/db";
 import axios from "axios";
 
 
@@ -20,8 +20,6 @@ export async function POST(req: Request) {
     try {
 
         const body = await req.json()
-        // const { name } = body
-        // console.log(body)
 
         const objectExists = await db.itemType.findFirst({
             where: {
@@ -43,11 +41,17 @@ export async function POST(req: Request) {
         // ----- item-type is created
         const itemTypeId = object.id
 
-        for (let i=0;i<body.length;i++) {
+        for (let i=1;i<body.list.length;i++) {
 
-            const attributeName = body[i].value
+            const attributeName = body.list[i].value
 
-            const data = await axios.post("/api/typeattribute", { name: attributeName, itemtypeId: itemTypeId })
+            const data = await db.typettribute.create({
+                data: {
+                    name: attributeName,
+                    itemtypeId: itemTypeId
+                }
+            })
+
             attributes.push(data)
         }
 
@@ -61,7 +65,4 @@ export async function POST(req: Request) {
     } catch (error) {
         console.error(error)
     }
-
-
-
 }
