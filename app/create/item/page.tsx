@@ -349,12 +349,12 @@ const App = () => {
                                         </div>
                                     ))}
                                 </div>
-                                <span className={'pt-3 pl-1'} >Typ szuflady nie podlega edycji po dodaniu przedmiotu</span>
+                                <span className={'pt-3 pl-1'} ></span>
                             </div>
                         </div>
                     </div>
 
-                    <SubmitButton isClicked={isClicked} />
+                    <SubmitButton className={'mt-10'} isClicked={isClicked} />
 
                 </form>
 

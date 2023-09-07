@@ -125,7 +125,7 @@ const MyForm = () => {
                         </div>
                     </div>
 
-                    <SubmitButton isClicked={isClicked} />
+                    <SubmitButton className={'mt-10'} isClicked={isClicked} />
                 </form>
             </main>
         </div>
