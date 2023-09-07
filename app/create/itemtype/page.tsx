@@ -1,12 +1,21 @@
 'use client'
 
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import SuccessModal from "@/components/SuccessModal";
+import config from "@/config.json";
+import SubmitButton from "@/components/submitButton";
 
 const Page = () => {
 
     const [inputList, setInputList] = useState([{ value: "", disabled: false }]);
     const [itemName, setItemName] = useState("");  // New state variable for the 'name' input
+
+    // submit button
+    const [isClicked, setIsClicked] = useState(false);
+// success modal
+    const [isOpen, setIsOpen] = useState(false);
+    const [object, setObject] = useState([]);
 
     const handleNameChange = (e) => {
         setItemName(e.target.value);
@@ -41,16 +50,41 @@ const Page = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setIsClicked(true);
+        setIsOpen(false);
+
         const payload = {
             name: itemName,
             list: inputList,
         };
+
+
         // console.log(payload)
         const data = await axios.post('/api/itemtype', payload);
         console.log(data);
+        // setObject({ name: data.data.name })
+
+        setObject(data.data);
+        setIsOpen(true);
+        setIsClicked(false);
     };
 
-    return (
+    return (<>
+
+        <SuccessModal
+            isOpen={isOpen}
+            text={config.ui.successModal.messages.item.smallText}
+            objectData={object}
+            bigText={config.ui.successModal.messages.item.bigText}
+        />
+
+        <main>
+
+
+
+        </main>
+
+
         <form onSubmit={handleSubmit}>
             <input
                 name={'name'}
@@ -83,8 +117,9 @@ const Page = () => {
                     )}
                 </div>
             ))}
-            <button type="submit">Submit</button>
+            <SubmitButton isClicked={isClicked} />
         </form>
+        </>
     );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../public/SuccessModal.css';
-import { useRouter } from 'next/navigation'; // note the corrected import for useRouter
+import { useRouter } from 'next/navigation';
 
 
 
@@ -24,7 +24,7 @@ const SuccessModal = ({ text, bigText, isOpen, objectData }) => {
     }
 
     return (
-        <div className={`fixed top-0 left-0 w-full h-full transition-opacity duration-300 bg-black bg-opacity-50 flex items-center justify-center ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed top-0 left-0 w-full h-full transition-opacity duration-300 bg-black bg-opacity-50 flex items-center justify-center ${isVisible ? 'opacity-100 z-50' : 'opacity-0 pointer-events-none'}`}>
             <dialog open={isVisible} className="relative h-auto w-auto p-14 bg-white rounded-3xl shadow-lg transition-transform duration-300 transform ${isVisible ? 'scale-100' : 'scale-90'}">
 
                 <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
@@ -40,6 +40,10 @@ const SuccessModal = ({ text, bigText, isOpen, objectData }) => {
 
                 <div className={'bg-gray-200 p-3 mt-6 mb-6 rounded-xl'}>
                     {Object.keys(objectData).map(key => {
+                        if (typeof objectData[key] === 'object') {
+                            return null
+                        }
+
                         if (key === 'id') {
                             return null;  // Skip rendering
                         }
