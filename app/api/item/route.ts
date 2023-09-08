@@ -5,7 +5,12 @@ import {createStatus} from "@/lib/db/createStatus";
 export async function GET(req: Request) {
     try {
 
-        const objects = await db.item.findMany()
+        const objects = await db.item.findMany({
+            include: {
+                company: true,
+                itemType: true
+            }
+        })
 
         return new Response( JSON.stringify(objects))
 

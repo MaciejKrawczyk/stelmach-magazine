@@ -61,7 +61,7 @@ const Page = () => {
         setIsError(false)
 
         console.log(inputList)
-        if (itemName.trim() === '' || inputList[0].value === '') {
+        if (itemName.trim() === '' || (inputList[0].value === '' && inputList.length === 1)) {
             alert("Pola nie mogą być puste!");
             return;
         }
