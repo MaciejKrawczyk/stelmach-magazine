@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Category {
-  id      String @id @default(uuid())
+  id      Int    @id @default(autoincrement())
   name    String @unique
   color   String
   notes   String
@@ -17,16 +17,16 @@ model Category {
 }
 
 model Company {
-  id    String @id @default(uuid())
+  id    Int    @id @default(autoincrement())
   name  String @unique
   notes String
   item  Item[]
 }
 
 model Status {
-  itemId      String
+  id          Int      @id @default(autoincrement())
+  itemId      Int
   item        Item     @relation(fields: [itemId], references: [id])
-  id          String   @id @default(uuid())
   name        String
   description String
   createdAt   DateTime @default(now())
@@ -34,40 +34,40 @@ model Status {
 }
 
 model Item {
-  id             String           @id @default(uuid())
+  id             Int              @id @default(autoincrement())
   name           String
   description    String
   placeId        Int
   shelfId        Int?
   shelfType      String
-  itemTypeId     String
+  itemTypeId     Int
   itemType       ItemType         @relation(fields: [itemTypeId], references: [id])
   attributeValue AttributeValue[]
   status         Status[]
   company        Company          @relation(fields: [companyId], references: [id])
-  companyId      String
+  companyId      Int
 }
 
 model ItemType {
-  id           String         @id @default(uuid())
+  id           Int            @id @default(autoincrement())
   name         String         @unique
   item         Item[]
   typettribute Typettribute[]
 }
 
 model Typettribute {
-  id             String           @id @default(uuid())
+  id             Int              @id @default(autoincrement())
   name           String
-  itemtypeId     String
+  itemtypeId     Int
   itemtype       ItemType         @relation(fields: [itemtypeId], references: [id])
   attributeValue AttributeValue[]
 }
 
 model AttributeValue {
-  id              String       @id @default(uuid())
+  id              Int          @id @default(autoincrement())
   value           String
-  itemId          String
+  itemId          Int
   item            Item         @relation(fields: [itemId], references: [id])
-  typeattributeId String
+  typeattributeId Int
   typeattribute   Typettribute @relation(fields: [typeattributeId], references: [id])
 }

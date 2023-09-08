@@ -8,7 +8,8 @@ export async function GET(req: Request) {
         const objects = await db.item.findMany({
             include: {
                 company: true,
-                itemType: true
+                itemType: true,
+                status: true
             }
         })
 
