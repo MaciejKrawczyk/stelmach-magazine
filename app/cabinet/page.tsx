@@ -65,15 +65,19 @@ const page = () => {
         <>
             <div className={'flex justify-center'}>
                 <main className={'w-10/12 h-auto mb-28'}>
+
                     <h1 className={'font-semibold text-3xl my-10 mx-auto '}>Przegląd szafy</h1>
-                    <div className={'w-8/12 h-auto grid grid-cols-3'}>
-                        <div className={'gap-3 border-gray-600 w-auto grid grid-cols-5 grid-rows-16'}>
+
+                    <div className={'flex'}>
+
+                        <div className={'w-8/12 h-auto grid grid-cols-3'}>
+                        <div className={'gap-3 border-2 border-black p-3 w-auto grid grid-cols-5 grid-rows-16'}>
                             {
                                 shelves
                                     .filter(shelf => shelf.name >= 1 && shelf.name <= 80 && shelf.size === "small")
                                     .map(shelf => (
                                         <div
-                                            className={'flex items-center justify-center'}
+                                            className={'flex items-center justify-center py-1'}
                                             key={shelf.id}
                                             style={{backgroundColor: shelf.category.color}}
                                         >
@@ -85,7 +89,7 @@ const page = () => {
                                     ))
                             }
                         </div>
-                        <div className={'gap-3 mx-3 border-gray-600 w-auto h-auto grid grid-cols-6 grid-rows-12'}>
+                        <div className={' gap-3 mx-3 border-2 border-black p-3 w-auto grid grid-cols-5 grid-rows-12'}>
                             {
                                 shelves
                                     .filter(shelf => shelf.name >= 1 && shelf.name <= 72 && shelf.size === "big")
@@ -103,13 +107,13 @@ const page = () => {
                                     ))
                             }
                         </div>
-                        <div className={'gap-3 border-gray-600 w-auto grid grid-cols-5 grid-rows-16'}>
+                        <div className={'gap-3 border-2 border-black p-3 w-auto grid grid-cols-5 grid-rows-16'}>
                             {
                                 shelves
                                     .filter(shelf => shelf.name >= 81 && shelf.name <= 160 && shelf.size === "small")
                                     .map(shelf => (
                                         <div
-                                            className={'flex items-center justify-center'}
+                                            className={'flex items-center justify-center py-1'}
                                             key={shelf.id}
                                             style={{backgroundColor: shelf.category.color}}
                                         >
@@ -122,7 +126,16 @@ const page = () => {
                             }
                         </div>
                     </div>
+
+                        <h2>Kategorie</h2>
+
+
+
+
+                    </div>
+
                     <hr className={'my-5'}/>
+
                     <div>
                         {categories.map((category) => (
                             <div key={category.id}>
