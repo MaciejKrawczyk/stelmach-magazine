@@ -1,5 +1,9 @@
 # DOKUMENTACJA MAGAZYNU PZ STELMACH
 
+## PIERWSZE URUCHOMIENIE / PO WYCZYSZCZENIU BAZY
+ - /api/category => stworzyć domyślną kategorie
+ - /api/generateShelves => tworzy szuladki
+
  ## --dev-notes
  - ## submit + modal
 
@@ -25,3 +29,4 @@ setObject(data.data);
 setIsOpen(true);
 setIsClicked(false);
 ```
+

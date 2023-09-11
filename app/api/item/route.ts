@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
         const body = await req.json()
 
-        const {companyId, description, itemType, name, placeId, shelfType, typeAttributes } = body
+        const {companyId, description, itemType, name, placeId, shelfType, typeAttributes, shelfId } = body
 
         const objectExists = await db.item.findFirst({
             where: {
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
                 },
                 shelf: {
                     connect: {
-                        id: 244
+                        id: shelfId
                     }
                 },
                 placeId: Number(placeId),

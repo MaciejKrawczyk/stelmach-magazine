@@ -12,6 +12,7 @@ import shelfSmall from '@/public/shelfSmall.svg'
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import Image from "next/image";
 import ToastNotification from "@/components/ToastNotification";
+import {sortTool} from "@/utils/sortToolShelf";
 
 const App = () => {
 
@@ -22,7 +23,8 @@ const App = () => {
         companyId: "",
         placeId: "1",  // Initialize placeId with the value "1"
         shelfType: "",
-        // shelfCategory: "",
+        shelfCategory: 1,
+        shelfId: "",
         typeAttributes: {}
     });
 
@@ -30,7 +32,7 @@ const App = () => {
 
     const [itemTypes, setItemTypes] = useState([]);
     const [companyIds, setCompanyIds] = useState([]);
-    // const [shelfCategories, setShelfCategories] = useState([])
+    const [shelfCategories, setShelfCategories] = useState([])
     const placeIds = Places
     const shelfIds = Object.keys(Shelves);
 
@@ -45,15 +47,18 @@ const App = () => {
     const [isError, setIsError] = useState(false)
     const [toastText, setToastText] = useState('')
 
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const itemTypesResponse = await axios.get('/api/itemtype');
                 const companiesResponse = await axios.get('/api/company');
                 const categoriesResponse = await axios.get('/api/category')
+                console.log(itemTypesResponse.data)
                 setItemTypes(itemTypesResponse.data);
                 setCompanyIds(companiesResponse.data);
-                // setShelfCategories(categoriesResponse.data)
+                setShelfCategories(categoriesResponse.data);
+                // console.log("Fetched shelf categories:", categoriesResponse.data); // log the fetched data
             } catch (error) {
                 console.error("Error fetching data", error);
             }
@@ -82,13 +87,15 @@ const App = () => {
         fetchTypeAttributes();
     }, [formData.itemType]);
 
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: value
         });
     };
+
 
     const handleAttributesChange = (e) => {
         const { name, value } = e.target;
@@ -105,8 +112,9 @@ const App = () => {
 
 
     const handleDivClick = (id) => {
+        // console.log("Setting shelf type to:", id);
         setFormData(prevState => ({ ...prevState, shelfType: id }));
-    }
+    };
 
 
     const handleSubmit = async (e) => {
@@ -122,41 +130,49 @@ const App = () => {
             return formData.typeAttributes[attribute.id] === undefined || formData.typeAttributes[attribute.id] === "";
         });
 
-        if (isAnyFieldEmpty) {
-            alert("Wszystkie pola muszą być wypełnione.");
-            return;
-        }
-
         if (areTypeAttributesEmpty) {
             alert("Wszystkie szczegółowe dane typu predmiotu nie mogą być puste.");
             return;
         }
 
-        setIsClicked(true);
-        setIsOpen(false);
-
-        const payload = formData
-
         try {
-            const data = await axios.post('/api/item', payload)
+            const shelfResult = await sortTool(formData.shelfType, formData.shelfCategory)
 
-            console.log("Form data submitted", formData);
+            setIsClicked(true);
+            setIsOpen(false);
 
-            setObject(data.data);
-            setIsOpen(true);
-            setIsClicked(false);
+            // Update formData with shelfId before sending it
+            let updatedFormData = { ...formData, shelfId: shelfResult.shelfId };
+
+            console.log(updatedFormData)
+
+            const payload = updatedFormData;
+
+            try {
+                const data = await axios.post('/api/item', payload)
+
+                console.log("Form data submitted", updatedFormData);
+
+                setObject(data.data);
+                setIsOpen(true);
+                setIsClicked(false);
+            } catch (e) {
+                console.error(e)
+                setIsError(true)
+                setIsClicked(false);
+                if (e.response.status === 409) {
+                    setToastText('Przedmiot z tym numerem istnieje juz w bazie')
+                } else {
+                    setToastText('Wystąpił błąd przy dodawaniu przedmiotu do bazy')
+                }
+            }
         } catch (e) {
-            console.error(e)
+            setToastText('Szuflada o wybranych parametrach nie znajduje się w kategorii')
             setIsError(true)
             setIsClicked(false);
-            if (e.response.status === 409) {
-                setToastText('Przedmiot z tym numerem istnieje juz w bazie')
-            } else {
-                setToastText('Wystąpił błąd przy dodawaniu przedmiotu do bazy')
-            }
-
         }
     };
+
 
     return (<div className={'flex justify-center'}>
 
@@ -353,9 +369,30 @@ const App = () => {
                                         </div>
                                     ))}
                                 </div>
+
                                 <span className={'pt-3 pl-1'} ></span>
+
+                                <div className="flex flex-col">
+                                    <select
+                                        className="w-full border-gray-300 p-3 rounded-lg text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
+                                        name="shelfCategory"
+                                        value={formData.shelfCategory}
+                                        onChange={handleChange}
+                                    >
+                                        {shelfCategories.map((category, index) => (
+                                            <option key={index} value={category.id}>
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <span className="pt-3 pl-1 mb-2 text-gray-500">Wybierz kategorię szuflady</span>
+                                </div>
+
                             </div>
                         </div>
+
+
+
                     </div>
 
                     <SubmitButton className={'mt-10'} isClicked={isClicked} />

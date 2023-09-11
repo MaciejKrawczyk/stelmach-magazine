@@ -13,7 +13,7 @@ model Category {
   name  String  @unique
   color String
   notes String
-  Shelf Shelf[]
+  shelf Shelf[]
 }
 
 enum ShelfType {

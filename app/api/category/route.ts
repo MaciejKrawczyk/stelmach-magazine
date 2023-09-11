@@ -4,7 +4,11 @@ import {db} from "@/lib/db/db";
 export async function GET(req: Request) {
     try {
 
-        const objects = await db.category.findMany()
+        const objects = await db.category.findMany({
+            include: {
+                shelf: true
+            }
+        })
 
         return new Response( JSON.stringify(objects))
 

@@ -85,7 +85,7 @@ const page = () => {
                                     ))
                             }
                         </div>
-                        <div className={'gap-3 border-gray-600 w-auto h-auto grid grid-cols-6 grid-rows-12'}>
+                        <div className={'gap-3 mx-3 border-gray-600 w-auto h-auto grid grid-cols-6 grid-rows-12'}>
                             {
                                 shelves
                                     .filter(shelf => shelf.name >= 1 && shelf.name <= 72 && shelf.size === "big")
