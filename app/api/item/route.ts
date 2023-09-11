@@ -9,7 +9,8 @@ export async function GET(req: Request) {
             include: {
                 company: true,
                 itemType: true,
-                status: true
+                status: true,
+                shelf: true
             }
         })
 
@@ -45,24 +46,35 @@ export async function POST(req: Request) {
                 description: description,
                 itemType: {
                     connect: {
-                        id: itemType
+                        id: Number(itemType)
+                    }
+                },
+                shelf: {
+                    connect: {
+                        id: 244
                     }
                 },
                 placeId: Number(placeId),
                 shelfType: shelfType,
                 company: {
                     connect: {
-                        id: companyId
+                        id: Number(companyId)
+                    }
+                },
+                status: {
+                    create: {
+                        name: "dodano",
+                        description: "dodano przedmiot"
                     }
                 }
             }
         })
 
-        const status = await createStatus(
-            object.id,
-            "DODANO",
-            "dodano nowe narzędzie do magazynu"
-        )
+        // const status = await createStatus(
+        //     String(object.id),
+        //     "DODANO",
+        //     "dodano nowe narzędzie do magazynu"
+        // )
 
         // attributes values!
         for (let key in typeAttributes) {
@@ -71,7 +83,7 @@ export async function POST(req: Request) {
                 data: {
                     value: typeAttributes[key],
                     itemId: object.id,
-                    typeattributeId: key
+                    typeattributeId: Number(key)
                 }
             })
         }

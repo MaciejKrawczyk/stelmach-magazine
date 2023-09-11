@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     try {
 
         const body = await req.json()
-        const { name, color, notes, shelfId } = body
+        const { name, color, notes } = body
 
         const objectExists = await db.category.findFirst({
             where: {
@@ -37,7 +37,6 @@ export async function POST(req: Request) {
                 name: name,
                 color: color,
                 notes: notes,
-                shelfId: shelfId
             }
         })
 

@@ -7,7 +7,7 @@ export async function GET(req: Request) {
 
         const objects = await db.typettribute.findMany({
             where: {
-                itemtypeId: id
+                itemtypeId: Number(id)
             }
         })
 

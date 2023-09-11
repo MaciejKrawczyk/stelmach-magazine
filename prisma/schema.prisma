@@ -9,11 +9,26 @@ datasource db {
 }
 
 model Category {
-  id      Int    @id @default(autoincrement())
-  name    String @unique
-  color   String
-  notes   String
-  shelfId Int    @unique
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  color String
+  notes String
+  Shelf Shelf[]
+}
+
+enum ShelfType {
+  small
+  big
+  brak
+}
+
+model Shelf {
+  id         Int       @id @default(autoincrement())
+  name       String
+  size       ShelfType
+  categoryId Int
+  category   Category  @relation(fields: [categoryId], references: [id])
+  item       Item[]
 }
 
 model Company {
@@ -38,7 +53,8 @@ model Item {
   name           String
   description    String
   placeId        Int
-  shelfId        Int?
+  shelfId        Int
+  shelf          Shelf            @relation(fields: [shelfId], references: [id])
   shelfType      String
   itemTypeId     Int
   itemType       ItemType         @relation(fields: [itemTypeId], references: [id])

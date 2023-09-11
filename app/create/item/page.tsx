@@ -22,6 +22,7 @@ const App = () => {
         companyId: "",
         placeId: "1",  // Initialize placeId with the value "1"
         shelfType: "",
+        // shelfCategory: "",
         typeAttributes: {}
     });
 
@@ -29,6 +30,7 @@ const App = () => {
 
     const [itemTypes, setItemTypes] = useState([]);
     const [companyIds, setCompanyIds] = useState([]);
+    // const [shelfCategories, setShelfCategories] = useState([])
     const placeIds = Places
     const shelfIds = Object.keys(Shelves);
 
@@ -48,8 +50,10 @@ const App = () => {
             try {
                 const itemTypesResponse = await axios.get('/api/itemtype');
                 const companiesResponse = await axios.get('/api/company');
+                const categoriesResponse = await axios.get('/api/category')
                 setItemTypes(itemTypesResponse.data);
                 setCompanyIds(companiesResponse.data);
+                // setShelfCategories(categoriesResponse.data)
             } catch (error) {
                 console.error("Error fetching data", error);
             }

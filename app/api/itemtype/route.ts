@@ -48,7 +48,7 @@ export async function POST(req: Request) {
             const data = await db.typettribute.create({
                 data: {
                     name: attributeName,
-                    itemtypeId: itemTypeId
+                    itemtypeId: Number(itemTypeId)
                 }
             })
 

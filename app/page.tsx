@@ -135,7 +135,7 @@ export default function Home() {
                             company={item.company.name}
                             date={item.status[0].createdAt}
                             shelfType={item.shelfType}
-                            shelfId={item.shelfId}
+                            shelfId={item.shelf.name}
                         /> : <></>}
                     </div>
                 )

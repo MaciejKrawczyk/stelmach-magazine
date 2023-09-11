@@ -22,6 +22,7 @@ const App = () => {
         companyId: "",
         placeId: "18",  // Initialize placeId with the value "1"
         shelfType: "",
+
         typeAttributes: {}
     });
 

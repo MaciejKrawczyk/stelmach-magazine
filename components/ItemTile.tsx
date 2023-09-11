@@ -57,7 +57,7 @@ const itemTile = ({itemType, name, company, date, shelfType, shelfId, itemId}) =
         };
     }, []);
 
-    return (<div className={'p-5 w-64 h-96 bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item'}>
+    return (      <div className={`p-5 w-64 ${shelfId === '-' ? 'h-auto' : 'h-96'} bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item`}>
         <div className={'flex justify-between w-full'}>
             <div className={'bg-blue-500 py-1 px-5 text-white rounded-full'}>
                 {itemType}
@@ -68,7 +68,7 @@ const itemTile = ({itemType, name, company, date, shelfType, shelfId, itemId}) =
         <div className={'flex flex-col gap-3 justify-start w-full'}>
             <div className={'flex'}>
                 <Image className={'mr-3'} src={scan} alt={'info'}></Image>
-                <span className={'text-gray-400'}>{name}</span>
+                <span className={'text-gray-400'}>{name.length > 19 ? name.substring(0, 19) + '...' : name}</span>
             </div>
             <hr className={'my-1'}/>
             <div className={'flex'}>
@@ -81,14 +81,18 @@ const itemTile = ({itemType, name, company, date, shelfType, shelfId, itemId}) =
                 <span className={'text-gray-400'}>{formatDate(date)}</span>
             </div>
             <hr className={'my-1'}/>
-            <div className={'flex'}>
-                <Image className={'mr-3'}  src={boxClosed} alt={'info'}></Image>
-                <span className={'text-gray-400'}>{shelfType}</span>
-            </div>
-            <div className={'flex'}>
-                <Image className={'mr-3'}  src={boxOpen} alt={'info'}></Image>
-                <span className={'text-gray-400'}>{shelfId}</span>
-            </div>
+            {shelfId !== '-' && (
+                <>
+                    <div className={'flex'}>
+                        <Image className={'mr-3'}  src={boxClosed} alt={'info'}></Image>
+                        <span className={'text-gray-400'}>{shelfType}</span>
+                    </div>
+                    <div className={'flex'}>
+                        <Image className={'mr-3'}  src={boxOpen} alt={'info'}></Image>
+                        <span className={'text-gray-400'}>{shelfId}</span>
+                    </div>
+                </>
+            )}
         </div>
         <div className={'flex justify-between my-4'}>
             <div

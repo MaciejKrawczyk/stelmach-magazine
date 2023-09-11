@@ -25,7 +25,7 @@ export async function POST(req: Request) {
             data: {
                 value: value,
                 itemId: itemId,
-                typeattributeId: typeattributeId
+                typeattributeId: Number(typeattributeId)
             }
         })
 
