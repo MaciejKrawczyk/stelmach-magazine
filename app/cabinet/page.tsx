@@ -29,6 +29,13 @@ const page = () => {
     const [modalState, setModalState] = useState('exited'); // new state to manage the modal transition
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
+    const [isRadioChecked, setIsRadioChecked] = useState(false);
+
+    const handleRadioChange = (id) => {
+        setSelectedCategoryId(id);
+        setIsRadioChecked(true);
+    };
+
     const fetchData = async () => {
         try {
             const response = await axios.get('/api/shelf');
@@ -50,6 +57,12 @@ const page = () => {
 
     const handleApply = async (e) => {
         setIsClicked(true)
+
+        if (isRadioChecked === false) {
+            alert("Zaznacz kategorię!")
+            setIsClicked(false)
+        }
+
         e.preventDefault(); // to prevent the form from submitting and refreshing the page
         const result = {
             selectedShelves: clickedShelves,
@@ -242,7 +255,10 @@ const page = () => {
                                     value={category.id}
                                     id={`category-${category.id}`}
                                     className="hidden"
-                                    onChange={() => setSelectedCategoryId(category.id)}
+                                    onChange={() => {
+                                        setIsRadioChecked(true)
+                                        setSelectedCategoryId(category.id)
+                                    }}
                                     checked={selectedCategoryId === category.id}
                                 />
                                 <label
@@ -250,6 +266,9 @@ const page = () => {
                                     className="flex items-center space-x-2 cursor-pointer"
                                 >
                         <span
+                            style={{
+                                backgroundColor: `${category.color}`
+                            }}
                             className={`w-5 h-5 bg-blue-500 rounded-full relative 
                                         ${selectedCategoryId === category.id ? 'bg-blue-500' : ''}`}
                         >
@@ -262,7 +281,7 @@ const page = () => {
                             </div>
                         ))}
                         {/*<button type="submit">apply</button>*/}
-                        <SubmitButton isClicked={isClicked}/>
+                        <SubmitButton disabled={isRadioChecked} isClicked={isClicked}/>
                     </form>
 
 
