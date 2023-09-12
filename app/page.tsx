@@ -18,25 +18,6 @@ export default function Home() {
   const [error, setError] = useState(null);
 
 
-  const updateValueInDictionary = (key, newValue) => {
-    if (itemCount.hasOwnProperty(key)) {
-      setItemCount(prevDictionary => ({
-        ...prevDictionary,   // copy the previous dictionary values
-        [key]: newValue      // update the existing key's value
-      }));
-    } else {
-      console.warn(`Key "${key}" does not exist in the dictionary.`);
-    }
-  };
-
-
-  const addValueToDictionary = (key, value) => {
-    setItemCount(prevDictionary => ({
-      ...prevDictionary,  // copy the previous dictionary values
-      [key]: value        // add or update the new key-value pair
-    }));
-  };
-
   useEffect(() => {
     let isMounted = true;
 
@@ -44,8 +25,6 @@ export default function Home() {
       const url = '/api/item';
       try {
         const response = await axios.get(url);
-
-        // console.log(response)
 
         if (isMounted) {
           setData(response.data);
@@ -85,7 +64,6 @@ export default function Home() {
 
 
   return (
-
 
     <div className={'flex justify-center'}>
 

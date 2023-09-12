@@ -8,7 +8,7 @@ http://localhost:3000/api/category POST
 ```json
 {
     "name": "domyślna",
-    "color": "#gray",
+    "color": "lightgray",
     "notes": "domyślna"
 }
 ```

@@ -136,7 +136,7 @@ const App = () => {
         }
 
         try {
-            const shelfResult = await sortTool(formData.shelfType, formData.shelfCategory)
+            const shelfResult = await sortTool(formData.shelfType, formData.shelfCategory, formData.itemType)
 
             setIsClicked(true);
             setIsOpen(false);
@@ -151,9 +151,14 @@ const App = () => {
             try {
                 const data = await axios.post('/api/item', payload)
 
-                console.log("Form data submitted", updatedFormData);
+                const objectToDisplay = {
+                    shelfName: data.data.shelf.name,
+                    shelfId: data.data.shelf.id,
+                    shelfType: data.data.shelf.size
+                }
 
-                setObject(data.data);
+                console.log(data)
+                setObject(objectToDisplay);
                 setIsOpen(true);
                 setIsClicked(false);
             } catch (e) {

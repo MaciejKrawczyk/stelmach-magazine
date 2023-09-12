@@ -107,6 +107,14 @@
               "icon": "type",
               "alt": "typ",
               "url": "/create/order"
+            },
+            {
+              "id": 5,
+              "name": "Dodaj kategorię szuflad",
+              "description": "Dodaj kategorię szuflad dla łatwiejszego segregowania",
+              "icon": "type",
+              "alt": "typ",
+              "url": "/create/category"
             }
           ],
           "url": "/"

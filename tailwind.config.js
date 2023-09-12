@@ -25,4 +25,11 @@ module.exports = {
     },
   },
   plugins: [],
+  corePlugins: {
+    // ...
+    transitionProperty: true,
+    transitionDuration: true,
+    transitionTimingFunction: true,
+    transitionDelay: true,
+  },
 }

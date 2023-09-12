@@ -7,7 +7,11 @@ export async function GET(req: Request) {
         const objects = await db.shelf.findMany({
             include: {
                 category: true,
-                item: true
+                item: {
+                    include: {
+                        itemType: true
+                    }
+                }
             }
         })
 

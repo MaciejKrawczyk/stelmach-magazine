@@ -67,6 +67,9 @@ export async function POST(req: Request) {
                         description: "dodano przedmiot"
                     }
                 }
+            },
+            include: {
+                shelf: true
             }
         })
 
@@ -88,7 +91,7 @@ export async function POST(req: Request) {
             })
         }
 
-        return new Response("success")
+        return new Response(JSON.stringify(object))
 
 
     } catch (error) {
