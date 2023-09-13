@@ -35,7 +35,7 @@
               "description": "Przenoś narzędzia między stanowiskami",
               "icon": "move",
               "alt": "transfer",
-              "url": "/"
+              "url": "/move"
             },
             {
               "id": 2,

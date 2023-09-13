@@ -1,38 +1,60 @@
 'use client'
+
 import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import tool from '@/public/small-tool.svg'
-import {useRouter} from "next/navigation";
 import SubmitButton from "@/components/submitButton";
 import Link from "next/link";
-import stelmachLogo from "@/public/stelmach-logo.svg";
+import SuccessModal from "@/components/SuccessModal";
+import {useRouter} from "next/navigation";
 
 const page = () => {
-
     const [categories, setCategories] = useState([])
     const [items, setItems] = useState([])
     const [shelves, setShelves] = useState([])
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     const [isClicked, setIsClicked] = useState(false)
-
     const [clickedShelves, setClickedShelves] = useState([]);
-
     const [showModal, setShowModal] = useState(false);
     const [modalPosition, setModalPosition] = useState({x: 0, y: 0});
     const [selectedShelf, setSelectedShelf] = useState(null); // To store the clicked shelf details
     const modalRef = useRef(null);
-
     const [modalState, setModalState] = useState('exited'); // new state to manage the modal transition
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-
     const [isRadioChecked, setIsRadioChecked] = useState(false);
-
     const [showItemOptionsModal, setShowItemOptionsModal] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItemId, setSelectedItemId] = useState(null);
+
+    const [isOpen, setIsOpen] = useState(false)
+    const [object, setObject] = useState([]);
+
+    const router = useRouter()
+
+    useEffect(() => {
+        console.log('mounted')
+        setIsClicked(false)
+        fetchData();
+    }, []);
+
+    const takeout = async () => {
+        if (confirm("Czy na pewno chcesz wyjąć z szafy przedmiot?")) {
+            setIsClicked(true)
+            setIsOpen(false)
+            try {
+                const result = await axios.put(`/api/item/takeout/${selectedItem.id}`)
+                setIsClicked(false)
+                setIsOpen(true)
+                setObject(result)
+                fetchData();
+            } catch (e) {
+                console.error(e)
+            }
+        }
+    }
 
     const handleItemOptionsClick = (item) => {
         setSelectedItem(item);
@@ -41,9 +63,27 @@ const page = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('/api/shelf');
-            const responseItem = await axios.get('/api/item')
-            const responseCategory = await axios.get('/api/category')
+            const response = await axios.get('/api/shelf', {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                }
+            });
+            const responseItem = await axios.get('/api/item', {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                }
+            })
+            const responseCategory = await axios.get('/api/category', {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                }
+            })
             console.log(response.data)
             console.log(responseItem.data)
             console.log(responseCategory.data)
@@ -98,6 +138,7 @@ const page = () => {
         setModalPosition({x: event.clientX, y: event.clientY}); // Get the position of the cursor
         setSelectedShelf(shelf); // Store the shelf data
         setShowItemOptionsModal(false)
+        setSelectedItemId(null)
     }
 
     useEffect(() => {
@@ -141,10 +182,6 @@ const page = () => {
         };
     }, [showModal, showItemOptionsModal]);
 
-    useEffect(() => {
-        setIsClicked(false)
-        fetchData();
-    }, []);
 
     if (loading) {
         return <div className="flex justify-center items-center min-h-screen">
@@ -158,6 +195,13 @@ const page = () => {
 
     return (
         <>
+            <SuccessModal
+                isOpen={isOpen}
+                text={'przedmiot został pomyślnie wyjęty z szafy, jeśli chcesz znaleźć wyjęte narzędzia, których nie ma na żadnej pozycji, przejdź do zakładki /...'}
+                objectData={object}
+                bigText={'narzędzie zostało wyjęte z szuflady!'}
+            />
+
             <div
                 className={'flex justify-center'}
             >
@@ -305,10 +349,13 @@ const page = () => {
                     <p>Szuflada nr {selectedShelf.name} ({selectedShelf.size})</p>
                         {selectedShelf.item.map((item) => {
                             return (
-                                <div className={'flex bg-blue-500 pr-4 pl-4 py-1 items-center justify-between w-full mt-1 mb-1 rounded-full text-xs text-white'}
+                                <div onClick={() => {
+                                    handleItemOptionsClick(item)
+                                    setSelectedItemId(item.id === selectedItemId ? null : item.id);  // Toggle selection
+                                }} className={`flex cursor-pointer bg-blue-500 pr-4 pl-4 py-1 items-center justify-between w-full mt-1 mb-1 rounded-full text-xs text-white ${item.id === selectedItemId ? 'bg-red-500' : 'bg-blue-500'}`}
                                      key={item.id}>
                                     <div className={''}>{item.itemType.name}</div>
-                                    <div className={'cursor-pointer'} onClick={() => handleItemOptionsClick(item)}>-></div>
+                                    <div className={''}>-></div>
                                 </div>
                             )
                         })}
@@ -333,24 +380,30 @@ const page = () => {
                     <p className={'text-center font-semibold'}>{selectedItem.itemType.name}, id: {selectedItem.id}</p>
                     <p className={'text-center text-gray-500 font-light my-2'}>{selectedItem.name}</p>
                     <hr/>
-                    <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
+                    <div
+                        className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'}
+                        onClick={takeout}
+                    >
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Wyjmij</span>
-                    </Link>
-                    <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
+                    </div>
+                    <Link
+                        className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'}
+                        href={`/move/${selectedItem.id}`}
+                    >
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Przenieś</span>
                     </Link>
                     <hr/>
-                    <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-red-200'} href={'/'}>
+                    <div
+                        className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-red-200'}
+                    >
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Usuń</span>
-                    </Link>
+                    </div>
                 </div>
                 )
             }
-
-
         </>
     )
 }

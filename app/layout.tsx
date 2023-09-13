@@ -12,11 +12,7 @@ export const metadata: Metadata = {
   description: 'Magazyn narzędzi dla firmy PZ Stelmach, projekt i implementacja: Maciej Krawczyk',
 }
 
-export default function RootLayout({
-                                     children,
-                                   }: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children, moveModal }: { children: React.ReactNode, moveModal: React.ReactNode }) {
   return (
       <html lang="pl">
 
@@ -26,7 +22,10 @@ export default function RootLayout({
         <Navbar />
       </header>
 
-      {children}
+      <div>
+          {moveModal}
+          {children}
+      </div>
 
       </body>
 

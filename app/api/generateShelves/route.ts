@@ -27,6 +27,14 @@ export async function POST(req: Request) {
             }
         })
 
+        const object1 = await db.shelf.create({
+            data: {
+                name: String(-1),
+                size: 'big',
+                categoryId: 1
+            }
+        })
+
         for (let i=0;i<72;i++) {
 
             const object = await db.shelf.create({

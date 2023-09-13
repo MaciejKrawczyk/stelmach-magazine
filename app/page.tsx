@@ -18,6 +18,15 @@ export default function Home() {
   const [error, setError] = useState(null);
 
 
+  const [expandedPlace, setExpandedPlace] = useState(null);
+
+  const togglePlace = (placeId) => {
+    setExpandedPlace(prevPlace => {
+      if (prevPlace === placeId) return null;  // If the place is already expanded, collapse it
+      return placeId;  // Otherwise, set the expanded place to the clicked place
+    });
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -76,7 +85,7 @@ export default function Home() {
           return (
               <div key={index}>
 
-              <div className="flex items-center my-5 ">
+                <div className="flex items-center my-5 p-2 cursor-pointer rounded-xl transition-colors duration-200 hover:bg-gray-200" onClick={() => togglePlace(place.id)}>
                 <div className="flex items-center mr-2">
                   <Image className="" priority src={pin} alt="pin" />
                   <div className="mx-4">
@@ -87,6 +96,8 @@ export default function Home() {
                 <hr className="flex-grow border-t-2" />
                 <Image className="ml-4" priority src={settings} alt="pin" />
               </div>
+
+                {expandedPlace === place.id && (
 
               <section className={'flex gap-5 flex-wrap'}>
 
@@ -121,6 +132,8 @@ export default function Home() {
               })}
 
             </section>
+                )}
+
           </div>
 
         )
