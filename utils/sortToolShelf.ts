@@ -1,102 +1,38 @@
 import axios from "axios";
 
-
 export const sortTool = async (shelfType, shelfCategoryId, itemType) => {
+    // Retrieve data with a single API call if possible.
+    const [categoriesShelvesResponse, itemsResponse] = await Promise.all([
+        axios.get('/api/category'),
+        axios.get('/api/item')
+    ]);
 
-    let categoriesShelves = await axios.get('/api/category')
-    let items = await axios.get('/api/item')
+    const categoriesShelves = categoriesShelvesResponse.data;
+    const items = itemsResponse.data;
 
-    let firstEmptyShelfId = null
+    // Use a Set for constant time lookup instead of an array
+    const shelvesOccupiedIds = new Set(items.map(item => Number(item.itemTypeId)));
 
-    console.log(categoriesShelves)
-    console.log(items)
-
-    categoriesShelves = categoriesShelves.data
-    items = items.data
-
-    let shelvesOccupiedIds = []
-
-    for (let i=0;i<items.length;i++) {
-        shelvesOccupiedIds.push(Number(items[i].shelfId))
+    const category = categoriesShelves.find(cat => cat.id === Number(shelfCategoryId));
+    if (!category) {
+        throw new Error("nie znaleziono szuflady w kategorii");
     }
-    // po tej petli w shelvesOccupiedIds mam wszystkie zajete szuflady
 
-    for (let i=0;i<categoriesShelves.length;i++) {
-
-        console.log('szukam po kateogriach')
-
-        if (categoriesShelves[i].id === Number(shelfCategoryId)) {
-
-            console.log('polaczylem id kategorii z formularza i z bazy danych')
-
-            for (let j=0;j<categoriesShelves[i].shelf.length;j++) {
-
-                console.log('przeszukuje wszystkie szuflady w kategorii')
-
-                if (
-                    Number(categoriesShelves[i].shelf[j].id) !== 1
-                    // && !shelvesOccupiedIds.includes(Number(categoriesShelves[i].shelf[j].id))
-                    && categoriesShelves[i].shelf[j].size === shelfType
-                ) {
-
-                    console.log('jesli szuflada nie ma id 1 (bo to ta tymczasowa) i rozmiar szuflad sie zgadza')
-
-                    if (shelvesOccupiedIds.includes(Number(categoriesShelves[i].shelf[j].id))) {
-
-                        console.log('szuflada sie zgadza ale jest zajeta...')
-
-                        // musze sprawdzic jaki typ ma narzedzie w tej szufladce
-
-                        const currentShelfId = Number(categoriesShelves[i].shelf[j].id)
-
-                        for (let itemIndex in items) {
-                            console.log('itemIndex', itemIndex)
-                            if (itemType === items[itemIndex].itemTypeId) {
-
-                                // tutaj jak znalazl szufladke w kategorii dla narzedzia
-                                console.log('znaleziono, pierwsza szufladka z tym samym typem: ', categoriesShelves[i].shelf[j].id, 'rozmiar:', categoriesShelves[i].shelf[j].size )
-
-                                const data = {
-                                    shelfId: currentShelfId
-                                }
-
-                                console.log(data)
-
-                                return data
-
-                            }
-
-                        }
-
-
-                    } else {
-
-                        if (firstEmptyShelfId === null) {
-                            firstEmptyShelfId = Number(categoriesShelves[i].shelf[j].id)
-                        }
-                    }
-
+    for (const shelf of category.shelf) {
+        const shelfId = Number(shelf.id);
+        if (shelfId !== 1 && shelf.size === shelfType) {
+            if (shelvesOccupiedIds.has(shelfId)) {
+                // If shelf is occupied, find if an item with the same type exists.
+                const matchingItem = items.find(item => Number(item.itemTypeId) === Number(itemType));
+                if (matchingItem) {
+                    return { shelfId };
                 }
-
-
+            } else {
+                // If shelf is not occupied, return the shelf.
+                return { shelfId };
             }
-
-            // tutaj jak znalazl szufladke w kategorii dla narzedzia
-            console.log('znaleziono, pierwsza wolna szufladka: ', firstEmptyShelfId )
-
-            const data = {
-                shelfId: firstEmptyShelfId
-            }
-
-            console.log(data)
-
-            return data
-
         }
-
     }
 
-    console.log('nie udalo sie')
-    throw new Error("nie znaleziono szuflady w kategorii")
-
+    throw new Error("nie znaleziono szuflady w kategorii");
 }

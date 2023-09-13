@@ -31,9 +31,12 @@ const page = () => {
 
     const [isRadioChecked, setIsRadioChecked] = useState(false);
 
-    const handleRadioChange = (id) => {
-        setSelectedCategoryId(id);
-        setIsRadioChecked(true);
+    const [showItemOptionsModal, setShowItemOptionsModal] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+
+    const handleItemOptionsClick = (item) => {
+        setSelectedItem(item);
+        setShowItemOptionsModal(true);
     };
 
     const fetchData = async () => {
@@ -94,6 +97,7 @@ const page = () => {
         setShowModal(true); // Show the modal
         setModalPosition({x: event.clientX, y: event.clientY}); // Get the position of the cursor
         setSelectedShelf(shelf); // Store the shelf data
+        setShowItemOptionsModal(false)
     }
 
     useEffect(() => {
@@ -116,21 +120,26 @@ const page = () => {
         }
     }
 
+    // const modalRef = useRef(null);
+    const itemOptionsModalRef = useRef(null);
+
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
+            if (modalRef.current && !modalRef.current.contains(event.target) &&
+                (!itemOptionsModalRef.current || !itemOptionsModalRef.current.contains(event.target))) {
                 setShowModal(false);
+                setShowItemOptionsModal(false); // Close both modals if clicked outside
             }
         }
 
-        if (showModal) {
+        if (showModal || showItemOptionsModal) {
             window.addEventListener('click', handleClickOutside);
         }
 
         return () => {
             window.removeEventListener('click', handleClickOutside);
         };
-    }, [showModal]); // Dependency on showModal
+    }, [showModal, showItemOptionsModal]);
 
     useEffect(() => {
         setIsClicked(false)
@@ -146,11 +155,6 @@ const page = () => {
     if (error) {
         return <div>Error loading data</div>;
     }
-
-    // const onSubmit = () => {
-    //
-    // }
-
 
     return (
         <>
@@ -291,22 +295,43 @@ const page = () => {
             {modalState !== 'exited' && (
                 <div
                     ref={modalRef}
-                    className={`p-4 flex flex-col absolute transition-opacity ease-in duration-100 ${modalState === 'entered' ? 'opacity-100' : 'opacity-0'} border border-gray-300 bg-white z-10`}
+                    className={`p-4 w-auto flex flex-col absolute transition-opacity ease-in duration-100 ${modalState === 'entered' ? 'opacity-100' : 'opacity-0'} border border-gray-300 bg-white z-10`}
                     style={{
                         top: `${modalPosition.y}px`,
                         left: `${modalPosition.x}px`,
                     }}
-                    onClick={() => setShowModal(false)}
+                    onClick={(e) => e.stopPropagation()}
                 >
                     <p>Szuflada nr {selectedShelf.name} ({selectedShelf.size})</p>
-                    {selectedShelf.item.map((item) => {
-                        return (
-                            <div className={'flex bg-blue-500 pr-4 pl-4 py-1 items-center justify-between w-full mt-1 mb-1  rounded-full text-xs text-white'} key={item.id}>
-                                <div className={''}>{item.itemType.name}</div>
-                                <div className={''}>?</div>
-                            </div>
-                        )
-                    })}
+                        {selectedShelf.item.map((item) => {
+                            return (
+                                <div className={'flex bg-blue-500 pr-4 pl-4 py-1 items-center justify-between w-full mt-1 mb-1 rounded-full text-xs text-white'}
+                                     key={item.id}>
+                                    <div className={''}>{item.itemType.name}</div>
+                                    <div className={'cursor-pointer'} onClick={() => handleItemOptionsClick(item)}>-></div>
+                                </div>
+                            )
+                        })}
+                    <hr/>
+                    <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
+                        <Image priority src={tool} alt={'stelmach logo'} />
+                        <span className="ml-4">Wsadź</span>
+                    </Link>
+                </div>
+            )}
+
+            {showItemOptionsModal && (
+                <div
+                    ref={itemOptionsModalRef}
+                    className="p-4 w-auto flex flex-col absolute z-20 border border-gray-300 bg-white"
+                    style={{
+                        top: `${modalPosition.y + 40}px`,
+                        left: `${modalPosition.x + 200}px`
+                    }}
+                    onClick={(e) => e.stopPropagation()} // This prevents the event from reaching the handleClickOutside
+                >
+                    <p className={'text-center font-semibold'}>{selectedItem.itemType.name}, id: {selectedItem.id}</p>
+                    <p className={'text-center text-gray-500 font-light my-2'}>{selectedItem.name}</p>
                     <hr/>
                     <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
                         <Image priority src={tool} alt={'stelmach logo'} />
@@ -314,11 +339,7 @@ const page = () => {
                     </Link>
                     <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
                         <Image priority src={tool} alt={'stelmach logo'} />
-                        <span className="ml-4">Wsadź</span>
-                    </Link>
-                    <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
-                        <Image priority src={tool} alt={'stelmach logo'} />
-                        <span className="ml-4">Prznieś</span>
+                        <span className="ml-4">Przenieś</span>
                     </Link>
                     <hr/>
                     <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-red-200'} href={'/'}>
@@ -326,10 +347,14 @@ const page = () => {
                         <span className="ml-4">Usuń</span>
                     </Link>
                 </div>
-            )}
+                )
+            }
 
 
         </>
     )
 }
+
+
+
 export default page
