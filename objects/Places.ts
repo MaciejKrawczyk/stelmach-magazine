@@ -1,5 +1,10 @@
 export const Places = [
     {
+        "id": -1,
+        "workname": "takeout",
+        "name": "wyjęte"
+    },
+    {
         "id": 1,
         "workname": "magazine",
         "name": "magazyn"

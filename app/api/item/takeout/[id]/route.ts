@@ -13,7 +13,8 @@ export async function PUT(request, {params}) {
                 id: Number(id)
             },
             data: {
-                shelfId: 1
+                shelfId: 1,
+                placeId: -1
             }
         })
         return NextResponse.json({ object }, { status: 200 })
