@@ -32,29 +32,7 @@ const SuccessModalWithoutAnimation = ({ text, bigText, isOpen, objectData }) => 
 
                 <h3 className={'text-xl flex justify-center'}>{bigText}</h3>
 
-                <p className={'justify-center m-auto flex font-extralight text-center w-10/12'}>{text}</p>
-
-                <div className={'bg-gray-200 p-3 mt-6 mb-6 rounded-xl'}>
-                    {Object.keys(objectData).map(key => {
-                        if (typeof objectData[key] === 'object') {
-                            return null
-                        }
-
-                        if (key === 'id') {
-                            return null;  // Skip rendering
-                        }
-                        return (
-                            <div key={key}>
-                                <div className={'flex justify-between font-jetbrains-mono pb-1 pt-1'}>
-                                    <div>{key.length > 11 ? key.substring(0, 11) + '...' : key}</div>
-                                    <div>{objectData[key].length > 11 ? objectData[key].substring(0, 11) + '...' : objectData[key]}</div>
-                                </div>
-                                <hr className={'border-gray-600'}/>
-                            </div>
-                        );
-                    })}
-
-                </div>
+                <p className={'justify-center flex font-extralight mb-10 ml-auto mr-auto mt-auto text-center w-10/12'}>{text}</p>
 
 
                 <form className={'flex justify-between'} method={'dialog'}>
