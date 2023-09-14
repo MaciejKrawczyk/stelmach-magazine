@@ -10,7 +10,8 @@ export async function GET(req: Request) {
                 company: true,
                 itemType: true,
                 status: true,
-                shelf: true
+                shelf: true,
+                orderCategory: true
             }
         })
 
@@ -28,7 +29,23 @@ export async function POST(req: Request) {
 
         const body = await req.json()
 
-        const {companyId, description, itemType, name, placeId, shelfType, typeAttributes, shelfId } = body
+        let {companyId, description, itemType, name, placeId, shelfType, typeAttributes, shelfId, isOrder, orderCategoryId } = body
+
+        // const isOrder = placeId === 18
+        let status
+        let object
+
+        if (isOrder) {
+            status = {
+                name: 'zamówiono',
+                description: 'zamówiono przedmiot'
+            }
+        } else {
+            status = {
+                name: 'dodano',
+                description: 'dodano przedmiot'
+            }
+        }
 
         const objectExists = await db.item.findFirst({
             where: {
@@ -37,47 +54,91 @@ export async function POST(req: Request) {
         })
 
         if (objectExists) {
-            return new Response('object already exists', { status: 409 })
+            return new Response(`object already exists ${JSON.stringify(objectExists)}`, { status: 409 })
         }
 
-        const object = await db.item.create({
-            data: {
-                name: name,
-                description: description,
-                itemType: {
-                    connect: {
-                        id: Number(itemType)
-                    }
-                },
-                shelf: {
-                    connect: {
-                        id: shelfId
-                    }
-                },
-                placeId: Number(placeId),
-                shelfType: shelfType,
-                company: {
-                    connect: {
-                        id: Number(companyId)
-                    }
-                },
-                status: {
-                    create: {
-                        name: "dodano",
-                        description: "dodano przedmiot"
-                    }
-                }
-            },
-            include: {
-                shelf: true
-            }
-        })
 
-        // const status = await createStatus(
-        //     String(object.id),
-        //     "DODANO",
-        //     "dodano nowe narzędzie do magazynu"
-        // )
+        if (isOrder) {
+
+            object = await db.item.create({
+                data: {
+                    orderCategory: {
+                        connect: {
+                            id: Number(orderCategoryId)
+                        }
+                    },
+                    name: name,
+                    description: description,
+                    itemType: {
+                        connect: {
+                            id: Number(itemType)
+                        }
+                    },
+                    shelf: {
+                        connect: {
+                            id: shelfId
+                        }
+                    },
+                    placeId: Number(placeId),
+                    shelfType: shelfType,
+                    isDeleted: false,
+                    isOrder: isOrder,
+                    company: {
+                        connect: {
+                            id: Number(companyId)
+                        }
+                    },
+                    status: {
+                        create: {
+                            name: status.name,
+                            description: status.description
+                        }
+                    }
+                },
+                include: {
+                    shelf: true,
+                }
+            })
+
+        } else {
+
+            object = await db.item.create({
+                data: {
+                    name: name,
+                    description: description,
+                    itemType: {
+                        connect: {
+                            id: Number(itemType)
+                        }
+                    },
+                    shelf: {
+                        connect: {
+                            id: shelfId
+                        }
+                    },
+                    placeId: Number(placeId),
+                    shelfType: shelfType,
+                    isDeleted: false,
+                    isOrder: isOrder,
+                    company: {
+                        connect: {
+                            id: Number(companyId)
+                        }
+                    },
+                    status: {
+                        create: {
+                            name: status.name,
+                            description: status.description
+                        }
+                    }
+                },
+                include: {
+                    shelf: true,
+                }
+            })
+        }
+
+
 
         // attributes values!
         for (let key in typeAttributes) {

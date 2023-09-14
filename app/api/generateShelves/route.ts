@@ -21,15 +21,8 @@ export async function POST(req: Request) {
 
         const object = await db.shelf.create({
             data: {
+                id: -1,
                 name: String(0),
-                size: 'big',
-                categoryId: 1
-            }
-        })
-
-        const object1 = await db.shelf.create({
-            data: {
-                name: String(-1),
                 size: 'big',
                 categoryId: 1
             }

@@ -12,17 +12,22 @@ import shelfSmall from '@/public/shelfSmall.svg'
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import Image from "next/image";
 import ToastNotification from "@/components/ToastNotification";
+import {generateRandomUUID} from "@/utils/generateRandomUUID";
 
 const App = () => {
 
     const [formData, setFormData] = useState({
-        name: "",
+        orderCategoryId: "",
+        isOrder: true,
+        quantity: 1,
+        name: `ORDER`,
         description: "",
         itemType: "",
         companyId: "",
         placeId: "18",  // Initialize placeId with the value "1"
         shelfType: "",
-
+        shelfCategory: 1,
+        shelfId: -1,
         typeAttributes: {}
     });
 
@@ -32,6 +37,7 @@ const App = () => {
     const [companyIds, setCompanyIds] = useState([]);
     const placeIds = Places
     const shelfIds = Object.keys(Shelves);
+    const [orderCategories, setOrderCategories] = useState([])
 
     const [isLoadingTypes, setIsLoadingTypes] = useState(false)
 
@@ -49,8 +55,10 @@ const App = () => {
             try {
                 const itemTypesResponse = await axios.get('/api/itemtype');
                 const companiesResponse = await axios.get('/api/company');
+                const orderCategoriesResponse = await axios.get('/api/orderCategory')
                 setItemTypes(itemTypesResponse.data);
                 setCompanyIds(companiesResponse.data);
+                setOrderCategories(orderCategoriesResponse.data)
             } catch (error) {
                 console.error("Error fetching data", error);
             }
@@ -119,6 +127,8 @@ const App = () => {
             return formData.typeAttributes[attribute.id] === undefined || formData.typeAttributes[attribute.id] === "";
         });
 
+        console.log(formData)
+
         if (isAnyFieldEmpty) {
             alert("Wszystkie pola muszą być wypełnione.");
             return;
@@ -132,16 +142,18 @@ const App = () => {
         setIsClicked(true);
         setIsOpen(false);
 
-        const payload = formData
+        let payload = formData
 
         try {
-            const data = await axios.post('/api/item', payload)
-
-            console.log("Form data submitted", formData);
-
-            setObject(data.data);
-            setIsOpen(true);
-            setIsClicked(false);
+            for (let i=0;i<formData.quantity;i++) {
+                const randomUUID = generateRandomUUID()
+                payload.name = `ORDER | ${randomUUID}`
+                const data = await axios.post('/api/item', payload)
+                setObject(data.data);
+            }
+                console.log("Form data submitted", formData);
+                setIsOpen(true);
+                setIsClicked(false);
         } catch (e) {
             console.error(e)
             setIsError(true)
@@ -171,6 +183,60 @@ const App = () => {
                 <h1 className={'font-semibold text-3xl my-10 mx-auto '}>Dodawanie przedmiotów</h1>
 
                 <form onSubmit={handleSubmit}>
+
+                    <div className="w-full flex justify-between">
+                        <div className="w-1/3">
+                            <h2 className="text-lg mb-2">Zamówienie</h2>
+                            <p className="text-zinc-500 font-light text-sm">
+                                Zamówienie, które jest tworzone w dodaj zamówienie. W tym wybranym zamówieniu będą się znajdować zamówione tutaj narzędzia
+                            </p>
+                        </div>
+                        <div className="w-1/3 text-xs">
+                            <div className="flex flex-col">
+                                <div className="flex justify-center items-center">
+                                    {/*<div className="mx-3 px-2 bg-amber-600 cursor-pointer text-white aspect-square flex justify-center items-center rounded-3xl">+</div>*/}
+
+                                    <select
+                                        className="w-full border-gray-300 p-3 rounded-lg text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
+                                        name="orderCategoryId"
+                                        value={formData.orderCategoryId}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="" disabled>Wybierz zamówienie</option>
+                                        {orderCategories.map((orderCategory, index) => (
+                                            <option key={index} value={orderCategory.id}>
+                                                {orderCategory.name}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                </div>
+                                <span className="pt-3 pl-1 mb-2 text-gray-500">Wybierz zamówienie z listy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr className={'my-7'}/>
+
+                    <div className={'w-full flex justify-between'}>
+                        <div className={'w-2/5'}>
+                            <h2 className={'text-lg mb-2'}>Ilość</h2>
+                            <p className={'text-zinc-500 font-light text-sm'}>Wpisz ilość przedmiotów tego samego typu, które zamawiasz.</p>
+                        </div>
+                        <div className={'w-1/3 text-xs text-red-600'}>
+                            <div className={'flex flex-col'}>
+                                <input
+                                    className="border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
+                                    type="number"
+                                    name="quantity"
+                                    value={formData.quantity}
+                                    onChange={handleChange}
+                                />
+                                <span className={'pt-3 pl-1'} >Wybierz ilość narzędzi tego typu, które zostaną dodane do zamówienia</span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr className={'my-7'}/>
 
                     <div className={'w-full flex justify-between'}>
                         <div className={'w-2/5'}>

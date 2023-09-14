@@ -9,6 +9,7 @@ import SubmitButton from "@/components/submitButton";
 import Link from "next/link";
 import SuccessModal from "@/components/SuccessModal";
 import {useRouter} from "next/navigation";
+import MoveItemForm from "@/components/MoveItemForm";
 
 const page = () => {
     const [categories, setCategories] = useState([])
@@ -32,10 +33,11 @@ const page = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [object, setObject] = useState([]);
 
+    const [isMoveItemFormOpen, setIsMoveItemFormOpen] = useState(false)
+
     const router = useRouter()
 
     useEffect(() => {
-        console.log('mounted')
         setIsClicked(false)
         fetchData();
     }, []);
@@ -360,12 +362,15 @@ const page = () => {
                             )
                         })}
                     <hr/>
-                    <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
+                    {selectedShelf.item.length === 0 ? <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Wsadź</span>
-                    </Link>
+                    </Link> : null}
+
                 </div>
             )}
+
+            {isMoveItemFormOpen && <MoveItemForm id={selectedItem.id}/>}
 
             {showItemOptionsModal && (
                 <div
@@ -387,13 +392,14 @@ const page = () => {
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Wyjmij</span>
                     </div>
-                    <Link
+                    <div
+                        onClick={() => setIsMoveItemFormOpen(true)}
                         className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'}
-                        href={`/move/${selectedItem.id}`}
+                        // href={`/move/${selectedItem.id}`}
                     >
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Przenieś</span>
-                    </Link>
+                    </div>
                     <hr/>
                     <div
                         className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-red-200'}
@@ -404,6 +410,7 @@ const page = () => {
                 </div>
                 )
             }
+
         </>
     )
 }

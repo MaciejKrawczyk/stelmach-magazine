@@ -10,7 +10,13 @@ import SuccessModal from "@/components/SuccessModal";
 import config from "@/config.json";
 import SuccessModalWithoutAnimation from "@/components/SuccessModalWithoutAnimation";
 
-const page = () => {
+interface MoveItemFormProps {
+    id: unknown
+}
+
+const MoveItemForm = ({ id }) => {
+
+    // const { id } = props
 
     const router = useRouter()
     // submit button
@@ -21,8 +27,8 @@ const page = () => {
 
     const [placeId, setPlaceId] = useState(5)
 
-    const params = useParams()
-    const id = params.id
+    // const params = useParams()
+    // const id = params.id
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -113,4 +119,4 @@ const page = () => {
 
 }
 
-export default page
+export default MoveItemForm

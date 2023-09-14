@@ -18,6 +18,12 @@ export async function PUT(request, {params}) {
                     connect: {
                         id: -1
                     }
+                },
+                status: {
+                    create: {
+                        name: "przeniesiono",
+                        description: "przeniesiono przedmiot"
+                    }
                 }
             }
         })

@@ -24,5 +24,4 @@ export async function PUT(request, {params}) {
         console.error(e)
 
     }
-
 }

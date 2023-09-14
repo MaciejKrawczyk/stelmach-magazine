@@ -49,19 +49,31 @@ model Status {
 }
 
 model Item {
-  id             Int              @id @default(autoincrement())
-  name           String
-  description    String
-  placeId        Int
-  shelfId        Int
-  shelf          Shelf            @relation(fields: [shelfId], references: [id])
-  shelfType      String
-  itemTypeId     Int
-  itemType       ItemType         @relation(fields: [itemTypeId], references: [id])
-  attributeValue AttributeValue[]
-  status         Status[]
-  company        Company          @relation(fields: [companyId], references: [id])
-  companyId      Int
+  id              Int              @id @default(autoincrement())
+  name            String
+  description     String
+  placeId         Int
+  shelfId         Int
+  shelf           Shelf            @relation(fields: [shelfId], references: [id])
+  shelfType       String
+  itemTypeId      Int
+  itemType        ItemType         @relation(fields: [itemTypeId], references: [id])
+  attributeValue  AttributeValue[]
+  status          Status[]
+  company         Company          @relation(fields: [companyId], references: [id])
+  companyId       Int
+  isDeleted       Boolean          @default(false)
+  isOrder         Boolean          @default(false)
+  orderCategory   OrderCategory?   @relation(fields: [orderCategoryId], references: [id])
+  orderCategoryId Int?
+}
+
+model OrderCategory {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  color       String
+  Item        Item[]
 }
 
 model ItemType {

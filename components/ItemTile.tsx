@@ -16,7 +16,7 @@ import React, {useEffect, useRef, useState} from "react";
 import ItemTileModal from "@/components/ItemTileModal";
 
 
-const itemTile = ({itemType, name, company, date, shelfType, shelfId, itemId}) => {
+const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, itemId, orderCategoryColor}) => {
 
     const [isModalVisible, setModalVisible] = useState(false);
     const modalRef = useRef(null);
@@ -57,11 +57,12 @@ const itemTile = ({itemType, name, company, date, shelfType, shelfId, itemId}) =
         };
     }, []);
 
-    return (      <div className={`p-5 w-64 ${shelfId === '-' ? 'h-auto' : 'h-96'} bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item`}>
+    return (      <div className={`p-5 w-64 ${placeId !== 1 ? 'h-auto' : 'h-96'} bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item`}>
         <div className={'flex justify-between w-full'}>
             <div className={'bg-blue-500 py-1 px-5 text-white rounded-full'}>
                 {itemType}
             </div>
+            { orderCategoryColor !== null ? (<div style={{backgroundColor: orderCategoryColor}} className={'py-1 px-5 text-white rounded-full'}></div>) : null }
             <Image src={info} alt={'info'}></Image>
         </div>
         <hr className={'my-2'}/>
@@ -81,7 +82,7 @@ const itemTile = ({itemType, name, company, date, shelfType, shelfId, itemId}) =
                 <span className={'text-gray-400'}>{formatDate(date)}</span>
             </div>
             <hr className={'my-1'}/>
-            {shelfId !== '-' && (
+            {placeId === 1 && (
                 <>
                     <div className={'flex'}>
                         <Image className={'mr-3'}  src={boxClosed} alt={'info'}></Image>
@@ -114,13 +115,13 @@ const itemTile = ({itemType, name, company, date, shelfType, shelfId, itemId}) =
             </div>
             <Link
                 className={'p-2 aspect-square bg-gray-300 rounded-full transform transition-transform duration-300 hover:scale-110'}
-                href={`/api/edit/${itemId}`}
+                href={`/edit/${itemId}`}
             >
                 <Image src={edit} alt={'info'}></Image>
             </Link>
             <Link
                 className={'p-2 aspect-square bg-gray-300 rounded-full transform transition-transform duration-300 hover:scale-110'}
-                href={`/api/move/${itemId}`}>
+                href={`/move/${itemId}`}>
                 <Image src={change} alt={'info'}></Image>
             </Link>
             {/*<Link className={'p-2 aspect-square bg-red-600 rounded-full transform transition-transform duration-300 hover:scale-110'} href={''}>*/}

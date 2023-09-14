@@ -83,9 +83,22 @@ export default function Home() {
                             </div>
                           </div>
                       )}
-                      {data.filter(item => item.placeId === place.id).map((item, idx) => (
-                          <ItemTile key={idx} itemId={item.id} itemType={item.itemType.name} name={item.name} company={item.company.name} date={item.status[0].createdAt} shelfType={item.shelfType} shelfId={item.shelf.name} />
-                      ))}
+                      {data.filter(item => item.placeId === place.id).map((item, idx) => {
+                        const orderCategoryColor = item.orderCategory !== null ? item.orderCategory.color : null
+                        return (
+                        <ItemTile
+                            key={idx}
+                            placeId={place.id}
+                            itemId={item.id}
+                            itemType={item.itemType.name}
+                            name={item.name}
+                            company={item.company.name}
+                            date={item.status[0].createdAt}
+                            shelfType={item.shelfType}
+                            shelfId={item.shelf.name}
+                            orderCategoryColor={orderCategoryColor}
+                        />
+                        )})}
                     </section>
                 )}
               </div>

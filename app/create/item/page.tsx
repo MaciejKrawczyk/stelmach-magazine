@@ -17,6 +17,7 @@ import {sortTool} from "@/utils/sortToolShelf";
 const App = () => {
 
     const [formData, setFormData] = useState({
+        orderCategoryId: null,
         name: "",
         description: "",
         itemType: "",
@@ -25,7 +26,9 @@ const App = () => {
         shelfType: "",
         shelfCategory: 1,
         shelfId: "",
-        typeAttributes: {}
+        typeAttributes: {},
+        isOrder: false,
+        isDeleted: false
     });
 
     const [typeAttributes, setTypeAttributes] = useState([]);

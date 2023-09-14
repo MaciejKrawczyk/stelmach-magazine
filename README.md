@@ -19,30 +19,9 @@ http://localhost:3000/api/generateShelves POST
 
  --- 
 
+## notes
 
- ## --dev-notes
- - ## submit + modal
+ - szuflada id -1 => na jakimś stanowisku (też wyjęte i zamówione) oprócz magazynu
 
- - #### początek funkcji page
-```typescript
-// submit button
-const [isClicked, setIsClicked] = useState(false);
-// success modal
-const [isOpen, setIsOpen] = useState(false);
-const [object, setObject] = useState([]);
-```
-
- - #### w funkcji handleSubmit po spełnieniu warunków
-
-```typescript
-setIsClicked(true);
-setIsOpen(false);
-```
-
- - #### po udanym requescie
-```typescript
-setObject(data.data);
-setIsOpen(true);
-setIsClicked(false);
-```
-
+ - miejsce id -1 => wyjęte
+ - miesjce id 18 => zamowione

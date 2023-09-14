@@ -1,23 +1,16 @@
 'use client'
 
-import SuccessModal from "@/components/SuccessModal";
-import config from "@/config.json";
-import ToastNotification from "@/components/ToastNotification";
 import React from "react";
-import {sortTool} from "@/utils/sortToolShelf";
-import axios from "axios/index";
 import {Places} from "@/objects/Places";
+import {useParams} from "next/navigation";
 
-const page = ({params}) => {
+const page = () => {
 
-    const { id } = params
-
+    const params = useParams()
+    const id = params.id
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-
-
     };
 
     const handleChange = () => {
@@ -50,7 +43,7 @@ const page = ({params}) => {
                             >
                                 <option value="" disabled>Select a place ID</option>
                                 {Places.map((place, index) => (
-                                    <option key={index} disabled={place.id === 18 || place.id === 1 || place.id === 2} value={place.id} >
+                                    <option key={index} disabled={place.id === 18 || place.id === 1 || place.id === 2 || place.id === 2 || place.id === 3} value={place.id} >
                                         {place.name}
                                     </option>
                                 ))}
