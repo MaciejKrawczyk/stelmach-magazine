@@ -31,14 +31,6 @@
           "expandable": [
             {
               "id": 1,
-              "name": "Wsadź w szufladę",
-              "description": "Wybierz szufladę z szafy i wsadź do niej przedmiot",
-              "icon": "move",
-              "alt": "transfer",
-              "url": "/insert"
-            },
-            {
-              "id": 2,
               "name": "Przenieś narzędzia",
               "description": "Przenoś narzędzia między stanowiskami",
               "icon": "move",
@@ -46,7 +38,7 @@
               "url": "/move"
             },
             {
-              "id": 3,
+              "id": 2,
               "name": "Zarządzaj szafą",
               "description": "Dodaj kategorie, przenoś, dodawaj, usuwaj narzędzia",
               "icon": "shelf",
@@ -54,7 +46,7 @@
               "url": "/cabinet"
             },
             {
-              "id": 4,
+              "id": 3,
               "name": "Zarządzaj producentami",
               "description": "Przeglądaj i zarządzaj producentami",
               "icon": "tool",
@@ -62,7 +54,7 @@
               "url": "/"
             },
             {
-              "id": 5,
+              "id": 4,
               "name": "Zarządzaj typami",
               "description": "Przeglądaj i zarządzaj typami narzędziami",
               "icon": "tool",
@@ -70,7 +62,7 @@
               "url": "/"
             },
             {
-              "id": 6,
+              "id": 5,
               "name": "Zarządzaj narzędziami",
               "description": "Przeglądaj i zarządzaj narzędziami",
               "icon": "tool",
