@@ -25,7 +25,7 @@ const App = () => {
         itemType: "",
         companyId: "",
         placeId: "18",  // Initialize placeId with the value "1"
-        shelfType: "",
+        shelfType: 'small',
         shelfCategory: 1,
         shelfId: -1,
         typeAttributes: {}
@@ -352,7 +352,7 @@ const App = () => {
                         <div className="w-1/3">
                             <h2 className="text-lg mb-2">Miejsce docelowe przedmiotu</h2>
                             <p className="text-zinc-500 font-light text-sm">
-                                Jest to zamówienie, przedmiot trafi do listy zamówionych
+                                Jest to zamówiony przedmiot, trafi on do listy zamówionych
                             </p>
                         </div>
                         <div className="w-1/3 text-xs">
@@ -373,36 +373,6 @@ const App = () => {
                                 </select>
 
                                 <span className="pt-3 pl-1 mb-2 text-gray-500">Domyślna opcja - nie można jej zmienić</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr className={'my-7'}/>
-
-                    <div className="w-full flex justify-between">
-                        <div className="w-1/3">
-                            <h2 className="text-lg mb-2">Typ szuflady</h2>
-                            <p className="text-zinc-500 font-light text-sm">
-                                Każdy przedmiot musi mieć przydzielony swój rozmiar szuflady, do którego będzie trafiać przy przeniesieniu do magazynu
-                            </p>
-                        </div>
-                        <div className="w-1/3 text-xs">
-                            <div className="flex flex-col">
-                                <div className={'flex justify-between'}>
-                                    {shelfIds.map((id, index) => (
-                                        <div
-                                            key={index}
-                                            className={`w-2/5 rounded-xl flex-wrap aspect-square flex items-center justify-center p-2 border border-gray-300 my-1 cursor-pointer hover:bg-gray-100 ${formData.shelfType === id ? "bg-gray-200" : ""}`}
-                                            onClick={() => handleDivClick(id)}
-                                        >
-                                            <div className={'flex justify-center items-center flex-col'}>
-                                                <Image className={'mb-3'} priority src={id === 'small' ? shelfSmall : shelfBig} alt={'shelf svg'} />
-                                                {id}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <span className={'pt-3 pl-1'} ></span>
                             </div>
                         </div>
                     </div>

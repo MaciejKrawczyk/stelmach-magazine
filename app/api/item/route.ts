@@ -1,5 +1,4 @@
 import {db} from "@/lib/db/db";
-import {createStatus} from "@/lib/db/createStatus";
 
 
 export async function GET(req: Request) {

@@ -5,7 +5,7 @@ import {NextResponse} from "next/server";
 export async function PUT(request, {params}) {
 
     const { id } = params
-    const { placeId } = await request.json()
+    const { placeId, shelfId } = await request.json()
 
     try {
         const object = await db.item.update({
@@ -16,7 +16,7 @@ export async function PUT(request, {params}) {
                 placeId: Number(placeId),
                 shelf: {
                     connect: {
-                        id: -1
+                        id: shelfId
                     }
                 },
                 status: {

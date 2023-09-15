@@ -10,9 +10,6 @@ import SuccessModal from "@/components/SuccessModal";
 import config from "@/config.json";
 import SuccessModalWithoutAnimation from "@/components/SuccessModalWithoutAnimation";
 
-interface MoveItemFormProps {
-    id: unknown
-}
 
 const MoveItemForm = ({ id }) => {
 
@@ -39,7 +36,8 @@ const MoveItemForm = ({ id }) => {
         try {
 
             const payload = {
-                placeId: placeId
+                placeId: placeId,
+                shelfId: -1
             }
 
             const result = await axios.put(`/api/item/move/${id}`, payload)

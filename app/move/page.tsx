@@ -5,6 +5,9 @@ import { Places } from "@/objects/Places";
 import axios from "axios";
 import MoveItemTile from "@/components/MoveItemTile";
 import SuccessModal from "@/components/SuccessModal";
+import {sortToolShelfMultiple} from "@/utils/sortToolShelfMultiple";
+import {sortTool} from "@/utils/sortToolShelf";
+import SubmitButton from "@/components/submitButton";
 
 const page = () => {
     const [items, setItems] = useState([]);
@@ -13,9 +16,11 @@ const page = () => {
     const [rightSelectedPlaceId, setRightSelectedPlaceId] = useState(null);  // Added this
 
     const [isOpen, setIsOpen] = useState(false)
+    const [isClicked, setIsClicked] = useState(false)
     const [object, setObject] = useState([])
 
     const [isMounted, setIsMounted] = useState(false)
+    const [info, setInfo] = useState({})
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,6 +44,7 @@ const page = () => {
     };
 
     const handleItemClick = (itemId) => {
+        // @ts-ignore
         setMovedItems(prevItems =>
             prevItems.includes(itemId) ?
                 prevItems.filter(id => id !== itemId) :
@@ -48,31 +54,66 @@ const page = () => {
 
     const handleSubmit = async () => {
         try {
-            setIsOpen(false)
-            if (movedItems.length === 0) {
-                alert('musisz przenieść co najmniej jedno narzędzie aby zatwierdzić')
-            } else if (rightSelectedPlaceId === null) {
-                alert('musisz wybrać kategorię zanim zawierdzisz')
-            } else if (confirm('Czy na pewno chcesz przenieść przedmioty?')) {
-                try {
-                    const payload = {
-                        placeId: rightSelectedPlaceId
-                    }
-                    for (let i = 0; i < movedItems.length; i++) {
-                        const result = await axios.put(`api/item/move/${movedItems[i]}`, payload)
-                        console.log(result)
-                    }
-                    setIsOpen(true)
-                    setIsMounted(false)
-                } catch (e) {
-                    console.log(e)
-                }
-            }
-        } catch (e) {
-            console.error(e)
-        }
+            setIsOpen(false);
+            setIsClicked(false);
 
+            if (movedItems.length === 0) {
+                alert('musisz przenieść co najmniej jedno narzędzie aby zatwierdzić');
+                return;
+            }
+
+            if (rightSelectedPlaceId === null) {
+                alert('musisz wybrać kategorię zanim zawierdzisz');
+                return;
+            }
+
+            if (!confirm('Czy na pewno chcesz przenieść przedmioty?')) {
+                return;
+            }
+
+            const payload = {
+                placeId: rightSelectedPlaceId,
+                shelfId: -1
+            };
+
+            console.log(payload);
+
+            if (rightSelectedPlaceId === 1) {
+                let updatedInfo = {};
+
+                const promises = movedItems.map(async itemId => {
+                    const itemWithData = await axios.get(`/api/item/${itemId}`);
+                    const shelfId = await sortTool(itemWithData.data.shelfType, 1, itemWithData.data.itemTypeId);
+
+                    payload.shelfId = shelfId.shelfId;
+                    const result = await axios.put(`api/item/move/${itemId}`, payload);
+
+                    updatedInfo[itemWithData.data.name] = shelfId.shelfId;
+
+                    return result;  // if needed
+                });
+
+                await Promise.all(promises);
+
+                setInfo(updatedInfo);
+            } else {
+                const promises = movedItems.map(itemId => {
+                    console.log('nie magazyn');
+                    return axios.put(`api/item/move/${itemId}`, payload);
+                });
+
+                await Promise.all(promises);
+            }
+
+            setIsClicked(false);
+            setIsOpen(true);
+            setIsMounted(false);
+        } catch (e) {
+            console.error(e);
+        }
     };
+
+
 
     const filteredItems = items.filter(item => item.placeId === selectedPlaceId);
 
@@ -114,6 +155,7 @@ const page = () => {
                                     onClick={() => handleItemClick(item.id)}
                                 />
                             ))}
+
                         </div>
 
                         {/* Right column */}
@@ -145,15 +187,15 @@ const page = () => {
                                 />
                             ))}
                         </div>
+                        <SubmitButton isClicked={isClicked} />
                     </div>
-                    <button type="submit" className="mt-4 p-2 bg-green-500 hover:bg-green-600 text-white rounded">Submit</button>
                 </form>
             </main>
 
             <SuccessModal
                 isOpen={isOpen}
                 text={'przedmiot został przeniesiony'}
-                objectData={object}
+                objectData={info}
                 bigText={'Przeniesiono'}
             />
 

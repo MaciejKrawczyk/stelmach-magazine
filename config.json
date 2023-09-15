@@ -22,8 +22,16 @@
         {
           "id": 1,
           "name": "Przeglądaj",
-          "expandable": [],
-          "url": "/"
+          "expandable": [
+            {
+              "id": 1,
+              "name": "Stanowiska",
+              "description": "Przeglądaj stanowiska i przedmioty do nich przypisane",
+              "icon": "move",
+              "alt": "transfer",
+              "url": "/overview"
+            }
+          ]
         },
         {
           "id": 2,
@@ -46,28 +54,12 @@
               "url": "/cabinet"
             },
             {
-              "id": 3,
-              "name": "Zarządzaj producentami",
-              "description": "Przeglądaj i zarządzaj producentami",
-              "icon": "tool",
-              "alt": "tool",
-              "url": "/"
-            },
-            {
-              "id": 4,
-              "name": "Zarządzaj typami",
-              "description": "Przeglądaj i zarządzaj typami narzędziami",
-              "icon": "tool",
-              "alt": "tool",
-              "url": "/"
-            },
-            {
               "id": 5,
-              "name": "Zarządzaj narzędziami",
-              "description": "Przeglądaj i zarządzaj narzędziami",
+              "name": "Zarządzaj zamówieniami",
+              "description": "Przeglądaj i zarządzaj zamówieniami",
               "icon": "tool",
               "alt": "tool",
-              "url": "/"
+              "url": "/orders"
             }
           ],
           "url": "/"

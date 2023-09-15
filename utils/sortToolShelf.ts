@@ -20,7 +20,7 @@ export const sortTool = async (shelfType, shelfCategoryId, itemType) => {
 
     for (const shelf of category.shelf) {
         const shelfId = Number(shelf.id);
-        if (shelfId !== 1 && shelf.size === shelfType) {
+        if (shelfId !== 1 && shelfId !== -1 && shelf.size === shelfType) {
             if (shelvesOccupiedIds.has(shelfId)) {
                 // If shelf is occupied, find if an item with the same type exists.
                 const matchingItem = items.find(item => Number(item.itemTypeId) === Number(itemType));

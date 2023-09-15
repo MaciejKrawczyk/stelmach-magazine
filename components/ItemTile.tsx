@@ -14,6 +14,8 @@ import change from "@/public/Horizontal_down_right_main_light.svg";
 import trash from "@/public/Trash_light.svg";
 import React, {useEffect, useRef, useState} from "react";
 import ItemTileModal from "@/components/ItemTileModal";
+import arrow from '@/public/arrow.svg'
+import {formatDate} from "@/utils/formatDate";
 
 
 const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, itemId, orderCategoryColor}) => {
@@ -22,26 +24,6 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
     const modalRef = useRef(null);
     const toggleRef = useRef(null);
 
-    function formatDate(dateStr) {
-        let date = new Date(dateStr);
-        //   let testDateStr = "2023-09-06T11:55:53.333Z";
-        const month = String(date.getMonth() + 1)
-        const months = {
-            1: 'STY',
-            2: 'LUT',
-            3: 'MAR',
-            4: 'KWI',
-            5: 'MAJ',
-            6: 'CZE',
-            7: 'LIP',
-            8: 'SIE',
-            9: 'WRZ',
-            10: 'PAŹ',
-            11: 'LIS',
-            12: 'GRU'
-        }
-        return `${String(date.getDate()).padStart(2, '0')} ${months[month]} ${date.getFullYear()} | ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-    }
 
     useEffect(() => {
         function handleOutsideClick(event) {
@@ -57,7 +39,7 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
         };
     }, []);
 
-    return (      <div className={`p-5 w-64 ${placeId !== 1 ? 'h-auto' : 'h-96'} bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item`}>
+    return (      <div className={`p-5 w-64 'h-auto' bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item`}>
         <div className={'flex justify-between w-full'}>
             <div className={'bg-blue-500 py-1 px-5 text-white rounded-full'}>
                 {itemType}
@@ -82,7 +64,7 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
                 <span className={'text-gray-400'}>{formatDate(date)}</span>
             </div>
             <hr className={'my-1'}/>
-            {placeId === 1 && (
+            {placeId === 1 && shelfType && shelfId && (
                 <>
                     <div className={'flex'}>
                         <Image className={'mr-3'}  src={boxClosed} alt={'info'}></Image>
@@ -98,7 +80,6 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
         <div className={'flex justify-between my-4'}>
             <div
                 onClick={() => setModalVisible(!isModalVisible)}
-                onMouseLeave={() => setModalVisible(false)}
                 className={'relative p-2 aspect-square bg-gray-300 rounded-full transform transition-transform duration-300 hover:scale-110'}
             >
                 <div className={'cursor-pointer'}>
@@ -107,9 +88,9 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
 
                 {isModalVisible && (
                     <ItemTileModal
-                        onMouseLeave={() => setModalVisible(false)}
                         isVisible={isModalVisible}
                         itemId={itemId}
+                        orderCategoryColor={orderCategoryColor}
                     />
                 )}
             </div>
@@ -119,11 +100,20 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
             >
                 <Image src={edit} alt={'info'}></Image>
             </Link>
+
+            { orderCategoryColor === null ? (
+                <Link
+                    className={'p-2 aspect-square bg-gray-300 rounded-full transform transition-transform duration-300 hover:scale-110'}
+                    href={`/move/${itemId}`}>
+                    <Image src={change} alt={'info'}></Image>
+                </Link>
+            ) :
             <Link
                 className={'p-2 aspect-square bg-gray-300 rounded-full transform transition-transform duration-300 hover:scale-110'}
-                href={`/move/${itemId}`}>
-                <Image src={change} alt={'info'}></Image>
-            </Link>
+                href={`/orderToMagazine/${itemId}`}>
+                <Image src={arrow} alt={'do magazynu'}></Image>
+            </Link> }
+
             {/*<Link className={'p-2 aspect-square bg-red-600 rounded-full transform transition-transform duration-300 hover:scale-110'} href={''}>*/}
             {/*    <Image src={trash} alt={'info'}></Image>*/}
             {/*</Link>*/}
