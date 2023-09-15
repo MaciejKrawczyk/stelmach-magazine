@@ -30,8 +30,7 @@ export async function POST(req: Request) {
 
         const objectExists = await db.category.findFirst({
             where: {
-                name,
-                color
+                name: name
             }
         })
 
@@ -52,7 +51,4 @@ export async function POST(req: Request) {
     } catch (error) {
         console.error(error)
     }
-
-
-
 }

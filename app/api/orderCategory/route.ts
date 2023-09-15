@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         const body = await req.json()
         const { name, color, description } = body
 
-        const objectExists = await db.category.findFirst({
+        const objectExists = await db.orderCategory.findFirst({
             where: {
                 name,
                 color

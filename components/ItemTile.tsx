@@ -16,14 +16,16 @@ import React, {useEffect, useRef, useState} from "react";
 import ItemTileModal from "@/components/ItemTileModal";
 import arrow from '@/public/arrow.svg'
 import {formatDate} from "@/utils/formatDate";
+import {useRouter} from "next/navigation";
 
 
 const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, itemId, orderCategoryColor}) => {
 
+    const router = useRouter()
+
     const [isModalVisible, setModalVisible] = useState(false);
     const modalRef = useRef(null);
     const toggleRef = useRef(null);
-
 
     useEffect(() => {
         function handleOutsideClick(event) {
@@ -31,16 +33,23 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
                 setModalVisible(false);
             }
         }
-
         document.addEventListener("mousedown", handleOutsideClick);
-
         return () => {
             document.removeEventListener("mousedown", handleOutsideClick);
         };
     }, []);
 
-    return (      <div className={`p-5 w-64 'h-auto' bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item`}>
-        <div className={'flex justify-between w-full'}>
+    const handleRedirect = () => {
+        router.push(`/${itemId}`)
+    }
+
+
+    return (<div
+        className={`p-5 w-64 'h-auto' bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item `}
+    >
+        <div
+            className={'flex justify-between w-full'}>
+
             <div className={'bg-blue-500 py-1 px-5 text-white rounded-full'}>
                 {itemType}
             </div>
@@ -49,7 +58,10 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
         </div>
         <hr className={'my-2'}/>
         <div className={'flex flex-col gap-3 justify-start w-full'}>
-            <div className={'flex'}>
+            <div
+                onClick={handleRedirect}
+                className={'flex cursor-pointer transition-colors duration-200 hover:bg-gray-200'}
+            >
                 <Image className={'mr-3'} src={scan} alt={'info'}></Image>
                 <span className={'text-gray-400'}>{name.length > 19 ? name.substring(0, 19) + '...' : name}</span>
             </div>
@@ -114,9 +126,6 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
                 <Image src={arrow} alt={'do magazynu'}></Image>
             </Link> }
 
-            {/*<Link className={'p-2 aspect-square bg-red-600 rounded-full transform transition-transform duration-300 hover:scale-110'} href={''}>*/}
-            {/*    <Image src={trash} alt={'info'}></Image>*/}
-            {/*</Link>*/}
         </div>
     </div>)
 }

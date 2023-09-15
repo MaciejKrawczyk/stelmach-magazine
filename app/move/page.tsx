@@ -5,7 +5,6 @@ import { Places } from "@/objects/Places";
 import axios from "axios";
 import MoveItemTile from "@/components/MoveItemTile";
 import SuccessModal from "@/components/SuccessModal";
-import {sortToolShelfMultiple} from "@/utils/sortToolShelfMultiple";
 import {sortTool} from "@/utils/sortToolShelf";
 import SubmitButton from "@/components/submitButton";
 
@@ -55,7 +54,7 @@ const page = () => {
     const handleSubmit = async () => {
         try {
             setIsOpen(false);
-            setIsClicked(false);
+            setIsClicked(true);
 
             if (movedItems.length === 0) {
                 alert('musisz przenieść co najmniej jedno narzędzie aby zatwierdzić');
@@ -113,19 +112,20 @@ const page = () => {
         }
     };
 
-
-
     const filteredItems = items.filter(item => item.placeId === selectedPlaceId);
 
     return (
         <div className={'flex justify-center'}>
 
             <main className={'w-9/12 h-auto mb-28'}>
+
                 <h1 className={'font-semibold text-3xl my-10 mx-auto '}>Przenoszenie przedmiotu</h1>
+
                 <form onSubmit={e => {
                     e.preventDefault();
                     handleSubmit();
-                }}>
+                }}
+                >
                     <div className={'w-full grid grid-cols-2 gap-1'}>
 
                         {/* Left column */}
@@ -155,6 +155,8 @@ const page = () => {
                                     onClick={() => handleItemClick(item.id)}
                                 />
                             ))}
+
+                            <SubmitButton isClicked={isClicked} />
 
                         </div>
 
@@ -187,7 +189,6 @@ const page = () => {
                                 />
                             ))}
                         </div>
-                        <SubmitButton isClicked={isClicked} />
                     </div>
                 </form>
             </main>
