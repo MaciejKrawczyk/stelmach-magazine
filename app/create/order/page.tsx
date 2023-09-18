@@ -89,24 +89,31 @@ const App = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        const newValue = value.replace(/,/g, '.');
+
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: newValue,
         });
     };
 
+
     const handleAttributesChange = (e) => {
         const { name, value } = e.target;
+
+        const newValue = value.replace(/,/g, '.');
 
         // Update only the specific attribute value that was changed
         setFormData(prevState => ({
             ...prevState,
             typeAttributes: {
                 ...prevState.typeAttributes,
-                [name]: value
+                [name]: newValue
             }
         }));
-    }
+    };
+
 
 
     const handleDivClick = (id) => {
@@ -290,7 +297,7 @@ const App = () => {
                                     </select>
 
                                 </div>
-                                <span className="pt-3 pl-1 mb-2 text-gray-500">Wybierz typ z listy</span>
+                                <span className="pt-3 pl-1 mb-2 text-gray-500">Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty</span>
 
                                 {typeAttributes.map((attribute, index) => (
                                     <div key={index} className="relative my-4">

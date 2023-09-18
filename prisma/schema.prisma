@@ -77,13 +77,13 @@ model OrderCategory {
 }
 
 model ItemType {
-  id           Int            @id @default(autoincrement())
-  name         String         @unique
+  id           Int             @id @default(autoincrement())
+  name         String          @unique
   item         Item[]
-  typettribute Typettribute[]
+  typettribute Typeattribute[]
 }
 
-model Typettribute {
+model Typeattribute {
   id             Int              @id @default(autoincrement())
   name           String
   itemtypeId     Int
@@ -92,10 +92,10 @@ model Typettribute {
 }
 
 model AttributeValue {
-  id              Int          @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   value           String
   itemId          Int
-  item            Item         @relation(fields: [itemId], references: [id])
+  item            Item          @relation(fields: [itemId], references: [id])
   typeattributeId Int
-  typeattribute   Typettribute @relation(fields: [typeattributeId], references: [id])
+  typeattribute   Typeattribute @relation(fields: [typeattributeId], references: [id])
 }

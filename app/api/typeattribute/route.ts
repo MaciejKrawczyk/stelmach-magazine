@@ -5,7 +5,7 @@ export async function GET(req: Request) {
         const url = new URL(req.url)
         const id = url.searchParams.get("itemtypeId")
 
-        const objects = await db.typettribute.findMany({
+        const objects = await db.typeattribute.findMany({
             where: {
                 itemtypeId: Number(id)
             }

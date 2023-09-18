@@ -13,16 +13,16 @@ export async function GET(req: Request, {params}) {
                 id: Number(id)
             },
             include: {
-                company: true,
-                itemType: true,
-                status: true,
-                shelf: true,
-                orderCategory: true,
                 attributeValue: {
                     include: {
                         typeattribute: true
                     }
-                }
+                },
+                company: true,
+                itemType: true,
+                status: true,
+                shelf: true,
+                orderCategory: true
             }
         })
 
@@ -67,6 +67,9 @@ export async function PUT(request, {params}) {
                         description: "narzędzie z zamówienia dodane do bazy"
                     }
                 }
+            },
+            include: {
+                shelf: true
             }
         })
         return NextResponse.json({ object }, { status: 200 })

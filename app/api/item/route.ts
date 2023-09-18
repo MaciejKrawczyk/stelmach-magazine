@@ -6,6 +6,11 @@ export async function GET(req: Request) {
 
         const objects = await db.item.findMany({
             include: {
+                attributeValue: {
+                    include: {
+                        typeattribute: true
+                    }
+                },
                 company: true,
                 itemType: true,
                 status: true,
@@ -132,7 +137,17 @@ export async function POST(req: Request) {
                     }
                 },
                 include: {
+                    attributeValue: {
+                        include: {
+                            typeattribute: true
+                        }
+                    },
+                    company: true,
+                    itemType: true,
+                    status: true,
                     shelf: true,
+                    orderCategory: true
+
                 }
             })
         }

@@ -5,7 +5,7 @@ import axios from "axios";
 export async function GET(req: Request) {
     try {
 
-        const objects = await db.itemType.findMany()
+        const objects = await db.itemType.findMany({})
 
         return new Response( JSON.stringify(objects))
 
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
             const attributeName = body.list[i].value
 
-            const data = await db.typettribute.create({
+            const data = await db.typeattribute.create({
                 data: {
                     name: attributeName,
                     itemtypeId: Number(itemTypeId)

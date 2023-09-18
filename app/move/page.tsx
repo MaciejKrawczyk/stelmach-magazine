@@ -7,6 +7,7 @@ import MoveItemTile from "@/components/MoveItemTile";
 import SuccessModal from "@/components/SuccessModal";
 import {sortTool} from "@/utils/sortToolShelf";
 import SubmitButton from "@/components/submitButton";
+import {sortToolExisting} from "@/utils/sortToolExisting";
 
 const page = () => {
     const [items, setItems] = useState([]);
@@ -80,19 +81,34 @@ const page = () => {
             if (rightSelectedPlaceId === 1) {
                 let updatedInfo = {};
 
-                const promises = movedItems.map(async itemId => {
+                // Create a new async function to handle the entire process for each item
+                const processItem = async itemId => {
                     const itemWithData = await axios.get(`/api/item/${itemId}`);
-                    const shelfId = await sortTool(itemWithData.data.shelfType, 1, itemWithData.data.itemTypeId);
+                    // console.log('pobrane itemWithData');
+
+                    const shelfId = await sortToolExisting(
+                        itemWithData.data.shelfType,
+                        1,
+                        itemWithData.data.itemTypeId,
+                        itemWithData.data.attributeValue
+                    );
+                    // console.log('sortTool zrobiony');
 
                     payload.shelfId = shelfId.shelfId;
+                    console.log('do payloudu dodane nowy shelfId');
+
                     const result = await axios.put(`api/item/move/${itemId}`, payload);
+                    console.log('result zroniony');
 
                     updatedInfo[itemWithData.data.name] = shelfId.shelfId;
 
                     return result;  // if needed
-                });
+                };
 
-                await Promise.all(promises);
+                // Use a for...of loop to ensure sequential execution for each item
+                for (const itemId of movedItems) {
+                    await processItem(itemId);
+                }
 
                 setInfo(updatedInfo);
             } else {
@@ -148,6 +164,7 @@ const page = () => {
                             {filteredItems.filter(item => !movedItems.includes(item.id)).map(item => (
                                 <MoveItemTile
                                     key={item.id}
+                                    attributes={item.attributeValue}
                                     itemType={item.itemType.name}
                                     name={item.name}
                                     company={item.company.name}
@@ -155,8 +172,6 @@ const page = () => {
                                     onClick={() => handleItemClick(item.id)}
                                 />
                             ))}
-
-                            <SubmitButton isClicked={isClicked} />
 
                         </div>
 
@@ -181,6 +196,7 @@ const page = () => {
                             {filteredItems.filter(item => movedItems.includes(item.id)).map(item => (
                                 <MoveItemTile
                                     key={item.id}
+                                    attributes={item.attributeValue}
                                     itemType={item.itemType.name}
                                     name={item.name}
                                     company={item.company.name}
@@ -188,6 +204,9 @@ const page = () => {
                                     onClick={() => handleItemClick(item.id)}
                                 />
                             ))}
+
+                            <SubmitButton isClicked={isClicked} />
+
                         </div>
                     </div>
                 </form>

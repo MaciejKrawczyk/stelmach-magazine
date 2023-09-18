@@ -385,6 +385,13 @@ const page = () => {
                     <p className={'text-center font-semibold'}>{selectedItem.itemType.name}, id: {selectedItem.id}</p>
                     <p className={'text-center text-gray-500 font-light my-2'}>{selectedItem.name}</p>
                     <hr/>
+
+                    {selectedItem.attributeValue.map((attribute) => {
+                        return (
+                            <p key={attribute.id}>{attribute.typeattribute.name}: {attribute.value}</p>
+                        )
+                    })}
+
                     <div
                         className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'}
                         onClick={takeout}

@@ -13,6 +13,7 @@ import SuccessModal from "@/components/SuccessModal";
 import config from "@/config.json";
 import ToastNotification from "@/components/ToastNotification";
 import SubmitButton from "@/components/submitButton";
+import {sortToolExisting} from "@/utils/sortToolExisting";
 
 
 const page = () => {
@@ -32,12 +33,30 @@ const page = () => {
     const [shelfCategories, setShelfCategories] = useState([])
     const shelfIds = Object.keys(Shelves);
 
+    const [formData, setFormData] = useState({
+        orderCategoryId: null,
+        name: "",
+        placeId: "1",
+        shelfCategory: 1,
+        shelfId: "",
+        isOrder: false,
+        isDeleted: false
+    });
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const categoriesResponse = await axios.get('/api/category')
+                const categoriesResponse = await axios.get('/api/category');
+                const itemResponse = await axios.get(`/api/item/${id}`);
                 setShelfCategories(categoriesResponse.data);
-                // console.log("Fetched shelf categories:", categoriesResponse.data); // log the fetched data
+
+                // Update formData with the fetched item's attributeValue
+                setFormData(prevState => ({
+                    ...prevState,
+                    typeAttributes: itemResponse.data.attributeValue
+                }));
+
             } catch (error) {
                 console.error("Error fetching data", error);
             }
@@ -45,16 +64,6 @@ const page = () => {
         fetchData();
     }, []);
 
-
-    const [formData, setFormData] = useState({
-        orderCategoryId: null,
-        name: "",
-        placeId: "1",  // Initialize placeId with the value "1"
-        shelfCategory: 1,
-        shelfId: "",
-        isOrder: false,
-        isDeleted: false
-    })
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -78,7 +87,13 @@ const page = () => {
         const isAnyFieldEmpty = Object.values(formData).some(value => value === "");
 
         try {
-            const shelfResult = await sortTool(formData.shelfType, formData.shelfCategory, formData.itemType)
+
+            const shelfResult = await sortToolExisting(
+                formData.shelfType,
+                formData.shelfCategory,
+                formData.itemType,
+                formData.typeAttributes
+            )
 
             setIsClicked(true);
             setIsOpen(false);
@@ -86,18 +101,17 @@ const page = () => {
             // Update formData with shelfId before sending it
             let updatedFormData = { ...formData, shelfId: shelfResult.shelfId };
 
-            console.log('shelfResult:', shelfResult)
-            console.log(updatedFormData)
-
             const payload = updatedFormData;
 
             try {
                 const data = await axios.put(`/api/item/${id}`, payload)
+                console.log(data)
+
 
                 const objectToDisplay = {
-                    shelfName: data.data.shelf.name,
-                    shelfId: data.data.shelf.id,
-                    shelfType: data.data.shelf.size
+                    shelfName: data.data.object.shelf.name,
+                    shelfId: data.data.object.shelf.id,
+                    shelfType: data.data.object.shelf.size
                 }
 
                 console.log(data)

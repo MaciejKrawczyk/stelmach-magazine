@@ -26,7 +26,8 @@ const Page = () => {
 
 
     const handleNameChange = (e) => {
-        setItemName(e.target.value);
+        let newValue = e.target.value.replace(/,/g, '.');
+        setItemName(newValue);
     };
 
     // Handler to add a new input field
@@ -48,10 +49,14 @@ const Page = () => {
     // Handler to update input value
     const handleInputChange = (e, index) => {
         const { value } = e.target;
+
+        const newValue = value.replace(/,/g, '.');
+
         const list = [...inputList];
-        list[index].value = value;
+        list[index].value = newValue;
         setInputList(list);
     };
+
 
     // Handler to submit form
     // Handler to submit form
@@ -74,6 +79,8 @@ const Page = () => {
             name: itemName,
             list: inputList,
         };
+
+        console.log(payload)
 
         try {
             const data = await axios.post('/api/itemtype', payload);
@@ -114,8 +121,6 @@ const Page = () => {
             <h1 className={'font-semibold text-3xl my-10 mx-auto '}>Dodawanie typów przedmiotów</h1>
 
             <form onSubmit={handleSubmit}>
-
-
 
 
                 <div className="w-full flex justify-between">
@@ -191,7 +196,7 @@ const Page = () => {
                                     ))}
 
                             </div>
-                            <span className="pt-3 pl-1 mb-2 text-gray-500"></span>
+                            <span className="pt-3 pl-1 mb-2 text-gray-500">UWAGA! Zaleca się wpisywanie również jednostki w jakich będą wpisywane wartości cechy</span>
                         </div>
                     </div>
                 </div>

@@ -101,7 +101,10 @@ const MyForm = () => {
                                     type="text"
                                     id="name"
                                     value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value.replace(/,/g, '.');
+                                        setName(newValue)
+                                    }}
                                 />
                                 <span className={'pt-3 pl-1'} ></span>
                             </div>
@@ -144,7 +147,10 @@ const MyForm = () => {
                                     className="border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
                                     id="description"
                                     value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value.replace(/,/g, '.');
+                                        setDescription(newValue)
+                                    }}
                                 ></textarea>
                                 <span className={'pt-3 pl-1'} ></span>
                             </div>

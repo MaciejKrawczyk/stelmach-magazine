@@ -28,7 +28,8 @@ const App = () => {
         shelfId: "",
         typeAttributes: {},
         isOrder: false,
-        isDeleted: false
+        isDeleted: false,
+        attributeValue: []
     });
 
     const [typeAttributes, setTypeAttributes] = useState([]);
@@ -50,6 +51,7 @@ const App = () => {
     const [isError, setIsError] = useState(false)
     const [toastText, setToastText] = useState('')
 
+    const [typeAttribute, setTypeAttribute] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,7 +59,9 @@ const App = () => {
                 const itemTypesResponse = await axios.get('/api/itemtype');
                 const companiesResponse = await axios.get('/api/company');
                 const categoriesResponse = await axios.get('/api/category')
+                // const attributesResponse = await axios.get('/api/typeattribute')
                 console.log(itemTypesResponse.data)
+                // setTypeAttribute(attributesResponse.data)
                 setItemTypes(itemTypesResponse.data);
                 setCompanyIds(companiesResponse.data);
                 setShelfCategories(categoriesResponse.data);
@@ -93,25 +97,28 @@ const App = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        const newValue = value.replace(/,/g, '.');
         setFormData({
             ...formData,
-            [name]: value
+            [name]: newValue
         });
     };
 
-
     const handleAttributesChange = (e) => {
         const { name, value } = e.target;
+
+        const newValue = value.replace(/,/g, '.');
 
         // Update only the specific attribute value that was changed
         setFormData(prevState => ({
             ...prevState,
             typeAttributes: {
                 ...prevState.typeAttributes,
-                [name]: value
+                [name]: newValue
             }
         }));
-    }
+    };
+
 
 
     const handleDivClick = (id) => {
@@ -122,6 +129,8 @@ const App = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+
 
         setIsError(false)
 
@@ -139,7 +148,14 @@ const App = () => {
         }
 
         try {
-            const shelfResult = await sortTool(formData.shelfType, formData.shelfCategory, formData.itemType)
+            console.log(formData)
+
+            const shelfResult = await sortTool(
+                formData.shelfCategory,
+                formData.shelfType,
+                formData.itemType,
+                formData.typeAttributes
+            )
 
             setIsClicked(true);
             setIsOpen(false);
@@ -265,7 +281,7 @@ const App = () => {
                                     </select>
 
                                 </div>
-                                <span className="pt-3 pl-1 mb-2 text-gray-500">Wybierz typ z listy</span>
+                                <span className="pt-3 pl-1 mb-2 text-gray-500">Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty</span>
 
                                 {typeAttributes.map((attribute, index) => (
                                     <div key={index} className="relative my-4">

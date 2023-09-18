@@ -15,10 +15,10 @@ const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
         if (!itemInShelf) return shelf.id;  // Return the id of the empty shelf.
 
         if (Number(itemInShelf.itemType.id) === Number(itemType)) {
-            const matchedAttributes = Object.entries(attributes).every(([typeattributeId, value]) => {
-                const attribute = itemInShelf.attributeValue.find(attr => Number(attr.typeattribute.id) === Number(typeattributeId));
-                return attribute && String(attribute.value) === String(value);
-            });
+            const matchedAttributes = attributes.every((attr, index) =>
+                String(attr.value) === String(itemInShelf.attributeValue[index].value) &&
+                String(attr.typeattribute.name) === String(itemInShelf.attributeValue[index].typeattribute.name)
+            );
 
             if (matchedAttributes) return shelf.id;
         }
@@ -27,8 +27,7 @@ const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
     return null;  // Return null if no matching shelf is found.
 }
 
-
-export const sortTool = async (shelfType, shelfCategoryId, itemType, attributes) => {
+export const sortToolExisting = async (shelfType, shelfCategoryId, itemType, attributes) => {
     try {
         const [categoriesShelvesResponse, itemsResponse] = await Promise.all([
             axios.get('/api/category'),

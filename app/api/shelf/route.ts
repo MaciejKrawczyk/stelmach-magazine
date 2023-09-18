@@ -9,6 +9,11 @@ export async function GET(req: Request) {
                 category: true,
                 item: {
                     include: {
+                        attributeValue: {
+                            include: {
+                                typeattribute: true
+                            }
+                        },
                         itemType: true
                     }
                 }
