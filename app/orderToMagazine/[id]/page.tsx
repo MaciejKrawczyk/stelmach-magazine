@@ -40,7 +40,10 @@ const page = () => {
         shelfCategory: 1,
         shelfId: "",
         isOrder: false,
-        isDeleted: false
+        isDeleted: false,
+        typeAttributes: undefined,
+        // itemType: undefined,
+        shelfType: undefined
     });
 
 
@@ -54,7 +57,8 @@ const page = () => {
                 // Update formData with the fetched item's attributeValue
                 setFormData(prevState => ({
                     ...prevState,
-                    typeAttributes: itemResponse.data.attributeValue
+                    typeAttributes: itemResponse.data.attributeValue,
+                    itemType: itemResponse.data.itemType.id
                 }));
 
             } catch (error) {
@@ -88,6 +92,8 @@ const page = () => {
 
         try {
 
+            console.log(formData)
+
             const shelfResult = await sortToolExisting(
                 formData.shelfType,
                 formData.shelfCategory,
@@ -106,6 +112,7 @@ const page = () => {
             try {
                 const data = await axios.put(`/api/item/${id}`, payload)
                 console.log(data)
+
 
 
                 const objectToDisplay = {
