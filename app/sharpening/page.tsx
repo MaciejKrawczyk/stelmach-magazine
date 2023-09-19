@@ -1,233 +1,116 @@
 'use client'
 
-import React, { useEffect, useState } from "react";
-import { Places } from "@/objects/Places";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-import MoveItemTile from "@/components/MoveItemTile";
-import SuccessModal from "@/components/SuccessModal";
-import {sortTool} from "@/utils/sortToolShelf";
-import SubmitButton from "@/components/submitButton";
-import {sortToolExisting} from "@/utils/sortToolExisting";
-import {PlaceNameById} from "@/utils/PlaceNameById";
+import Image from "next/image";
+import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
+import pin from "@/public/place-marker-svgrepo-com 1.svg";
+import settings from "@/public/Setting_alt_line.svg";
+import ItemTile from "@/components/ItemTile";
+import Link from "next/link";
+import arrow from '@/public/arrow_right.svg'
 
 const page = () => {
-    const [items, setItems] = useState([]);
-    const [selectedPlaceId, setSelectedPlaceId] = useState(null);
-    const [movedItems, setMovedItems] = useState([]);
-    const [rightSelectedPlaceId, setRightSelectedPlaceId] = useState(null);  // Added this
 
-    const [isOpen, setIsOpen] = useState(false)
-    const [isClicked, setIsClicked] = useState(false)
-    const [object, setObject] = useState([])
+    const [items, setItems] = useState([])
+    const [itemSent, setItemSent] = useState([])
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [expandedPlace, setExpandedPlace] = useState(null);
 
-    const [isMounted, setIsMounted] = useState(false)
-    const [info, setInfo] = useState({})
-
-    const [from, setFrom] = useState('')
+    const [selectedItems, setSelectedItems] = useState([]);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchData = async () => {
             try {
-                const itemsResponse = await axios.get('/api/item');
-                setItems(itemsResponse.data);
-            } catch (error) {
-                console.error("Error fetching data", error);
+                const response = await axios.get('/api/item');
+                const orderCategoriesResponse = await axios.get('/api/itemSent')
+                if (isMounted) {
+                    setItems(response.data);
+                    setItemSent(orderCategoriesResponse.data)
+                    setLoading(false);
+                }
+            } catch (e) {
+                console.error('Failed to fetch data:', e);
+                if (isMounted) {
+                    setError(e);
+                    setLoading(false);
+                }
             }
         };
         fetchData();
-        setIsMounted(true)
-    }, [isMounted]);
+        return () => { isMounted = false; };
+    }, []);
 
-    const handleChange = (e) => {
-        setSelectedPlaceId(Number(e.target.value));
-        setFrom(Number(e.target.value))
-    };
-
-    const handleRightChange = (e) => { // Added this function
-        setRightSelectedPlaceId(Number(e.target.value));
-    };
-
-    const handleItemClick = (itemId) => {
-        // @ts-ignore
-        setMovedItems(prevItems =>
-            prevItems.includes(itemId) ?
-                prevItems.filter(id => id !== itemId) :
-                [...prevItems, itemId]
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Image priority alt={'loading...'} src={loadingSVG} />
+            </div>
         );
-    };
+    }
 
-    const handleSubmit = async () => {
-        try {
-            setIsOpen(false);
-            setIsClicked(true);
+    if (error) return <div>Error loading data</div>;
 
-            if (movedItems.length === 0) {
-                alert('musisz przenieść co najmniej jedno narzędzie aby zatwierdzić');
-                return;
-            }
+    function send() {
+        // Filter items based on the expandedPlace id and store them in selectedItems
+        const itemsFromExpandedPlace = items.filter(item => item.itemSentCategoryId === expandedPlace);
+        setSelectedItems(itemsFromExpandedPlace);
+        console.log(selectedItems)
+    }
 
-            if (rightSelectedPlaceId === null) {
-                alert('musisz wybrać kategorię zanim zawierdzisz');
-                return;
-            }
+    return <div className='flex justify-center'>
+        <main className='w-10/12 h-auto mb-28'>
+            <h1 className='font-semibold text-3xl my-10 mx-auto'>Paczki do wysłania</h1>
 
-            if (!confirm('Czy na pewno chcesz przenieść przedmioty?')) {
-                return;
-            }
-
-            const payload = {
-                placeId: rightSelectedPlaceId,
-                shelfId: -1,
-                from: PlaceNameById(from),
-                to: PlaceNameById(rightSelectedPlaceId)
-            };
-
-            console.log(payload);
-
-            if (rightSelectedPlaceId === 1) {
-                let updatedInfo = {};
-
-                // Create a new async function to handle the entire process for each item
-                const processItem = async itemId => {
-                    const itemWithData = await axios.get(`/api/item/${itemId}`);
-                    // console.log('pobrane itemWithData');
-
-                    const shelfId = await sortToolExisting(
-                        itemWithData.data.shelfType,
-                        1,
-                        itemWithData.data.itemTypeId,
-                        itemWithData.data.attributeValue
-                    );
-                    // console.log('sortTool zrobiony');
-
-                    payload.shelfId = shelfId.shelfId;
-
-                    console.log('do payloudu dodane nowy shelfId');
-
-                    const result = await axios.put(`api/item/move/${itemId}`, payload);
-                    console.log('result zroniony');
-
-                    updatedInfo[itemWithData.data.name] = shelfId.shelfId;
-
-                    return result;  // if needed
-                };
-
-                // Use a for...of loop to ensure sequential execution for each item
-                for (const itemId of movedItems) {
-                    await processItem(itemId);
-                }
-
-                setInfo(updatedInfo);
-            } else {
-                const promises = movedItems.map(itemId => {
-                    console.log('nie magazyn');
-                    return axios.put(`api/item/move/${itemId}`, payload);
-                });
-
-                await Promise.all(promises);
-            }
-
-            setIsClicked(false);
-            setIsOpen(true);
-            setIsMounted(false);
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    const filteredItems = items.filter(item => item.placeId === selectedPlaceId);
-
-    return (
-        <div className={'flex justify-center'}>
-
-            <main className={'w-9/12 h-auto mb-28'}>
-
-                <h1 className={'font-semibold text-3xl my-10 mx-auto '}>Przenoszenie przedmiotu</h1>
-
-                <form onSubmit={e => {
-                    e.preventDefault();
-                    handleSubmit();
-                }}
-                >
-                    <div className={'w-full grid grid-cols-2 gap-1'}>
-
-                        {/* Left column */}
-                        <div className={'h-10 bg-red-600 flex items-center flex-col'}>
-
-                            <select
-                                className="w-1/2 border-gray-300 p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
-                                name="placeId"
-                                onChange={handleChange}
-                                value={selectedPlaceId || ""}
-                            >
-                                <option value="" disabled>Select a place ID</option>
-                                {Places.map((place, index) => (
-                                    <option key={index} value={place.id} disabled={place.id===18}>
-                                        {place.name}
-                                    </option>
-                                ))}
-                            </select>
-
-                            {filteredItems.filter(item => !movedItems.includes(item.id)).map(item => (
-                                <MoveItemTile
-                                    key={item.id}
-                                    attributes={item.attributeValue}
-                                    itemType={item.itemType.name}
-                                    name={item.name}
-                                    company={item.company.name}
-                                    description={item.description}
-                                    onClick={() => handleItemClick(item.id)}
-                                />
-                            ))}
-
+            {itemSent.map((place, index) => (
+                <div key={index}>
+                    <div className="flex items-center my-5 p-2 cursor-pointer rounded-xl transition-colors duration-200 hover:bg-gray-200" onClick={() => setExpandedPlace(prevPlace => prevPlace === place.id ? null : place.id)}>
+                        <div className="flex items-center mr-2">
+                            <Image className="" priority src={pin} alt="pin" />
+                            <div className="mx-4">
+                                <span className='text-gray-900'>{place.name}&emsp;=>&emsp;{place.company.name}</span>
+                                <span className='mx-1 text-gray-400 text-sm'></span>
+                            </div>
                         </div>
-
-                        {/* Right column */}
-                        <div className={'h-10 bg-blue-500 flex items-center flex-col'}>
-
-                            <select
-                                className="w-1/2 border-gray-300 p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
-                                name="rightPlaceId"
-                                onChange={handleRightChange}
-                                value={rightSelectedPlaceId || ""}
-                            >
-                                <option value="" disabled>Select a place ID</option>
-                                {Places.map((place, index) => (
-                                    <option key={index} value={place.id} disabled={selectedPlaceId === place.id || place.id === 18 || place.id === -1 || place.id === 2}>
-                                        {place.name}
-                                    </option>
-                                ))}
-                            </select>
-
-
-                            {filteredItems.filter(item => movedItems.includes(item.id)).map(item => (
-                                <MoveItemTile
-                                    key={item.id}
-                                    attributes={item.attributeValue}
-                                    itemType={item.itemType.name}
-                                    name={item.name}
-                                    company={item.company.name}
-                                    description={item.description}
-                                    onClick={() => handleItemClick(item.id)}
-                                />
-                            ))}
-
-                            <SubmitButton isClicked={isClicked} />
-
-                        </div>
+                        <hr className="flex-grow border-t-2" />
+                        <Image className="ml-4" priority src={settings} alt="settings" />
                     </div>
-                </form>
-            </main>
+                    {expandedPlace === place.id && (
+                        <section className='flex gap-5 flex-wrap'>
+                            {items.filter(item => item.itemSentCategoryId === place.id).map((item, idx) => {
+                                const orderCategoryColor = item.itemSentCategory !== null ? item.itemSentCategory.color : null
 
-            <SuccessModal
-                isOpen={isOpen}
-                text={'przedmiot został przeniesiony'}
-                objectData={info}
-                bigText={'Przeniesiono'}
-            />
+                                return (
+                                    <ItemTile
+                                        key={idx}
+                                        placeId={place.id}
+                                        itemId={item.id}
+                                        itemType={item.itemType.name}
+                                        name={item.name}
+                                        company={item.company.name}
+                                        date={item.status[0].createdAt}
+                                        orderCategoryColor={orderCategoryColor}
+                                    />
+                                )})}
 
-        </div>
-    );
+                            <div className='w-64 h-96 bg-gray-100 flex flex-col justify-center items-center border-gray-200 rounded-xl shadow-item'>
+                                <div onClick={send} className="relative cursor-pointer mb-4 w-1/2 aspect-square rounded-full bg-amber-100 flex items-center justify-center transition duration-200 hover:bg-amber-200">
+                                    <Image priority src={arrow} width={60} alt={'send'}/>
+                                </div>
+                                <div className='flex justify-center items-center flex-col'>
+                                    <h3 className='text-xl font-bold mb-2'>Wyślij paczkę</h3>
+                                    <p className='text-lg font-light text-gray-500 text-center'>Wszystkie przedmioty w paczce zostaną wysłane do firmy <strong>{place.company.name}</strong></p>
+                                </div>
+                            </div>
+
+                        </section>
+                    )}
+                </div>
+            ))}
+        </main>
+    </div>
 }
 
-export default page;
+export default page

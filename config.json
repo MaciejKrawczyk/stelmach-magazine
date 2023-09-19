@@ -63,7 +63,7 @@
             },
             {
               "id": 6,
-              "name": "Poczekalnia do wysyłki",
+              "name": "Zarządzaj paczkami do wysyłki",
               "description": "Wysyłaj przedmioty do do firm",
               "icon": "tool",
               "alt": "tool",

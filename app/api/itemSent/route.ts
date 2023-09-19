@@ -4,6 +4,9 @@ import {db} from "@/lib/db/db";
 export async function GET(req: Request) {
     try {
         const objects = await db.itemSentCategory.findMany({
+            include: {
+                company: true
+            }
         })
 
         return new Response( JSON.stringify(objects))
@@ -38,7 +41,7 @@ export async function POST(req: Request) {
                 description: description,
                 company: {
                     connect: {
-                        id: companyId
+                        id: Number(companyId)
                     }
                 }
             }

@@ -67,7 +67,11 @@ export async function PUT(request, {params}) {
 
 
     const { id } = params
-    const { shelfId, shelfType, orderCategoryId, name, isOrder, isDeleted, to, from } = await request.json()
+    let { shelfId, shelfType, orderCategoryId, name, isOrder, isDeleted, to, from, itemSentCategoryId, placeId } = await request.json()
+
+    if (!placeId) {
+        placeId = 1
+    }
 
 
     try {
@@ -76,13 +80,18 @@ export async function PUT(request, {params}) {
                 id: Number(id)
             },
             data: {
+                itemSentCategory: {
+                    connect: {
+                        id: Number(itemSentCategoryId)
+                    }
+                },
                 name: name,
                 isOrder: isOrder,
                 isDeleted: isDeleted,
                 orderCategory: {
                   disconnect: true,
                 },
-                placeId: 1,
+                placeId: placeId,
                 shelf: {
                     connect: {
                         id: Number(shelfId)
@@ -97,7 +106,8 @@ export async function PUT(request, {params}) {
                 }
             },
             include: {
-                shelf: true
+                shelf: true,
+                itemSentCategory: true
             }
         })
         return NextResponse.json({ object }, { status: 200 })

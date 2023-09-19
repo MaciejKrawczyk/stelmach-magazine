@@ -64,7 +64,7 @@ const MyForm = () => {
             name: name,
             color: color,
             description: description,
-            companyId: company.id
+            companyId: company
         };
 
         try {
