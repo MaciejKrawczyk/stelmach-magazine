@@ -10,7 +10,8 @@ export async function GET(req: Request, {params}) {
 
         const objects = await db.item.findFirst({
             where: {
-                id: Number(id)
+                id: Number(id),
+                isDeleted: false
             },
             include: {
                 attributeValue: {
@@ -35,11 +36,38 @@ export async function GET(req: Request, {params}) {
 
 
 
+export async function DELETE(request, {params}) {
+
+    const { id } = params
+
+    try {
+
+        const objects = await db.item.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                isDeleted: true,
+                shelfId: -1,
+            }
+        })
+
+        return new Response( JSON.stringify(objects))
+
+    } catch (error) {
+        console.error(error)
+    }
+
+
+}
+
+
+
 export async function PUT(request, {params}) {
 
 
     const { id } = params
-    const { shelfId, shelfType, orderCategoryId, name, isOrder, isDeleted } = await request.json()
+    const { shelfId, shelfType, orderCategoryId, name, isOrder, isDeleted, to, from } = await request.json()
 
 
     try {
@@ -64,7 +92,7 @@ export async function PUT(request, {params}) {
                 status: {
                     create: {
                         name: "zamówienie zrealizowane",
-                        description: "narzędzie z zamówienia dodane do bazy"
+                        description: `narzędzie z ${from} dodane do ${to}`
                     }
                 }
             },
@@ -79,7 +107,6 @@ export async function PUT(request, {params}) {
         console.error(e)
 
     }
-
-
-
 }
+
+

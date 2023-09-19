@@ -9,6 +9,7 @@ import axios from "axios";
 import SuccessModal from "@/components/SuccessModal";
 import config from "@/config.json";
 import SuccessModalWithoutAnimation from "@/components/SuccessModalWithoutAnimation";
+import {PlaceNameById} from "@/utils/PlaceNameById";
 
 
 const MoveItemForm = ({ id }) => {
@@ -37,7 +38,9 @@ const MoveItemForm = ({ id }) => {
 
             const payload = {
                 placeId: placeId,
-                shelfId: -1
+                shelfId: -1,
+                to: PlaceNameById(placeId),
+                from: PlaceNameById(1)
             }
 
             const result = await axios.put(`/api/item/move/${id}`, payload)

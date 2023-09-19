@@ -1,18 +1,34 @@
 import axios from "axios";
 
-// Helper function to get occupied shelf ids
+const getItemsFromApi = async () => {
+    try {
+        const response = await axios.get('/api/item');
+        return response.data;
+    } catch (error) {
+        throw new Error(`Failed to get items: ${error.message}`);
+    }
+};
+
+const getCategoriesFromApi = async () => {
+    try {
+        const response = await axios.get('/api/category');
+        return response.data;
+    } catch (error) {
+        throw new Error(`Failed to get categories: ${error.message}`);
+    }
+};
+
 const getOccupiedShelfIds = (items) => {
     return items.filter(item => item.placeId === 1 && item.shelfId === -1).map(item => item.shelfId);
-}
+};
 
-// Helper function to find a matching shelf
 const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
     for (let shelf of shelves) {
         if (shelf.id === -1 || shelfType !== shelf.size) continue;
 
         const itemInShelf = items.find(item => Number(item.shelfId) === Number(shelf.id));
 
-        if (!itemInShelf) return shelf.id;  // Return the id of the empty shelf.
+        if (!itemInShelf) return shelf.id;
 
         if (Number(itemInShelf.itemType.id) === Number(itemType)) {
             const matchedAttributes = Object.entries(attributes).every(([typeattributeId, value]) => {
@@ -23,31 +39,29 @@ const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
             if (matchedAttributes) return shelf.id;
         }
     }
+    return null;
+};
 
-    return null;  // Return null if no matching shelf is found.
-}
-
-
-export const sortTool = async (shelfType, shelfCategoryId, itemType, attributes) => {
+export const sortTool = async (shelfCategoryId, shelfType, itemType, attributes) => {
     try {
-        const [categoriesShelvesResponse, itemsResponse] = await Promise.all([
-            axios.get('/api/category'),
-            axios.get('/api/item')
-        ]);
+        const [categories, items] = await Promise.all([getCategoriesFromApi(), getItemsFromApi()]);
 
-        const category = categoriesShelvesResponse.data.find(cat => Number(cat.id) === Number(shelfCategoryId));
+        const category = categories.find(cat => Number(cat.id) === Number(shelfCategoryId));
+
         if (!category) {
             throw new Error("No shelf found in the category.");
         }
 
-        const occupiedShelfIds = getOccupiedShelfIds(itemsResponse.data);
-        const matchingShelfId = findMatchingShelf(category.shelf, itemsResponse.data, shelfType, itemType, attributes);
+        const occupiedShelfIds = getOccupiedShelfIds(items);
+        const matchingShelfId = findMatchingShelf(category.shelf, items, shelfType, itemType, attributes);
 
         if (matchingShelfId !== null) return { shelfId: matchingShelfId };
 
+        console.error('Not found suitable shelf');
         throw new Error("Could not find a suitable shelf.");
 
     } catch (error) {
+        console.error(error);
         throw new Error(`Error occurred while sorting: ${error.message}`);
     }
-}
+};

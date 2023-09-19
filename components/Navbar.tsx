@@ -70,11 +70,11 @@ const Navbar = () => {
                                 )}
 
                                 {hoveredLink === link.id && isExpandable && (
-                                    <div className="rounded-xl p-5 absolute top-full transform -translate-x-1/5 w-auto h-auto z-10 bg-white transition-transform duration-200">
+                                    <div className="rounded-xl p-5 absolute top-full transform -translate-x-1/5 w-120 h-auto z-10 bg-white transition-transform duration-200 flex flex-row flex-wrap justify-start">
                                         {config.ui.navbar.links[index].expandable.map((menuLink, linkIndex) => {
                                             return (
                                                 <Link href={menuLink.url} key={menuLink.id}>
-                                                    <div className="rounded-xl pt-3 pb-3 pl-3 my-5 pr-10 w-96 h-auto flex flex-col flex-nowrap bg-stone-200 text-black hover:bg-green-200">
+                                                    <div className="rounded-xl pt-3 pb-3 pl-3 my-2 mx-2 pr-10 w-64 h-auto flex flex-col flex-nowrap bg-stone-200 text-black hover:bg-green-200">
                                                         <div className="flex flex-row space-x-4 items-center m-2">
                                                             <div className={'p-3 rounded-full bg-stone-300'}>
                                                                 <Image

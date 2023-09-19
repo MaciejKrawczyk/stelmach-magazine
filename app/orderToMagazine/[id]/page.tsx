@@ -14,6 +14,7 @@ import config from "@/config.json";
 import ToastNotification from "@/components/ToastNotification";
 import SubmitButton from "@/components/submitButton";
 import {sortToolExisting} from "@/utils/sortToolExisting";
+import {PlaceNameById} from "@/utils/PlaceNameById";
 
 
 const page = () => {
@@ -21,6 +22,7 @@ const page = () => {
     const params = useParams()
     const id = params.id
 
+    const [item, setItem] = useState(null)
     // submit button
     const [isClicked, setIsClicked] = useState(false);
     // success modal
@@ -33,6 +35,8 @@ const page = () => {
     const [shelfCategories, setShelfCategories] = useState([])
     const shelfIds = Object.keys(Shelves);
 
+    const [from, setFrom] = useState('')
+
     const [formData, setFormData] = useState({
         orderCategoryId: null,
         name: "",
@@ -42,7 +46,6 @@ const page = () => {
         isOrder: false,
         isDeleted: false,
         typeAttributes: undefined,
-        // itemType: undefined,
         shelfType: undefined
     });
 
@@ -53,7 +56,7 @@ const page = () => {
                 const categoriesResponse = await axios.get('/api/category');
                 const itemResponse = await axios.get(`/api/item/${id}`);
                 setShelfCategories(categoriesResponse.data);
-
+                setItem(itemResponse.data)
                 // Update formData with the fetched item's attributeValue
                 setFormData(prevState => ({
                     ...prevState,
@@ -105,7 +108,12 @@ const page = () => {
             setIsOpen(false);
 
             // Update formData with shelfId before sending it
-            let updatedFormData = { ...formData, shelfId: shelfResult.shelfId };
+            let updatedFormData = {
+                ...formData,
+                shelfId: shelfResult.shelfId,
+                from: `zamówienia "${item.orderCategory.name}"`,
+                to: PlaceNameById(1),
+            };
 
             const payload = updatedFormData;
 

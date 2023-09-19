@@ -5,7 +5,7 @@ import {NextResponse} from "next/server";
 export async function PUT(request, {params}) {
 
     const { id } = params
-    const { placeId, shelfId } = await request.json()
+    const { placeId, shelfId, from, to } = await request.json()
 
     try {
         const object = await db.item.update({
@@ -22,7 +22,7 @@ export async function PUT(request, {params}) {
                 status: {
                     create: {
                         name: "przeniesiono",
-                        description: "przeniesiono przedmiot"
+                        description: `przeniesiono przedmiot z ${from} do ${to}`
                     }
                 }
             }

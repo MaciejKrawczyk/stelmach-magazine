@@ -32,16 +32,17 @@ model Shelf {
 }
 
 model Company {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  notes String
-  item  Item[]
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  notes            String
+  item             Item[]
+  ItemSentCategory ItemSentCategory[]
 }
 
 model Status {
   id          Int      @id @default(autoincrement())
   itemId      Int
-  item        Item     @relation(fields: [itemId], references: [id])
+  item        Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
   name        String
   description String
   createdAt   DateTime @default(now())
@@ -49,23 +50,35 @@ model Status {
 }
 
 model Item {
-  id              Int              @id @default(autoincrement())
-  name            String
-  description     String
-  placeId         Int
-  shelfId         Int
-  shelf           Shelf            @relation(fields: [shelfId], references: [id])
-  shelfType       String
-  itemTypeId      Int
-  itemType        ItemType         @relation(fields: [itemTypeId], references: [id])
-  attributeValue  AttributeValue[]
-  status          Status[]
-  company         Company          @relation(fields: [companyId], references: [id])
-  companyId       Int
-  isDeleted       Boolean          @default(false)
-  isOrder         Boolean          @default(false)
-  orderCategory   OrderCategory?   @relation(fields: [orderCategoryId], references: [id])
-  orderCategoryId Int?
+  id                 Int               @id @default(autoincrement())
+  name               String
+  description        String
+  placeId            Int
+  shelfId            Int
+  shelf              Shelf             @relation(fields: [shelfId], references: [id])
+  shelfType          String
+  itemTypeId         Int
+  itemType           ItemType          @relation(fields: [itemTypeId], references: [id])
+  attributeValue     AttributeValue[]
+  status             Status[]
+  company            Company           @relation(fields: [companyId], references: [id])
+  companyId          Int
+  isDeleted          Boolean           @default(false)
+  isOrder            Boolean           @default(false)
+  orderCategory      OrderCategory?    @relation(fields: [orderCategoryId], references: [id])
+  orderCategoryId    Int?
+  itemSentCategoryId Int?
+  itemSentCategory   ItemSentCategory? @relation(fields: [itemSentCategoryId], references: [id])
+}
+
+model ItemSentCategory {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  color       String
+  companyId   Int
+  company     Company @relation(fields: [companyId], references: [id])
+  Item        Item[]
 }
 
 model OrderCategory {
@@ -87,7 +100,7 @@ model Typeattribute {
   id             Int              @id @default(autoincrement())
   name           String
   itemtypeId     Int
-  itemtype       ItemType         @relation(fields: [itemtypeId], references: [id])
+  itemtype       ItemType         @relation(fields: [itemtypeId], references: [id], onDelete: Cascade)
   attributeValue AttributeValue[]
 }
 
@@ -95,7 +108,7 @@ model AttributeValue {
   id              Int           @id @default(autoincrement())
   value           String
   itemId          Int
-  item            Item          @relation(fields: [itemId], references: [id])
+  item            Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
   typeattributeId Int
-  typeattribute   Typeattribute @relation(fields: [typeattributeId], references: [id])
+  typeattribute   Typeattribute @relation(fields: [typeattributeId], references: [id], onDelete: Cascade)
 }

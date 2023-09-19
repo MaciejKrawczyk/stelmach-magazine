@@ -16,6 +16,9 @@ export async function GET(req: Request) {
                 status: true,
                 shelf: true,
                 orderCategory: true
+            },
+            where: {
+                isDeleted: false
             }
         })
 

@@ -60,6 +60,22 @@
               "icon": "tool",
               "alt": "tool",
               "url": "/orders"
+            },
+            {
+              "id": 6,
+              "name": "Poczekalnia do wysyłki",
+              "description": "Wysyłaj przedmioty do do firm",
+              "icon": "tool",
+              "alt": "tool",
+              "url": "/sharpening"
+            },
+            {
+              "id": 7,
+              "name": "Dodaj do wysyłki",
+              "description": "Przenieś przedmiot do paczki do wysłania",
+              "icon": "move",
+              "alt": "transfer",
+              "url": "/moveSharpening"
             }
           ],
           "url": "/"
@@ -115,6 +131,14 @@
               "icon": "type",
               "alt": "typ",
               "url": "/create/orderCategory"
+            },
+            {
+              "id": 7,
+              "name": "Dodaj paczkę do wysłania",
+              "description": "Dodaj wysyłkę, do którego będziesz mógł dodać przedmioty do wysyłki",
+              "icon": "type",
+              "alt": "typ",
+              "url": "/create/itemSent"
             }
           ],
           "url": "/"

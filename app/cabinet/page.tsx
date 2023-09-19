@@ -35,6 +35,11 @@ const page = () => {
 
     const [isMoveItemFormOpen, setIsMoveItemFormOpen] = useState(false)
 
+    const [fromTo, setFromTo] = useState({
+        from: 1,
+        to: ''
+    })
+
     const router = useRouter()
 
     useEffect(() => {
@@ -193,6 +198,21 @@ const page = () => {
 
     if (error) {
         return <div>Error loading data</div>;
+    }
+
+    async function deleteItem() {
+
+        try {
+            const object = await axios.delete(`/api/item/${selectedItemId}`)
+            fetchData();
+            setShowModal(false);
+            setIsClicked(false)
+            setModalState('exited')
+            setShowItemOptionsModal(false)
+        } catch (e) {
+            console.error(e)
+        }
+        setClickedShelves([])
     }
 
     return (
@@ -409,6 +429,7 @@ const page = () => {
                     </div>
                     <hr/>
                     <div
+                        onClick={() => deleteItem()}
                         className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-red-200'}
                     >
                         <Image priority src={tool} alt={'stelmach logo'} />

@@ -157,6 +157,8 @@ const App = () => {
                 formData.typeAttributes
             )
 
+            console.log('po sortowaniu')
+
             setIsClicked(true);
             setIsOpen(false);
 
