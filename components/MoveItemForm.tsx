@@ -6,7 +6,7 @@ import {useParams, useRouter} from "next/navigation";
 import LinkModal from "@/components/LinkModal";
 import SubmitButton from "@/components/submitButton";
 import axios from "axios";
-import SuccessModal from "@/components/SuccessModal";
+import SuccessModal from "@/components/form/modal/SuccessModal";
 import config from "@/config.json";
 import SuccessModalWithoutAnimation from "@/components/SuccessModalWithoutAnimation";
 import {PlaceNameById} from "@/utils/PlaceNameById";

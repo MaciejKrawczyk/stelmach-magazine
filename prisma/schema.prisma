@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  // relationMode = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-model Category {
+model ShelfCategory {
   id    Int     @id @default(autoincrement())
   name  String  @unique
   color String
@@ -19,24 +19,25 @@ model Category {
 enum ShelfType {
   small
   big
-  brak
 }
 
 model Shelf {
-  id         Int       @id @default(autoincrement())
-  name       String
-  size       ShelfType
-  categoryId Int
-  category   Category  @relation(fields: [categoryId], references: [id])
-  item       Item[]
+  id              Int           @id @default(autoincrement())
+  name            String
+  size            ShelfType
+  shelfCategoryId Int
+  shelfCategory   ShelfCategory @relation(fields: [shelfCategoryId], references: [id])
+  item            Item[]
+
+  @@index([shelfCategoryId])
 }
 
 model Company {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
-  notes            String
-  item             Item[]
-  ItemSentCategory ItemSentCategory[]
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  notes          String
+  item           Item[]
+  ParcelCategory ParcelCategory[]
 }
 
 model Status {
@@ -47,31 +48,35 @@ model Status {
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([itemId])
 }
 
 model Item {
-  id                 Int               @id @default(autoincrement())
-  name               String
-  description        String
-  placeId            Int
-  shelfId            Int
-  shelf              Shelf             @relation(fields: [shelfId], references: [id])
-  shelfType          String
-  itemTypeId         Int
-  itemType           ItemType          @relation(fields: [itemTypeId], references: [id])
-  attributeValue     AttributeValue[]
-  status             Status[]
-  company            Company           @relation(fields: [companyId], references: [id])
-  companyId          Int
-  isDeleted          Boolean           @default(false)
-  isOrder            Boolean           @default(false)
-  orderCategory      OrderCategory?    @relation(fields: [orderCategoryId], references: [id])
-  orderCategoryId    Int?
-  itemSentCategoryId Int?
-  itemSentCategory   ItemSentCategory? @relation(fields: [itemSentCategoryId], references: [id])
+  id               Int              @id @default(autoincrement())
+  name             String
+  description      String
+  placeId          Int
+  shelfId          Int
+  shelf            Shelf            @relation(fields: [shelfId], references: [id])
+  shelfType        String
+  itemTypeId       Int
+  itemType         ItemType         @relation(fields: [itemTypeId], references: [id])
+  attributeValue   AttributeValue[]
+  status           Status[]
+  company          Company          @relation(fields: [companyId], references: [id])
+  companyId        Int
+  isDeleted        Boolean          @default(false)
+  isOrder          Boolean          @default(false)
+  orderCategory    OrderCategory?   @relation(fields: [orderCategoryId], references: [id])
+  orderCategoryId  Int?
+  parcelCategoryId Int?
+  parcelCategory   ParcelCategory?  @relation(fields: [parcelCategoryId], references: [id])
+
+  @@index([shelfId, itemTypeId, companyId, orderCategoryId, parcelCategoryId])
 }
 
-model ItemSentCategory {
+model ParcelCategory {
   id          Int     @id @default(autoincrement())
   name        String
   description String
@@ -79,6 +84,8 @@ model ItemSentCategory {
   companyId   Int
   company     Company @relation(fields: [companyId], references: [id])
   Item        Item[]
+
+  @@index([companyId])
 }
 
 model OrderCategory {
@@ -90,18 +97,20 @@ model OrderCategory {
 }
 
 model ItemType {
-  id           Int             @id @default(autoincrement())
-  name         String          @unique
-  item         Item[]
-  typettribute Typeattribute[]
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  item          Item[]
+  typeAttribute TypeAttribute[]
 }
 
-model Typeattribute {
+model TypeAttribute {
   id             Int              @id @default(autoincrement())
   name           String
   itemtypeId     Int
   itemtype       ItemType         @relation(fields: [itemtypeId], references: [id], onDelete: Cascade)
   attributeValue AttributeValue[]
+
+  @@index([itemtypeId])
 }
 
 model AttributeValue {
@@ -109,6 +118,8 @@ model AttributeValue {
   value           String
   itemId          Int
   item            Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  typeattributeId Int
-  typeattribute   Typeattribute @relation(fields: [typeattributeId], references: [id], onDelete: Cascade)
+  typeAttributeId Int
+  typeAttribute   TypeAttribute @relation(fields: [typeAttributeId], references: [id], onDelete: Cascade)
+
+  @@index([itemId, typeAttributeId])
 }

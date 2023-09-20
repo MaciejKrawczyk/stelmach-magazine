@@ -31,36 +31,24 @@ export async function POST(req: Request) {
             return new Response('object already exists', { status: 409 })
         }
 
+        let attributes = []
+        for (let i=1;i<body.list.length;i++) {
+            const attributeName = body.list[i].value
+            attributes.push({name: attributeName})
+        }
+
         const object = await db.itemType.create({
             data: {
-                name: body.name
+                name: body.name,
+                typeAttribute: {
+                    createMany: {
+                        data: attributes
+                    }
+                }
             }
         })
-        let attributes = []
 
-        // ----- item-type is created
-        const itemTypeId = object.id
-
-        for (let i=1;i<body.list.length;i++) {
-
-            const attributeName = body.list[i].value
-
-            const data = await db.typeattribute.create({
-                data: {
-                    name: attributeName,
-                    itemtypeId: Number(itemTypeId)
-                }
-            })
-
-            attributes.push(data)
-        }
-
-        const finishedObject = {
-            itemtypeName: object.name,
-            attributes: attributes
-        }
-
-        return new Response(JSON.stringify(finishedObject))
+        return new Response(JSON.stringify(object))
 
     } catch (error) {
         console.error(error)

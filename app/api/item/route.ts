@@ -8,7 +8,7 @@ export async function GET(req: Request) {
             include: {
                 attributeValue: {
                     include: {
-                        typeattribute: true
+                        typeAttribute: true
                     }
                 },
                 company: true,
@@ -16,7 +16,7 @@ export async function GET(req: Request) {
                 status: true,
                 shelf: true,
                 orderCategory: true,
-                itemSentCategory: true
+                parcelCategory: true
             },
             where: {
                 isDeleted: false
@@ -143,7 +143,7 @@ export async function POST(req: Request) {
                 include: {
                     attributeValue: {
                         include: {
-                            typeattribute: true
+                            typeAttribute: true
                         }
                     },
                     company: true,
@@ -165,7 +165,7 @@ export async function POST(req: Request) {
                 data: {
                     value: typeAttributes[key],
                     itemId: object.id,
-                    typeattributeId: Number(key)
+                    typeAttributeId: Number(key)
                 }
             })
         }

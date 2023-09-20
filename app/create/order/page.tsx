@@ -5,14 +5,14 @@ import {Shelves} from "@/objects/Shelves";
 import {Places} from "@/objects/Places";
 import axios from "axios";
 import SubmitButton from "@/components/submitButton";
-import SuccessModal from "@/components/SuccessModal";
+import SuccessModal from "@/components/form/modal/SuccessModal";
 import config from "@/config.json";
-import shelfBig from '@/public/shelfBig.svg'
-import shelfSmall from '@/public/shelfSmall.svg'
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import Image from "next/image";
-import ToastNotification from "@/components/ToastNotification";
+import ToastNotification from "@/components/form/notification/ToastNotification";
 import {generateRandomUUID} from "@/utils/generateRandomUUID";
+import {Container} from "@/components/Container";
+import NumberInput from "@/components/form/NumberInput";
 
 const App = () => {
 
@@ -174,7 +174,8 @@ const App = () => {
         }
     };
 
-    return (<div className={'flex justify-center'}>
+    return (
+        <Container>
 
             <SuccessModal
                 isOpen={isOpen}
@@ -185,7 +186,7 @@ const App = () => {
 
             <ToastNotification shouldAppear={isError} text={toastText} />
 
-            <main className={'w-9/12 h-auto mb-28'}>
+
 
                 <h1 className={'font-semibold text-3xl my-10 mx-auto '}>Dodawanie przedmiotów</h1>
 
@@ -243,6 +244,16 @@ const App = () => {
                             </div>
                         </div>
                     </div>
+
+                    {/*<NumberInput*/}
+                    {/*    id={'quantity'}*/}
+                    {/*    value={formData.quantity} */}
+                    {/*    description={'Wpisz ilość przedmiotów tego samego typu, które zamawiasz.'} */}
+                    {/*    title={'Ilość'}*/}
+                    {/*    note={'Wybierz ilość narzędzi tego typu, które zostaną dodane do zamówienia'} */}
+                    {/*    setValue={}*/}
+                    {/*/>*/}
+
                     <hr className={'my-7'}/>
 
                     <div className={'w-full flex justify-between'}>
@@ -388,9 +399,7 @@ const App = () => {
 
                 </form>
 
-            </main>
-
-        </div>
+        </Container>
     );
 };
 

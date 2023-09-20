@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MoveItemTile from "@/components/MoveItemTile";
-import SuccessModal from "@/components/SuccessModal";
+import SuccessModal from "@/components/form/modal/SuccessModal";
 import SubmitButton from "@/components/submitButton";
 import {PlaceNameById} from "@/utils/PlaceNameById";
 import {Place} from "@mui/icons-material";

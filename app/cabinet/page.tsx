@@ -7,7 +7,7 @@ import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import tool from '@/public/small-tool.svg'
 import SubmitButton from "@/components/submitButton";
 import Link from "next/link";
-import SuccessModal from "@/components/SuccessModal";
+import SuccessModal from "@/components/form/modal/SuccessModal";
 import {useRouter} from "next/navigation";
 import MoveItemForm from "@/components/MoveItemForm";
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../public/SuccessModal.css';
+import '../../../public/SuccessModal.css';
 import { useRouter } from 'next/navigation';
 
 

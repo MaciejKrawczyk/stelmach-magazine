@@ -1,6 +1,16 @@
 import { z } from 'zod'
-import {ItemSchema} from "@/types/zod/Item";
-import {ShelfCategorySchema} from "@/types/zod/ShelfCategory";
+import { ItemSchema } from "@/types/zod/Item";
+
+// Use a forward reference for shelfSchema using z.lazy
+const LazyShelfSchema = z.lazy(() => shelfSchema);
+
+const ShelfCategorySchema = z.object({
+    id: z.number().optional(),
+    name: z.string(),
+    color: z.string().length(7).regex(/^#/),
+    notes: z.string(),
+    shelf: z.array(LazyShelfSchema).optional()
+});
 
 export const shelfSchema = z.object({
     id: z.number(),
@@ -14,4 +24,7 @@ export const shelfSchema = z.object({
     shelfCategory: ShelfCategorySchema.optional()
 })
 
-export type Shelf = z.infer<typeof shelfSchema>
+type Shelf = z.infer<typeof shelfSchema>;
+type ShelfCategory = z.infer<typeof ShelfCategorySchema>;
+
+export { ShelfCategorySchema, ShelfCategory, Shelf };

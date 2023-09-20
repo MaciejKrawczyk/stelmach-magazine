@@ -3,10 +3,15 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import SubmitButton from "@/components/submitButton";
-import SuccessModal from "@/components/SuccessModal";
+import SuccessModal from "@/components/form/modal/SuccessModal";
 import config from '../../../config.json'
-import ToastNotification from "@/components/ToastNotification";
+import ToastNotification from "@/components/form/notification/ToastNotification";
 import { HexColorPicker } from "react-colorful";
+import Container from "@/components/Container";
+import TextInput from "@/components/form/TextInput";
+import InputDivider from "@/components/form/InputDivider";
+import ColorPickerInput from "@/components/form/ColorPickerInput";
+import TextAreaInput from "@/components/form/TextAreaInput";
 
 const MyForm = () => {
     // Initialize state variables for the two text inputs
@@ -71,7 +76,8 @@ const MyForm = () => {
     };
 
 
-    return (<div className={'flex justify-center'}>
+    return (
+        <Container>
 
             <SuccessModal
                 isOpen={isOpen}
@@ -82,85 +88,48 @@ const MyForm = () => {
 
             <ToastNotification shouldAppear={isError} text={toastText} />
 
-            <main className={'w-9/12 h-auto mb-28'}>
 
                 <h1 className={'font-semibold text-3xl my-10 mx-auto '}>Dodawanie Zamówienia</h1>
 
                 <form onSubmit={handleSubmit}>
 
-                    <div className={'w-full flex justify-between'}>
-                        <div className={'w-2/5'}>
-                            <h2 className={'text-lg mb-2'}>Nazwa zamówienia</h2>
-                            <p className={'text-zinc-500 font-light text-sm'}>Nazwa zamówienia lub numer, który ułatwi Tobie wyszukanie zamówienia</p>
-                        </div>
-                        <div className={'w-1/3 text-xs text-red-600'}>
-                            <div className={'flex flex-col'}>
-                                <input
-                                    className="border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
-                                    placeholder={'nazwa zamówienia'}
-                                    type="text"
-                                    id="name"
-                                    value={name}
-                                    onChange={(e) => {
-                                        const newValue = e.target.value.replace(/,/g, '.');
-                                        setName(newValue)
-                                    }}
-                                />
-                                <span className={'pt-3 pl-1'} ></span>
-                            </div>
-                        </div>
-                    </div>
+                    <TextInput
+                        id={'name'}
+                        note={''}
+                        value={name}
+                        setValue={setName}
+                        description={'Nazwa zamówienia lub numer, który ułatwi Tobie wyszukanie zamówienia'}
+                        placeholder={'Nazwa zamówienia'}
+                        title={'Nazwa zamówienia'}
+                    />
 
-                    <hr className={'my-7'}/>
+                    <InputDivider />
 
-                    <div className={'w-full flex justify-between'}>
-                        <div className={'w-2/5'}>
-                            <h2 className={'text-lg mb-2'}>Kolor zamówienia</h2>
-                            <p className={'text-zinc-500 font-light text-sm'}>Ustaw kolor, aby dane zamówienie wyróżniało się na tle innych</p>
-                        </div>
-                        <div className={'w-1/3 text-xs text-red-600'}>
-                            <div className={'flex flex-col'}>
-                                <HexColorPicker color={color} onChange={setColor} />
-                                {/*<textarea*/}
-                                {/*    placeholder={'kolor'}*/}
-                                {/*    className="border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"*/}
-                                {/*    id="color"*/}
-                                {/*    value={color}*/}
-                                {/*    onChange={(e) => setColor(e.target.value)}*/}
-                                {/*></textarea>*/}
-                                <span className={'pt-3 pl-1'} ></span>
-                            </div>
-                        </div>
-                    </div>
+                    <ColorPickerInput
+                        title={'Kolor zamówienia'}
+                        color={color}
+                        setColor={setColor}
+                        note={''}
+                        description={'Ustaw kolor, aby dane zamówienie wyróżniało się na tle innych'}
+                    />
 
-                    <hr className={'my-7'}/>
+                    <InputDivider />
 
-                    <div className={'w-full flex justify-between'}>
-                        <div className={'w-2/5'}>
-                            <h2 className={'text-lg mb-2'}>Opis zamówienia</h2>
-                            <p className={'text-zinc-500 font-light text-sm'}>Opis zamówienia, ważna informacja dla obsługującego szafy</p>
-                        </div>
-                        <div className={'w-1/3 text-xs text-red-600'}>
-                            <div className={'flex flex-col'}>
-                                <textarea
-                                    placeholder={'Opis'}
-                                    className="border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
-                                    id="description"
-                                    value={description}
-                                    onChange={(e) => {
-                                        const newValue = e.target.value.replace(/,/g, '.');
-                                        setDescription(newValue)
-                                    }}
-                                ></textarea>
-                                <span className={'pt-3 pl-1'} ></span>
-                            </div>
-                        </div>
-                    </div>
+                    <TextAreaInput
+                        note={''}
+                        title={'Opis zamówienia'}
+                        description={'Opis zamówienia, ważna informacja dla obsługującego szafy'}
+                        placeholder={'Opis'}
+                        value={description}
+                        setValue={setDescription}
+                        id={'description'}
+                    />
 
                     <SubmitButton className={'mt-10'} isClicked={isClicked} />
+
                 </form>
-            </main>
-        </div>
+
+        </Container>
     );
 };
 

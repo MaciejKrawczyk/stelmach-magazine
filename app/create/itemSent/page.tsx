@@ -3,9 +3,9 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import SubmitButton from "@/components/submitButton";
-import SuccessModal from "@/components/SuccessModal";
+import SuccessModal from "@/components/form/modal/SuccessModal";
 import config from '../../../config.json'
-import ToastNotification from "@/components/ToastNotification";
+import ToastNotification from "@/components/form/notification/ToastNotification";
 import { HexColorPicker } from "react-colorful";
 
 const MyForm = () => {

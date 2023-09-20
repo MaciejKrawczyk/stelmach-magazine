@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Places } from "@/objects/Places";
 import axios from "axios";
 import MoveItemTile from "@/components/MoveItemTile";
-import SuccessModal from "@/components/SuccessModal";
+import SuccessModal from "@/components/form/modal/SuccessModal";
 import {sortTool} from "@/utils/sortToolShelf";
 import SubmitButton from "@/components/submitButton";
 import {sortToolExisting} from "@/utils/sortToolExisting";

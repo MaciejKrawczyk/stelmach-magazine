@@ -5,13 +5,13 @@ import {Shelves} from "@/objects/Shelves";
 import {Places} from "@/objects/Places";
 import axios from "axios";
 import SubmitButton from "@/components/submitButton";
-import SuccessModal from "@/components/SuccessModal";
+import SuccessModal from "@/components/form/modal/SuccessModal";
 import config from "@/config.json";
 import shelfBig from '@/public/shelfBig.svg'
 import shelfSmall from '@/public/shelfSmall.svg'
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import Image from "next/image";
-import ToastNotification from "@/components/ToastNotification";
+import ToastNotification from "@/components/form/notification/ToastNotification";
 import {sortTool} from "@/utils/sortToolShelf";
 
 const App = () => {
