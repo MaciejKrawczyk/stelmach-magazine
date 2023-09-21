@@ -17,8 +17,8 @@ import { formatCommasToDots } from "@/utils/formatCommaToDots";
  */
 interface TextInputProps {
     id: string;
-    value: string;
-    setValue: (value: string) => void;
+    value: number;
+    setValue: (value: number) => void;
     title: string;
     description: string;
     note: string;

@@ -1,14 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, FC} from 'react';
 import '../../../public/SuccessModal.css';
 import { useRouter } from 'next/navigation';
 
+interface SuccessModalProps {
+    text: string;
+    bigText: string;
+    isOpen: boolean;
+    objectData: {
+        [key: string]: string | object;
+    };
+}
 
-
-const SuccessModal = ({ text, bigText, isOpen, objectData }) => {
+const SuccessModal: FC<SuccessModalProps> = ({ text, bigText, isOpen, objectData }) => {
     const router = useRouter();
 
     // Use local state to manage modal visibility
-    const [isVisible, setIsVisible] = useState(isOpen);
+    const [isVisible, setIsVisible] = useState<boolean>(isOpen);
 
     useEffect(() => {
         setIsVisible(isOpen);
@@ -40,18 +47,16 @@ const SuccessModal = ({ text, bigText, isOpen, objectData }) => {
 
                 <div className={'bg-gray-200 p-3 mt-6 mb-6 rounded-xl'}>
                     {Object.keys(objectData).map(key => {
-                        if (typeof objectData[key] === 'object') {
-                            return null
+                        if (typeof objectData[key] === 'object' || key === 'id') {
+                            return null; // Skip rendering
                         }
 
-                        if (key === 'id') {
-                            return null;  // Skip rendering
-                        }
+                        const value = objectData[key] as string;
                         return (
                             <div key={key}>
                                 <div className={'flex justify-between font-jetbrains-mono pb-1 pt-1'}>
                                     <div>{key.length > 11 ? key.substring(0, 11) + '...' : key}</div>
-                                    <div>{objectData[key].length > 11 ? objectData[key].substring(0, 11) + '...' : objectData[key]}</div>
+                                    <div>{value.length > 11 ? value.substring(0, 11) + '...' : value}</div>
                                 </div>
                                 <hr className={'border-gray-600'}/>
                             </div>
@@ -61,10 +66,10 @@ const SuccessModal = ({ text, bigText, isOpen, objectData }) => {
                 </div>
 
 
-                <form className={'flex justify-between'} method={'dialog'}>
+                <div className={'flex justify-between'} >
                     <button onClick={onClose} type="button" className="m-2 px-4 py-2 bg-blue-500 text-white rounded-md">OK</button>
                     <button onClick={onRedirect} type="button" className="m-2 px-4 py-2 bg-gray-300 rounded-md">wróć do menu</button>
-                </form>
+                </div>
             </dialog>
         </div>
     );

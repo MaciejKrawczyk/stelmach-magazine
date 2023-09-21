@@ -1,6 +1,14 @@
 'use client'
 
-import {useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
+
+
+export type UseSubmitForm<T> = (
+    validationParams: FormValidation<T>,
+    beforeSuccess?: (data: T) => T,
+    onSuccessFunction?: (data: T) => void
+) => [boolean, string | null, (e: React.FormEvent) => void];
+
 
 /**
  * @typedef FormValidation
@@ -33,7 +41,7 @@ const defaultErrorMessages = {
  * @param {Function} onSuccessFunction - Callback to run on successful submission.
  * @returns {[boolean, string | null, Function]} - Returns submission state, error, and handler.
  */
-const useSubmitForm = <T extends {}>(
+const useSubmitForm = (
     {
         checkEmptyFields,
         validateData,

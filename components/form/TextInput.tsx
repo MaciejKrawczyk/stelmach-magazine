@@ -18,19 +18,23 @@ import {formatCommasToDots} from "@/utils/formatCommaToDots";
  */
 interface TextInputProps {
     id: string;
-    value: string;
-    setValue: (value: string) => void;
+    formData: string;
+    setFormData: (value: string) => void;
     placeholder: string;
     title: string;
     description: string;
     note: string;
 }
 
-const TextInput: FC<TextInputProps> = ({ id, value, setValue, placeholder, title, description, note }) => {
+const TextInput: FC<TextInputProps> = ({ id, formData, setFormData, placeholder, title, description, note }) => {
 
-    const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e) => {
+        const { name } = e.target;
         let newValue = formatCommasToDots(e.target.value)
-        setValue(newValue);
+        setFormData({
+            ...formData,
+            [name]: newValue,
+        });
     };
 
     return (
@@ -46,9 +50,9 @@ const TextInput: FC<TextInputProps> = ({ id, value, setValue, placeholder, title
                         placeholder={placeholder}
                         type="text"
                         id={id}
-                        value={value}
+                        value={formData}
                         name={id}
-                        onChange={handleValueChange}
+                        onChange={handleChange}
                     />
                     <span className={'pt-3 pl-1'}>{note}</span>
                 </div>

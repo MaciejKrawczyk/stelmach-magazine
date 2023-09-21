@@ -9,7 +9,9 @@ import TextAreaInput from "@/components/form/TextAreaInput";
 import SubmitButton from "@/components/submitButton";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import { ShelfCategorySchema } from "@/types/zod/Shelf";
+import {ShelfCategory} from "@/types/zod/Shelf";
 import useSubmitForm from '@/components/hooks/useSubmitForm';
+import SuccessModal from "@/components/form/modal/SuccessModal";
 
 // Defining component props type
 interface ShelfCategoryFormProps {
@@ -33,14 +35,19 @@ const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
 
     // Local state to check if the form has been submitted
     const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+    const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [data, setData] = useState(null)
 
-    const beforeSuccessFunction = (data: ShelfCategorySchema) => {
+    const beforeSuccessFunction = (data: ShelfCategory) => {
         console.log("Data before success:", data);
         return data; // return processed data
     };
 
-    const onSuccessFunction = (processedData: ShelfCategorySchema) => {
+    const onSuccessFunction = (processedData: ShelfCategory) => {
+        setData(processedData)
         console.log("Data successfully processed:", processedData);
+        setShowSuccessModal(true);  // Show the SuccessModal when form is successfully submitted
     };
 
 
@@ -53,6 +60,7 @@ const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
     const validateData = useCallback((data: any) => {
         return ShelfCategorySchema.safeParse(data).success;
     }, []);
+
 
     // Using the custom hook to manage form submission and validation
     const [isSubmitting, error, handleSubmit] = useSubmitForm({
@@ -67,6 +75,11 @@ const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
         e.preventDefault();
         setHasBeenSubmitted(true);
         handleSubmit({ name, color, notes });
+
+        // After handling submission, if there's an error, update the last error timestamp.
+        if (error) {
+            setLastErrorTimestamp(Date.now());
+        }
     };
 
 
@@ -101,7 +114,9 @@ const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
             />
             <SubmitButton className='mt-10' isClicked={isSubmitting} />
 
-            {error && <ToastNotification text={error} />}
+            {error && <ToastNotification key={lastErrorTimestamp} text={error} />}
+            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={data} />}
+
         </form>
     );
 }

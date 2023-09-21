@@ -139,54 +139,6 @@ const Page = () => {
 
                 <InputDivider />
 
-                {/*<div className="w-full flex justify-between">*/}
-                {/*    <div className="w-1/3">*/}
-                {/*        <h2 className="text-lg mb-2">Cechy szczególne typu przedmiotu</h2>*/}
-                {/*        <p className="text-zinc-500 font-light text-sm">*/}
-                {/*            Są to cechy jakie trzeba będzie uzupełnić przy tworzeniu przedmiotu o danym type -*/}
-                {/*            np. narzędzie może mieć cechy tj materiał, szerokość, wysokość, promień, a tulejka tj szerokość, wysokość itd.*/}
-                {/*        </p>*/}
-                {/*    </div>*/}
-                {/*    <div className="w-1/3 text-xs">*/}
-                {/*        <div className="flex flex-col w-full">*/}
-                {/*            <div className="flex justify-center items-center w-full flex-col">*/}
-                {/*                    <div className={'flex w-full'}>*/}
-                {/*                        <input*/}
-                {/*                            placeholder={'cecha typu przedmiotu'}*/}
-                {/*                            className="my-2 border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"*/}
-                {/*                            type="text"*/}
-                {/*                            value={inputList[0]?.value}*/}
-                {/*                            disabled={inputList[0]?.disabled}*/}
-                {/*                            onChange={(e) => handleInputChange(e, 0)}*/}
-                {/*                        />*/}
-                {/*                        <button*/}
-                {/*                            className="mx-3 my-2 w-12 h-auto bg-amber-600 cursor-pointer text-white flex justify-center items-center rounded-3xl"*/}
-                {/*                            onClick={(e) => handleAddInput(e)} disabled={!inputList[0]?.value}*/}
-                {/*                        >+</button>*/}
-                {/*                    </div>*/}
-                {/*                    {inputList.slice(1).map((inputField, index) => (*/}
-                {/*                        <div className={'flex w-full'} key={index + 1}>*/}
-                {/*                            <input*/}
-                {/*                                className="my-2 border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"*/}
-                {/*                                type="text"*/}
-                {/*                                value={inputField.value}*/}
-                {/*                                disabled={inputField.disabled}*/}
-                {/*                                onChange={(e) => handleInputChange(e, index + 1)}*/}
-                {/*                            />*/}
-                {/*                            {inputList.length > 1 && (*/}
-                {/*                                <button*/}
-                {/*                                    className="mx-3 my-2 w-12 h-auto bg-red-600 cursor-pointer text-white flex justify-center items-center rounded-3xl"*/}
-                {/*                                    onClick={(e) => handleRemoveInput(index + 1, e)}*/}
-                {/*                                >-</button>*/}
-                {/*                            )}*/}
-                {/*                        </div>*/}
-                {/*                    ))}*/}
-                {/*            </div>*/}
-                {/*            <span className="pt-3 pl-1 mb-2 text-gray-500">UWAGA! Zaleca się wpisywanie również jednostki w jakich będą wpisywane wartości cechy</span>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-
                 <TypeValueAttributesInputItemTypeCreate
                     title={'Cechy szczególne typu przedmiotu'}
                     note={'UWAGA! Zaleca się wpisywanie również jednostki w jakich będą wpisywane wartości cechy'}
