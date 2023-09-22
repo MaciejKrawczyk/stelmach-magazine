@@ -5,19 +5,25 @@ import {formatCommasToDots} from "@/utils/formatCommaToDots";
 interface SelectInputProps {
     id: string;
     value: string;
-    setValue: (value: string) => void;
+    onChange: any;
     title: string;
     description: string;
     note: string;
-    objectList: any[]
+    objectList: any[];
+    disabledOptions?: number[]; // Add this line
+    enabledOptions?: number[];  // Add this line
 }
 
-const SelectInput: FC<SelectInputProps> = ({ id, value, setValue, title, description, note, objectList }) => {
-
-    const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let newValue = formatCommasToDots(e.target.value)
-        setValue(newValue);
-    };
+const SelectInput: FC<SelectInputProps> = ({
+       id,
+       value,
+       onChange, title,
+       description,
+       note,
+       objectList,
+       disabledOptions,
+       enabledOptions
+}) => {
 
     return (
         <div className="w-full flex justify-between">
@@ -35,14 +41,21 @@ const SelectInput: FC<SelectInputProps> = ({ id, value, setValue, title, descrip
                             className="w-full border-gray-300 p-3 rounded-lg text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
                             name={id}
                             value={value}
-                            onChange={handleValueChange}
+                            onChange={onChange}
                         >
                             <option value="" disabled>Wybierz firmę</option>
-                            {objectList.map((object, index) => (
-                                <option key={index} value={object.id}>
-                                    {object.name}
-                                </option>
-                            ))}
+                            {objectList.map((object, index) => {
+                                // Check if the current object.id is in the disabledOptions or
+                                // if enabledOptions are provided, check if it's not in the list.
+                                const isDisabled = (disabledOptions && disabledOptions.includes(object.id)) ||
+                                    (enabledOptions && !enabledOptions.includes(object.id));
+
+                                return (
+                                    <option key={index} value={object.id} disabled={isDisabled}>
+                                        {object.name}
+                                    </option>
+                                )
+                            })}
                         </select>
 
                     </div>

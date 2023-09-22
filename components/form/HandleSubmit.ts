@@ -31,7 +31,7 @@ export const universalHandleSubmit = async (
             return {
                 success: false,
                 errors: {},
-                validationError: `An error occurred: ${error.message}`
+                validationError: `Błąd przy realizacji formularza: ${error.message}`
             };
         }
     }

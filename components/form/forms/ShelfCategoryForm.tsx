@@ -1,121 +1,116 @@
-'use client'
-
-// Importing required modules and types
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useState } from 'react';
 import TextInput from "@/components/form/TextInput";
 import InputDivider from "@/components/form/InputDivider";
 import ColorPickerInput from "@/components/form/ColorPickerInput";
 import TextAreaInput from "@/components/form/TextAreaInput";
-import SubmitButton from "@/components/submitButton";
+import SubmitButton from "@/components/form/SubmitButton";
 import ToastNotification from "@/components/form/notification/ToastNotification";
-import { ShelfCategorySchema } from "@/types/zod/Shelf";
-import {ShelfCategory} from "@/types/zod/Shelf";
-import useSubmitForm from '@/components/hooks/useSubmitForm';
 import SuccessModal from "@/components/form/modal/SuccessModal";
+import useFormStatus from "@/components/hooks/useFormStatus";
+import {formatCommasToDots} from "@/utils/formatCommaToDots";
+import {universalHandleSubmit} from "@/components/form/HandleSubmit";
+import {ShelfCategorySchema} from "@/types/zod/Shelf";
 
-// Defining component props type
+
 interface ShelfCategoryFormProps {
-    name: string;
-    setName: (name: string) => void;
-    color: string;
-    setColor: (color: string) => void;
-    notes: string;
-    setNotes: (notes: string) => void;
+    formData: any;
+    setFormData: any;
 }
 
-// Component definition
 const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
-                                                           name,
-                                                           setName,
-                                                           color,
-                                                           setColor,
-                                                           notes,
-                                                           setNotes,
-                                                       }) => {
+    formData,
+    setFormData
+}) => {
 
-    // Local state to check if the form has been submitted
-    const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
     const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
+    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+    const [validationError, setValidationError] = useState<string | null>(null);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const [data, setData] = useState(null)
 
-    const beforeSuccessFunction = (data: ShelfCategory) => {
-        console.log("Data before success:", data);
-        return data; // return processed data
+    const { pending, startSubmit, finishSubmit } = useFormStatus();
+
+    const handleChange = (e) => {
+        const { name } = e.target;
+        let newValue = formatCommasToDots(e.target.value)
+        setFormData({
+            ...formData,
+            [name]: newValue,
+        });
     };
 
-    const onSuccessFunction = (processedData: ShelfCategory) => {
-        setData(processedData)
-        console.log("Data successfully processed:", processedData);
-        setShowSuccessModal(true);  // Show the SuccessModal when form is successfully submitted
-    };
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        startSubmit();
 
+        const result = await universalHandleSubmit(
+            formData,
+            ShelfCategorySchema,
+            async (data) => {
+                try {
+                    // This is a placeholder for the actual server submit functionality
+                    // e.g., an API call.
+                    // throw new Error('ciul');
 
-    // Function to check for empty fields in the form data
-    const checkEmptyFields = useCallback((data: any) => {
-        return Object.keys(data).filter(key => !data[key]);
-    }, []);
+                    console.log('posting...')
+                    console.log('post', data)
 
-    // Function to validate the form data
-    const validateData = useCallback((data: any) => {
-        return ShelfCategorySchema.safeParse(data).success;
-    }, []);
+                } catch (e) {
+                    setValidationError(e.message); // Display the error message in the ToastNotification
+                    throw e; // Re-throw the error so it can be caught in universalHandleSubmit
+                }
+            }
+        );
 
-
-    // Using the custom hook to manage form submission and validation
-    const [isSubmitting, error, handleSubmit] = useSubmitForm({
-        checkEmptyFields,
-        validateData,
-        // optional custom error messges
-    }, beforeSuccessFunction, onSuccessFunction);
-
-
-    // Handler for form submission
-    const formHandler = (e: React.FormEvent) => {
-        e.preventDefault();
-        setHasBeenSubmitted(true);
-        handleSubmit({ name, color, notes });
-
-        // After handling submission, if there's an error, update the last error timestamp.
-        if (error) {
+        if (result.success) {
+            setShowSuccessModal(true);
+        } else {
             setLastErrorTimestamp(Date.now());
+            setShowSuccessModal(false);
         }
-    };
+        setFieldErrors(result.errors);
+        setValidationError(result.validationError || validationError); // Use the existing validationError if result doesn't provide a new one
 
+        finishSubmit();
+    }
 
     return (
-        <form onSubmit={formHandler}>
+        <form onSubmit={handleSubmit}>
             <TextInput
                 id='name'
                 description='Nazwa kategorii, która ma ułatwić segregowanie przedmiotów w szafie'
                 placeholder='nazwa kategorii'
-                note={hasBeenSubmitted && checkEmptyFields({ name }).length ? 'uzupełnij brakujące pole' : ''}
-                value={name}
-                setValue={setName}
+                note={fieldErrors.name || ''}
+                value={formData.name}
+                onChange={handleChange}
                 title='Nazwa kategorii'
             />
+
             <InputDivider />
+
             <ColorPickerInput
                 title='Kolor kategorii'
-                color={color}
-                note={hasBeenSubmitted && checkEmptyFields({ color }).length ? 'uzupełnij brakujące pole' : ''}
-                setColor={setColor}
+                value={formData.color}
+                note={fieldErrors.color || ''}
+                onChange={handleChange}
                 description='Ustaw kolor, który ułatwi wizualne rozpoznanie szuflad w kategorii'
             />
+
             <InputDivider />
+
             <TextAreaInput
-                note={hasBeenSubmitted && checkEmptyFields({ notes }).length ? 'uzupełnij brakujące pole' : ''}
+                note={fieldErrors.notes || ''}
                 description='Opis kategorii, ważna informacja dla obsługującego szafy'
                 title='Opis kategorii'
-                setValue={setNotes}
-                value={notes}
+                onChange={handleChange}
+                value={formData.notes}
                 placeholder='Notatki'
                 id='notes'
             />
-            <SubmitButton className='mt-10' isClicked={isSubmitting} />
 
-            {error && <ToastNotification key={lastErrorTimestamp} text={error} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={data} />}
+            <SubmitButton pending={pending} />
+
+            {validationError && <ToastNotification key={lastErrorTimestamp} text={validationError} />}
+            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={formData} />}
 
         </form>
     );

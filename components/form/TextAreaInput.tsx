@@ -22,6 +22,7 @@ const TextAreaInput: FC<TextInputProps> = ({
    note
 }) => {
 
+
     return (
         <div className={'w-full flex justify-between'}>
             <div className={'w-2/5'}>

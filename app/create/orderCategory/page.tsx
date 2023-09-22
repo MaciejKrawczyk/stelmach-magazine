@@ -6,21 +6,18 @@ import OrderCategoryForm from "@/components/form/forms/OrderCategoryForm";
 
 const MyForm = () => {
 
-    const [name, setName] = useState('');
-    const [color, setColor] = useState("#aabbcc")
-    const [description, setDescription] = useState('');
-
+    const [formData, setFormData] = useState({
+        name: "",
+        color: "#FF33FF",
+        description: ""
+    })
 
     return (
         <Container title={'Dodawanie Zamówienia'}>
 
             <OrderCategoryForm
-                name={name}
-                setName={setName}
-                setColor={setColor}
-                color={color}
-                setDescription={setDescription}
-                description={description}
+                setFormData={setFormData}
+                formData={formData}
             />
 
         </Container>

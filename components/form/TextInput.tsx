@@ -1,6 +1,4 @@
 import React, { FC } from 'react'
-import {formatCommasToDots} from "@/utils/formatCommaToDots";
-
 
 interface TextInputProps {
     id: string;

@@ -1,85 +1,109 @@
 'use client'
 
-// Importing required modules and types
-import React, { FC, useCallback, useState, FormEvent } from 'react';
+import React, {FC, useState, useEffect} from 'react';
 import InputDivider from "@/components/form/InputDivider";
 import TextAreaInput from "@/components/form/TextAreaInput";
-import SubmitButton from "@/components/submitButton";
-import useSubmitForm from '@/components/hooks/useSubmitForm';
+import SubmitButton from "@/components/form/SubmitButton";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
 import SelectInput from "@/components/form/SelectInput";
 import NumberInput from "@/components/form/NumberInput";
 import ItemTypeAttributesInput from "@/components/form/ItemTypeAttributesInput";
 import {Places} from "@/objects/Places";
-import {Order, OrderSchema} from "@/types/zod/Order";
+import axios from "axios";
+import {formatCommasToDots} from "@/utils/formatCommaToDots";
+import useFormStatus from "@/components/hooks/useFormStatus";
+import {universalHandleSubmit} from "@/components/form/HandleSubmit";
+import {OrderSchema} from "@/types/zod/Order";
 
-// Defining component props type
-interface OrderCategoryFormProps {
+interface OrderFormProps {
     formData: any
     setFormData: any
 }
 
 // Component definition
-const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
+const OrderForm: FC<OrderFormProps> = ({
     formData,
     setFormData
-                                                       }) => {
+   }) => {
 
-    // Local state to check if the form has been submitted
-    const [hasBeenSubmitted, setHasBeenSubmitted] = useState<boolean>(false);
     const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
-    const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
-    const [data, setData] = useState<OrderCategory | null>(null);
+    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+    const [validationError, setValidationError] = useState<string | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    const beforeSuccessFunction = (data: Order): Order => {
-        console.log("Data before success:", data);
-        return data; // return processed data
-    };
+    const [typeAttributes, setTypeAttributes] = useState([]);
+    const [companyIds, setCompanyIds] = useState([]);
+    const [orderCategories, setOrderCategories] = useState([])
 
-    const onSuccessFunction = (processedData: Order): void => {
-        setData(processedData);
-        console.log("Data successfully processed:", processedData);
-        setShowSuccessModal(true);  // Show the SuccessModal when form is successfully submitted
-    };
+    const { pending, startSubmit, finishSubmit } = useFormStatus();
 
-    // Function to check for empty fields in the form data
-    const checkEmptyFields = useCallback((data: Order): string[] => {
-        return Object.keys(data).filter(key => !data[key as keyof Order]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const companiesResponse = await axios.get('/api/company');
+                const orderCategoriesResponse = await axios.get('/api/orderCategory')
+                setCompanyIds(companiesResponse.data);
+                setOrderCategories(orderCategoriesResponse.data)
+            } catch (error) {
+                console.error("Error fetching data", error);
+            }
+        };
+        fetchData();
     }, []);
 
-    // Function to validate the form data
-    const validateData = useCallback((data: any): boolean => {
-        return OrderSchema.safeParse(data).success;
-    }, []);
+    const handleChange = (e) => {
+        const { name } = e.target;
+        let newValue = formatCommasToDots(e.target.value)
+        setFormData({
+            ...formData,
+            [name]: newValue,
+        });
+    };
 
-    // Using the custom hook to manage form submission and validation
-    const [isSubmitting, error, handleSubmit] = useSubmitForm({
-        checkEmptyFields,
-        validateData,
-        // optional custom error messges
-    }, beforeSuccessFunction, onSuccessFunction);
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        startSubmit();
 
-    // Handler for form submission
-    const formHandler = (e: FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-        setHasBeenSubmitted(true);
-        handleSubmit({ formData });
+        const result = await universalHandleSubmit(
+            formData,
+            OrderSchema,
+            async (data) => {
+                try {
+                    // This is a placeholder for the actual server submit functionality
+                    // e.g., an API call.
+                    // throw new Error('ciul');
 
-        // After handling submission, if there's an error, update the last error timestamp.
-        if (error) {
+                    console.log('posting...')
+                    console.log('post', data)
+
+                } catch (e) {
+                    setValidationError(e.message); // Display the error message in the ToastNotification
+                    throw e; // Re-throw the error so it can be caught in universalHandleSubmit
+                }
+            }
+        );
+
+        if (result.success) {
+            setShowSuccessModal(true);
+        } else {
             setLastErrorTimestamp(Date.now());
+            setShowSuccessModal(false);
         }
-    };
+        setFieldErrors(result.errors);
+        setValidationError(result.validationError || validationError); // Use the existing validationError if result doesn't provide a new one
+
+        finishSubmit();
+    }
 
     return (
 
-        <form onSubmit={formHandler}>
+        <form onSubmit={handleSubmit}>
 
             <SelectInput
                 id={'orderCategoryId'}
                 value={formData.orderCategoryId}
-                setValue={handleChange}
+                onChange={handleChange}
                 description={'Zamówienie, które jest tworzone w dodaj zamówienie. W tym wybranym zamówieniu będą się znajdować zamówione tutaj narzędzia'}
                 title={'Zamówienie'}
                 note={'Wybierz zamówienie z listy'}
@@ -89,10 +113,10 @@ const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
             <InputDivider />
 
             <NumberInput
-                note={'Wybierz ilość narzędzi tego typu, które zostaną dodane do zamówienia'}
+                note={fieldErrors.quantity || 'Wybierz ilość narzędzi tego typu, które zostaną dodane do zamówienia'}
                 title={'Ilość'}
                 value={formData.quantity}
-                setValue={handleChange}
+                onChange={handleChange}
                 description={'Wpisz ilość przedmiotów tego samego typu, które zamawiasz.'}
                 id={'quantity'}
             />
@@ -103,9 +127,9 @@ const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
                 id={'description'}
                 title={'Opis przedmiotu'}
                 value={formData.description}
-                setValue={handleChange}
+                onChange={handleChange}
                 description={'Opis jest dla Ciebie - cechy szczególne, ważne dodatkowe informacje'}
-                note={''}
+                note={fieldErrors.description || ''}
                 placeholder={'Opis'}
             />
 
@@ -113,7 +137,7 @@ const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
 
             <ItemTypeAttributesInput
                 description={'Typ przedmiotu - dodawany w dodaj -> dodaj typ przedmiotów. Sposób tworzenia typów jest pozostawiony użytkownikowi.'}
-                note={'Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty'}
+                note={fieldErrors.itemType || 'Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty'}
                 title={'Typ przedmiotu'}
                 id={'itemType'}
                 formData={formData}
@@ -126,9 +150,9 @@ const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
             <SelectInput
                 id={'companyId'}
                 title={'Producent'}
-                note={'Wybierz producenta z listy'}
+                note={fieldErrors.companyId || 'Wybierz producenta z listy'}
                 value={formData.companyId}
-                setValue={handleChange}
+                onChange={handleChange}
                 description={'Producent przedmiotu jest wybierany z listy wszystkich firm dodanych do bazy.'}
                 objectList={companyIds}
             />
@@ -138,17 +162,18 @@ const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
             <SelectInput
                 id={'placeId'}
                 title={'Miejsce docelowe przedmiotu'}
-                note={'Domyślna opcja - nie można jej zmienić'}
+                note={fieldErrors.placeId || 'Domyślna opcja - nie można jej zmienić'}
                 value={formData.placeId}
-                setValue={handleChange}
+                onChange={handleChange}
                 objectList={Places}
                 description={'Jest to zamówiony przedmiot, trafi on do listy zamówionych'}
+                enabledOptions={[18]}
             />
 
-            <SubmitButton className={'mt-10'} isClicked={isSubmitting} />
+            <SubmitButton pending={pending} />
 
-            {error && <ToastNotification key={lastErrorTimestamp} text={error} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={data} />}
+            {validationError && <ToastNotification key={lastErrorTimestamp} text={validationError} />}
+            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={formData} />}
 
         </form>
 
@@ -156,7 +181,7 @@ const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
 }
 
 // Exporting the component
-export default OrderCategoryForm;
+export default OrderForm;
 
 
 

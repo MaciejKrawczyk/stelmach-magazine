@@ -1,112 +1,123 @@
 'use client'
 
 // Importing required modules and types
-import React, { FC, useCallback, useState, FormEvent } from 'react';
+import React, {FC, useState, useEffect} from 'react';
 import TextInput from "@/components/form/TextInput";
 import InputDivider from "@/components/form/InputDivider";
 import TextAreaInput from "@/components/form/TextAreaInput";
-import SubmitButton from "@/components/submitButton";
-import useSubmitForm from '@/components/hooks/useSubmitForm';
+import SubmitButton from "@/components/form/SubmitButton";
 import ColorPickerInput from "@/components/form/ColorPickerInput";
 import SelectInput from "@/components/form/SelectInput";
 import {ParcelCategory, ParcelCategorySchema} from "@/types/zod/ParcelCategory";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
+import {formatCommasToDots} from "@/utils/formatCommaToDots";
+import {universalHandleSubmit} from "@/components/form/HandleSubmit";
+import useFormStatus from "@/components/hooks/useFormStatus";
+import axios from "axios";
 
 // Defining component props type
-interface ShelfCategoryFormProps {
-    name: string;
-    setName: (name: string) => void;
-    description: string;
-    setDescription: (notes: string) => void;
-    color: string,
-    setColor: (color: string) => void;
-    company: string,
-    setCompany: (company: string) => void
-    companies: any[]
+interface ParcelCategoryFormProps {
+    formData: ParcelCategory,
+    setFormData: any;
 }
 
 // Component definition
-const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
-    name,
-    setName,
-    color,
-    setColor,
-    setDescription,
-    description,
-    company,
-    setCompany,
-    companies,
-
+const ParcelCategoryForm: FC<ParcelCategoryFormProps> = ({
+    formData,
+    setFormData
                                                        }) => {
 
     // Local state to check if the form has been submitted
-    const [hasBeenSubmitted, setHasBeenSubmitted] = useState<boolean>(false);
     const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
-    const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
-    const [data, setData] = useState<ParcelCategory | null>(null);
+    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+    const [validationError, setValidationError] = useState<string | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    const beforeSuccessFunction = (data: ParcelCategory): ParcelCategory => {
-        console.log("Data before success:", data);
-        return data; // return processed data
-    };
+    const { pending, startSubmit, finishSubmit } = useFormStatus();
 
-    const onSuccessFunction = (processedData: ParcelCategory): void => {
-        setData(processedData);
-        console.log("Data successfully processed:", processedData);
-        setShowSuccessModal(true);  // Show the SuccessModal when form is successfully submitted
-    };
 
-    // Function to check for empty fields in the form data
-    const checkEmptyFields = useCallback((data: ParcelCategory): string[] => {
-        return Object.keys(data).filter(key => !data[key as keyof ParcelCategory]);
+    const [company, setCompany] = useState('')
+
+    const [companies, setCompanies] = useState([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const companiesResponse = await axios.get('/api/company');
+                setCompanies(companiesResponse.data);
+            } catch (error) {
+                console.error("Error fetching data", error);
+            }
+        };
+        fetchData();
+        console.log(companies)
     }, []);
 
-    // Function to validate the form data
-    const validateData = useCallback((data: any): boolean => {
-        return ParcelCategorySchema.safeParse(data).success;
-    }, []);
 
-    // Using the custom hook to manage form submission and validation
-    const [isSubmitting, error, handleSubmit] = useSubmitForm({
-        checkEmptyFields,
-        validateData,
-        // optional custom error messges
-    }, beforeSuccessFunction, onSuccessFunction);
+    const handleChange = (e) => {
+        const { name } = e.target;
+        let newValue = formatCommasToDots(e.target.value)
+        setFormData({
+            ...formData,
+            [name]: newValue,
+        });
+    };
 
-    // Handler for form submission
-    const formHandler = (e: FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-        setHasBeenSubmitted(true);
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        startSubmit();
 
-        // Assuming handleSubmit can extract form data by itself
-        handleSubmit(e);
+        const result = await universalHandleSubmit(
+            formData,
+            ParcelCategorySchema,
+            async (data) => {
+                try {
+                    // This is a placeholder for the actual server submit functionality
+                    // e.g., an API call.
+                    // throw new Error('ciul');
 
-        // After handling submission, if there's an error, update the last error timestamp.
-        if (error) {
+                    console.log('posting...')
+                    console.log('post', data)
+
+                } catch (e) {
+                    setValidationError(e.message); // Display the error message in the ToastNotification
+                    throw e; // Re-throw the error so it can be caught in universalHandleSubmit
+                }
+            }
+        );
+
+        if (result.success) {
+            setShowSuccessModal(true);
+        } else {
             setLastErrorTimestamp(Date.now());
+            setShowSuccessModal(false);
         }
-    };
+        setFieldErrors(result.errors);
+        setValidationError(result.validationError || validationError); // Use the existing validationError if result doesn't provide a new one
+
+        finishSubmit();
+    }
 
     return (
-        <form onSubmit={formHandler}>
+        <form onSubmit={handleSubmit}>
             <TextInput
                 id={'name'}
                 title={'Nazwa wysyłki'}
-                value={name}
-                setValue={setName}
+                value={formData.name}
+                onChange={handleChange}
                 description={'Nazwa wysyłki lub numer, który ułatwi Tobie jej wyszukanie'}
                 placeholder={'Nazwa wysyłki'}
-                note={hasBeenSubmitted && checkEmptyFields({ name }).length ? 'uzupełnij brakujące pole' : ''}
+                note={fieldErrors.name || ''}
             />
 
             <InputDivider />
 
             <ColorPickerInput
                 title={'Kolor wysyłki'}
-                color={color}
-                note={''}
-                setColor={setColor}
+                value={formData.color}
+                note={fieldErrors.color || ''}
+                onChange={handleChange}
                 description={'Ustaw kolor, aby dane wysyłki wyróżniały się na tle innych'}
             />
 
@@ -114,36 +125,36 @@ const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
 
             <SelectInput
                 id={'companyId'}
-                note={hasBeenSubmitted && checkEmptyFields({ company }).length ? 'uzupełnij brakujące pole' : 'Wybierz firmę z listy'}
+                note={fieldErrors.companyId || ''}
                 description={'Producent przedmiotu jest wybierany z listy wszystkich firm dodanych do bazy.'}
                 title={'Producent'}
                 value={company}
-                setValue={setCompany}
+                onChange={handleChange}
                 objectList={companies}
             />
 
             <InputDivider />
 
             <TextAreaInput
-                note={hasBeenSubmitted && checkEmptyFields({ description }).length ? 'uzupełnij brakujące pole' : ''}
-                value={description}
+                note={fieldErrors.description || ''}
+                value={formData.description}
                 title={'Opis wysyłki'}
-                setValue={setDescription}
+                onChange={handleChange}
                 description={'Opis wysyłki, ważna informacja dla obsługującego szafy'}
                 id={'description'}
                 placeholder={'Opis'}
             />
 
-            <SubmitButton className={'mt-10'} isClicked={isSubmitting} />
+            <SubmitButton pending={pending} />
 
-            {error && <ToastNotification key={lastErrorTimestamp} text={error} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={data} />}
+            {validationError && <ToastNotification key={lastErrorTimestamp} text={validationError} />}
+            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={formData} />}
 
         </form>
     );
 }
 
-export default ShelfCategoryForm;
+export default ParcelCategoryForm;
 
 
 

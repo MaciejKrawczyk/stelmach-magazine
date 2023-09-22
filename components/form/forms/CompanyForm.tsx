@@ -5,22 +5,23 @@ import TextAreaInput from "@/components/form/TextAreaInput";
 import SubmitButton from "@/components/form/SubmitButton";
 import {formatCommasToDots} from "@/utils/formatCommaToDots";
 import useFormStatus from "@/components/hooks/useFormStatus";
-import {CompanySchema} from "@/types/zod/Company";
+import {Company, CompanySchema} from "@/types/zod/Company";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
 import {universalHandleSubmit} from "@/components/form/HandleSubmit";
+import {ShelfCategorySchema} from "@/types/zod/Shelf";
 
 
 
 interface CompanyFormProps {
-    formData: any;
+    formData: Company;
     setFormData: any;
 }
 
 
 const CompanyForm: FC<CompanyFormProps> = ({
     formData, setFormData
-                                                       }) => {
+}) => {
 
     const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
     const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
@@ -42,11 +43,24 @@ const CompanyForm: FC<CompanyFormProps> = ({
         event.preventDefault();
         startSubmit();
 
-        const result = await universalHandleSubmit(formData, CompanySchema, async (data) => {
-            console.log('posting...')
-            console.log('posted', data)
-            // Implement logic to post the data to the server
-        });
+        const result = await universalHandleSubmit(
+            formData,
+            CompanySchema,
+            async (data) => {
+                try {
+                    // This is a placeholder for the actual server submit functionality
+                    // e.g., an API call.
+                    // throw new Error('ciul');
+
+                    console.log('posting...')
+                    console.log('post', data)
+
+                } catch (e) {
+                    setValidationError(e.message); // Display the error message in the ToastNotification
+                    throw e; // Re-throw the error so it can be caught in universalHandleSubmit
+                }
+            }
+        );
 
         if (result.success) {
             setShowSuccessModal(true);
@@ -55,7 +69,7 @@ const CompanyForm: FC<CompanyFormProps> = ({
             setShowSuccessModal(false);
         }
         setFieldErrors(result.errors);
-        setValidationError(result.validationError);
+        setValidationError(result.validationError || validationError); // Use the existing validationError if result doesn't provide a new one
 
         finishSubmit();
     }

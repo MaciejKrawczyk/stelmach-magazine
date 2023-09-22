@@ -16,40 +16,20 @@ import TextAreaInput from "@/components/form/TextAreaInput";
 import ParcelCategoryForm from "@/components/form/forms/ParcelCategoryForm";
 
 const MyForm = () => {
-    // Initialize state variables for the two text inputs
-    const [name, setName] = useState('');
-    const [color, setColor] = useState("#aabbcc")
-    const [description, setDescription] = useState('');
-    const [company, setCompany] = useState('')
 
-    const [companies, setCompanies] = useState([])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const companiesResponse = await axios.get('/api/company');
-                setCompanies(companiesResponse.data);
-            } catch (error) {
-                console.error("Error fetching data", error);
-            }
-        };
-        fetchData();
-        console.log(companies)
-    }, []);
-
+    const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        color: "#FF33FF",
+        companyId: undefined, // not defined
+        notes: ""
+    })
 
     return (
         <Container title={'Dodawanie Wysyłki'}>
                 <ParcelCategoryForm
-                    color={color}
-                    setColor={setColor}
-                    description={description}
-                    setDescription={setDescription}
-                    setCompany={setCompany}
-                    company={company}
-                    companies={companies}
-                    setName={setName}
-                    name={name}
+                    formData={formData}
+                    setFormData={setFormData}
                 />
         </Container>
     );

@@ -18,20 +18,18 @@ import FormStatusHandler from "@/components/form/FormStatusHandler";
 const MyForm = () => {
     // Initialize state variables for the two text inputs
 
-    const [name, setName] = useState('');
-    const [color, setColor] = useState("#aabbcc")
-    const [notes, setNotes] = useState('');
+    const [formData, setFormData] = useState({
+        name: "",
+        color: "#aabbcc",
+        notes: ""
+    })
 
     return (
         <Container title={'Dodawanie kategorii szuflad'}>
 
                 <ShelfCategoryForm
-                    color={color}
-                    setColor={setColor}
-                    name={name}
-                    setName={setName}
-                    notes={notes}
-                    setNotes={setNotes}
+                    formData={formData}
+                    setFormData={setFormData}
                 />
 
         </Container>
