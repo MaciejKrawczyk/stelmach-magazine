@@ -2,8 +2,8 @@ import { z } from 'zod'
 
 export const OrderSchema = z.object({
     id: z.number().optional(),
-    name: z.string(),
-    description: z.string(),
+    name: z.string().min(1),
+    description: z.string().min(1),
     placeId: z.number().refine(value => value === 18, {
         message: "Value must always be the id of order Place"
     }),

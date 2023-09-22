@@ -1,118 +1,102 @@
-'use client'
-
-// Importing required modules and types
-import React, { FC, useCallback, useState, FormEvent } from 'react';
+import React, { FC, useState} from 'react';
 import TextInput from "@/components/form/TextInput";
 import InputDivider from "@/components/form/InputDivider";
 import TextAreaInput from "@/components/form/TextAreaInput";
-import SubmitButton from "@/components/submitButton";
-import useSubmitForm from '@/components/hooks/useSubmitForm';
+import SubmitButton from "@/components/form/SubmitButton";
+import {formatCommasToDots} from "@/utils/formatCommaToDots";
+import useFormStatus from "@/components/hooks/useFormStatus";
+import {CompanySchema} from "@/types/zod/Company";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
-import {Company, CompanySchema} from "@/types/zod/Company";
+import {universalHandleSubmit} from "@/components/form/HandleSubmit";
 
-// Defining component props type
-interface ShelfCategoryFormProps {
+
+
+interface CompanyFormProps {
     formData: any;
     setFormData: any;
 }
 
-// Component definition
-const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
-formData, setFormData
+
+const CompanyForm: FC<CompanyFormProps> = ({
+    formData, setFormData
                                                        }) => {
-    // Local state to check if the form has been submitted
-    const [hasBeenSubmitted, setHasBeenSubmitted] = useState<boolean>(false);
+
     const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
-    const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
-    const [data, setData] = useState<Company | null>(null);
+    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+    const [validationError, setValidationError] = useState<string | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    const beforeSuccessFunction = (data: Company): Company => {
-        console.log("Data before success:", data);
-        return data; // return processed data
+    const { pending, startSubmit, finishSubmit } = useFormStatus();
+
+    const handleChange = (e) => {
+        const { name } = e.target;
+        let newValue = formatCommasToDots(e.target.value)
+        setFormData({
+            ...formData,
+            [name]: newValue,
+        });
     };
 
-    const onSuccessFunction = (processedData: Company): void => {
-        setData(processedData);
-        console.log("Data successfully processed:", processedData);
-        setShowSuccessModal(true);  // Show the SuccessModal when form is successfully submitted
-    };
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        startSubmit();
 
-    // Function to check for empty fields in the form data
-    const checkEmptyFields = useCallback((data: Company): string[] => {
-        return Object.keys(data).filter(key => !data[key as keyof Company]);
-    }, []);
+        const result = await universalHandleSubmit(formData, CompanySchema, async (data) => {
+            console.log('posting...')
+            console.log('posted', data)
+            // Implement logic to post the data to the server
+        });
 
-    // Function to validate the form data
-    const validateData = useCallback((data: any): boolean => {
-        return CompanySchema.safeParse(data).success;
-    }, []);
-
-    // Using the custom hook to manage form submission and validation
-    const [isSubmitting, error, handleSubmit] = useSubmitForm({
-        checkEmptyFields,
-        validateData,
-        // optional custom error messges
-    }, beforeSuccessFunction, onSuccessFunction);
-
-    // Handler for form submission
-    const formHandler = (e: FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-        setHasBeenSubmitted(true);
-
-        // Assuming handleSubmit can extract form data by itself
-        handleSubmit(e);
-
-        // After handling submission, if there's an error, update the last error timestamp.
-        if (error) {
+        if (result.success) {
+            setShowSuccessModal(true);
+        } else {
             setLastErrorTimestamp(Date.now());
+            setShowSuccessModal(false);
         }
-    };
+        setFieldErrors(result.errors);
+        setValidationError(result.validationError);
+
+        finishSubmit();
+    }
+
 
     return (
-        <form onSubmit={formHandler}>
 
-            <TextInput
-                id={'name'}
-                note={hasBeenSubmitted && checkEmptyFields({ name }).length ? 'uzupełnij brakujące pole' : ''}
-                placeholder={'Nazwa firmy'}
-                value={formData.name}
-                setValue={setName}
-                title={'Nazwa firmy'}
-                description={'Nazwa firmy np. producent, firma, która ostrzy, firma świadcząca jakąś usługę'}
-            />
+            <form onSubmit={handleSubmit}>
 
-            <InputDivider />
+                <TextInput
+                    id={'name'}
+                    note={fieldErrors.name || ''}
+                    placeholder={'Nazwa firmy'}
+                    value={formData.name}
+                    onChange={handleChange}
+                    title={'Nazwa firmy'}
+                    description={'Nazwa firmy np. producent, firma, która ostrzy, firma świadcząca jakąś usługę'}
+                />
 
-            <TextAreaInput
-                description={'Ważne informacje o firmie np. telefon kontaktowy, adres, email, opis'}
-                title={'Opis przedmiotu'}
-                setValue={setNotes}
-                value={notes}
-                note={hasBeenSubmitted && checkEmptyFields({ notes }).length ? 'uzupełnij brakujące pole' : ''}
-                placeholder={'Notatki'}
-                id={'notes'}
-            />
+                <InputDivider />
 
-            <SubmitButton className={'mt-10'} isClicked={isSubmitting} />
+                <TextAreaInput
+                    description={'Ważne informacje o firmie np. telefon kontaktowy, adres, email, opis'}
+                    title={'Opis przedmiotu'}
+                    onChange={handleChange}
+                    value={formData.notes}
+                    note={fieldErrors.notes || ''}
+                    placeholder={'Notatki'}
+                    id={'notes'}
+                />
 
-            {error && <ToastNotification key={lastErrorTimestamp} text={error} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={data} />}
+                <SubmitButton pending={pending} />
 
-        </form>
+                {validationError && <ToastNotification key={lastErrorTimestamp} text={validationError} />}
+                {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={formData} />}
+
+            </form>
+
     );
 }
 
 // Exporting the component
-export default ShelfCategoryForm;
-
-
-
-
-
-
-
-
-
-
+export default CompanyForm;
 

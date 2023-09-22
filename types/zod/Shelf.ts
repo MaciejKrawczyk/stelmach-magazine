@@ -6,15 +6,15 @@ const LazyShelfSchema = z.lazy(() => shelfSchema);
 
 const ShelfCategorySchema = z.object({
     id: z.number().optional(),
-    name: z.string(),
+    name: z.string().min(1),
     color: z.string().length(7).regex(/^#/),
-    notes: z.string(),
+    notes: z.string().min(1),
     shelf: z.array(LazyShelfSchema).optional()
 });
 
 export const shelfSchema = z.object({
     id: z.number(),
-    name: z.number(),
+    name: z.number().min(1),
     size: z.union([
         z.literal('big'),
         z.literal('small')

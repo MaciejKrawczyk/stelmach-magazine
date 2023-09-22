@@ -2,8 +2,8 @@ import { z } from 'zod'
 
 export const ItemSchema = z.object({
     id: z.number().optional(),
-    name: z.string(),
-    description: z.string(),
+    name: z.string().min(1),
+    description: z.string().min(1),
     placeId: z.number(),
     shelfId: z.number(),
     shelfType: z.union([

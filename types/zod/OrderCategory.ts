@@ -2,8 +2,8 @@ import { z } from 'zod'
 
 export const OrderCategorySchema = z.object({
     id: z.number().optional(),
-    name: z.string(),
-    description: z.string(),
+    name: z.string().min(1),
+    description: z.string().min(1),
     color: z.string().length(7).regex(/^#/),
 })
 
