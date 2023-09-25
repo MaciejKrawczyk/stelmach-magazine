@@ -12,6 +12,7 @@ import {formatCommasToDots} from "@/utils/formatCommaToDots";
 import {universalHandleSubmit} from "@/components/form/HandleSubmit";
 import TypeValueAttributesInputItemTypeCreate from "@/components/form/TypeValueAttributesInputItemTypeCreate";
 import {ItemType, ItemTypeSchema} from "@/types/zod/ItemType";
+import {createItemType} from "@/lib/db/itemType/functions";
 
 // Defining component props type
 interface ItemTypeFormProps {
@@ -46,10 +47,11 @@ const ItemTypeForm: FC<ItemTypeFormProps> = ({
     };
 
     useEffect(() => {
-        const filteredList = inputList.filter((_, index) => index !== 0);
+        // const filteredList = inputList.filter((_, index) => index !== 0);
         setFormData((prevData) => ({
             ...prevData,
-            list: filteredList,
+            // list: filteredList,
+            list: inputList
         }));
     }, [inputList]);
 
@@ -58,7 +60,7 @@ const ItemTypeForm: FC<ItemTypeFormProps> = ({
         event.preventDefault();
 
         // Check if formData.list is empty or undefined
-        if (!formData.list || formData.list.length === 0) {
+        if (!formData.list || formData.list.length === 0 || (formData.list[0].value.length === 0 && formData.list.length === 1)) {
             setValidationError("Cechy typu przedmiotu nie mogą być puste"); // Display the error message in the ToastNotification
             setLastErrorTimestamp(Date.now());
             return;  // Prevent form submission
@@ -75,8 +77,9 @@ const ItemTypeForm: FC<ItemTypeFormProps> = ({
                     // e.g., an API call.
                     // throw new Error('ciul');
 
-                    console.log('posting...')
-                    console.log('post', data)
+                    const object = await createItemType(data)
+                    // console.log('posting...')
+                    console.log('post', object)
 
                 } catch (e) {
                     setValidationError(e.message); // Display the error message in the ToastNotification
