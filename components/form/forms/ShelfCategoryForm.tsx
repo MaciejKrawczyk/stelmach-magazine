@@ -10,6 +10,7 @@ import useFormStatus from "@/components/hooks/useFormStatus";
 import {formatCommasToDots} from "@/utils/formatCommaToDots";
 import {universalHandleSubmit} from "@/components/form/HandleSubmit";
 import {ShelfCategorySchema} from "@/types/zod/Shelf";
+import {createShelfCategory} from "@/lib/db/shelfCategory/functions";
 
 
 interface ShelfCategoryFormProps {
@@ -51,8 +52,9 @@ const ShelfCategoryForm: FC<ShelfCategoryFormProps> = ({
                     // e.g., an API call.
                     // throw new Error('ciul');
 
-                    console.log('posting...')
-                    console.log('post', data)
+                    // console.log('posting...')
+                    const object = await createShelfCategory(data)
+                    console.log('post', object)
 
                 } catch (e) {
                     setValidationError(e.message); // Display the error message in the ToastNotification

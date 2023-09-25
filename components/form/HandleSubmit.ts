@@ -6,6 +6,7 @@ export const universalHandleSubmit = async (
     serverSubmitFunction: (data: any) => Promise<void>
 ) => {
     try {
+        console.log(formData)
         zodSchema.parse(formData);
         await serverSubmitFunction(formData);
 
@@ -25,7 +26,7 @@ export const universalHandleSubmit = async (
             return {
                 success: false,
                 errors,
-                validationError: "Wystąpił błąd przy weryfikacji formularza."
+                validationError: `Wystąpił błąd przy weryfikacji formularza. ${JSON.stringify(errors)}`
             };
         } else {
             return {

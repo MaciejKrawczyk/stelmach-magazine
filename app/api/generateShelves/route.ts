@@ -24,7 +24,8 @@ export async function POST(req: Request) {
                 id: -1,
                 name: String(0),
                 size: 'big',
-                categoryId: 1
+                shelfCategoryId: 1
+                // categoryId: 1
             }
         })
 
@@ -34,7 +35,8 @@ export async function POST(req: Request) {
                 data: {
                     name: String(i + 1),
                     size: 'big',
-                    categoryId: 1
+                    // categoryId: 1
+                    shelfCategoryId: 1
                 }
             })
 
@@ -46,7 +48,8 @@ export async function POST(req: Request) {
                 data: {
                     name: String(i + 1),
                     size: 'small',
-                    categoryId: 1
+                    // categoryId: 1
+                    shelfCategoryId: 1
                 }
             })
 

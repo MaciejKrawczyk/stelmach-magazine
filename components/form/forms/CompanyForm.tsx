@@ -10,6 +10,7 @@ import ToastNotification from "@/components/form/notification/ToastNotification"
 import SuccessModal from "@/components/form/modal/SuccessModal";
 import {universalHandleSubmit} from "@/components/form/HandleSubmit";
 import {ShelfCategorySchema} from "@/types/zod/Shelf";
+import {createCompany} from "@/lib/db/company/functions";
 
 
 
@@ -52,8 +53,11 @@ const CompanyForm: FC<CompanyFormProps> = ({
                     // e.g., an API call.
                     // throw new Error('ciul');
 
-                    console.log('posting...')
-                    console.log('post', data)
+                    // console.log('posting...')
+
+                    const object = await createCompany(data)
+                    console.log('post', object)
+
 
                 } catch (e) {
                     setValidationError(e.message); // Display the error message in the ToastNotification

@@ -38,6 +38,7 @@ const SelectInput: FC<SelectInputProps> = ({
                     <div className="flex justify-center items-center">
 
                         <select
+                            id={id}
                             className="w-full border-gray-300 p-3 rounded-lg text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
                             name={id}
                             value={value}
@@ -57,6 +58,7 @@ const SelectInput: FC<SelectInputProps> = ({
                                 )
                             })}
                         </select>
+
 
                     </div>
                     <span className="pt-3 pl-1 mb-2 text-gray-500">{note}</span>
