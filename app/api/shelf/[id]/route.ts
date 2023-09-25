@@ -14,7 +14,7 @@ export async function PUT(request, {params}) {
                 id: Number(id)
             },
             data: {
-                categoryId: Number(categoryId)
+                shelfCategoryId: Number(categoryId)
             }
         })
         return NextResponse.json({ object }, { status: 200 })

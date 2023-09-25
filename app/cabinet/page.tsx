@@ -251,7 +251,7 @@ const page = () => {
                                             className={`cursor-pointer flex items-center justify-center py-1 ${clickedShelves.includes(shelf.id) ? 'border-black border-2' : ''}`}
                                             key={shelf.id}
                                             onContextMenu={(e) => onRightClick(e, shelf)} // Add this line
-                                            style={{backgroundColor: shelf.category.color}}
+                                            style={{backgroundColor: shelf.shelfCategory.color}}
                                         >
                                             {/*{shelf.name}*/}
                                             {shelf.item.length > 0 && (
@@ -274,7 +274,7 @@ const page = () => {
                                             className={`cursor-pointer flex items-center justify-center ${clickedShelves.includes(shelf.id) ? 'border-black border-2' : ''}`}
                                             key={shelf.id}
                                             onContextMenu={(e) => onRightClick(e, shelf)} // Add this line
-                                            style={{backgroundColor: shelf.category.color}}
+                                            style={{backgroundColor: shelf.shelfCategory.color}}
                                         >
                                             {/*{shelf.name}*/}
                                             {shelf.item.length > 0 && (
@@ -297,7 +297,7 @@ const page = () => {
                                             className={`cursor-pointer flex items-center justify-center py-1 ${clickedShelves.includes(shelf.id) ? 'border-black border-2' : ''}`}
                                             key={shelf.id}
                                             onContextMenu={(e) => onRightClick(e, shelf)} // Add this line
-                                            style={{backgroundColor: shelf.category.color}}
+                                            style={{backgroundColor: shelf.shelfCategory.color}}
                                         >
                                             {/*{shelf.name}*/}
                                             {shelf.item.length > 0 && (
@@ -408,7 +408,7 @@ const page = () => {
 
                     {selectedItem.attributeValue.map((attribute) => {
                         return (
-                            <p key={attribute.id}>{attribute.typeattribute.name}: {attribute.value}</p>
+                            <p key={attribute.id}>{attribute.typeAttribute.name}: {attribute.value}</p>
                         )
                     })}
 

@@ -6,12 +6,12 @@ export async function GET(req: Request) {
 
         const objects = await db.shelf.findMany({
             include: {
-                category: true,
+                shelfCategory: true,
                 item: {
                     include: {
                         attributeValue: {
                             include: {
-                                typeattribute: true
+                                typeAttribute: true
                             }
                         },
                         itemType: true
