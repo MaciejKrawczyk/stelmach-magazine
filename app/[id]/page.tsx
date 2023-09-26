@@ -61,7 +61,7 @@ const page = () => {
 
                 {item.status.map((status, index) => {
                     return (
-                        <div>
+                        <div key={index}>
                             <div>{formatDate(status.createdAt)}</div>
                             <div>{status.name}</div>
                             <div>{status.description}</div>
@@ -69,42 +69,6 @@ const page = () => {
                         </div>
                     )
                 })}
-
-            {/*<Timeline>*/}
-            {/*    {item.status.map((status, index) => {*/}
-            {/*        return (*/}
-            {/*            <TimelineItem*/}
-            {/*                key={index}*/}
-            {/*                  sx={{*/}
-            {/*                [`& .${timelineOppositeContentClasses.root}`]: {*/}
-            {/*                    flex: 0.2,*/}
-            {/*                },*/}
-            {/*            }}*/}
-            {/*            >*/}
-            {/*                <TimelineOppositeContent*/}
-            {/*                    sx={{ m: 'auto 0' }}*/}
-            {/*                    align="right"*/}
-            {/*                    variant="body2"*/}
-            {/*                    color="text.secondary"*/}
-            {/*                >*/}
-            {/*                    {formatDate(status.createdAt)}*/}
-            {/*                </TimelineOppositeContent>*/}
-            {/*                <TimelineSeparator>*/}
-            {/*                    <TimelineConnector />*/}
-            {/*                    <TimelineDot>*/}
-            {/*                        <CheckIcon />*/}
-            {/*                    </TimelineDot>*/}
-            {/*                    <TimelineConnector />*/}
-            {/*                </TimelineSeparator>*/}
-            {/*                <TimelineContent sx={{ py: '12px', px: 2 }}>*/}
-            {/*                    <Typography variant="h6" component="span">*/}
-            {/*                        {status.name}*/}
-            {/*                    </Typography>*/}
-            {/*                    <Typography>{status.description}</Typography>*/}
-            {/*                </TimelineContent>*/}
-            {/*            </TimelineItem>*/}
-            {/*            )})}*/}
-            {/*</Timeline>*/}
 
             <div className={'bg-red-600 w-full h-96 rounded-xl text-white flex justify-center flex-col items-center text-center'}>
 
@@ -126,7 +90,7 @@ const page = () => {
                 {item.attributeValue.map((attribute) => {
                     return (
                         <div className={'my-2'} key={attribute.id}>
-                            <p>{attribute.typeattribute.name}</p>
+                            <p>{attribute.typeAttribute.name}</p>
                             <p>{attribute.value}</p>
                         </div>
                     )

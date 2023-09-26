@@ -77,7 +77,7 @@ const ItemForm: FC<ItemFormProps> = ({
                     setFormData(prevData => ({ ...prevData, companyId: companiesResponse.data[0].id }));
                 }
 
-                // Set the formData.shelfCategory to the first category
+                // Set the formData.shelf-category to the first shelf-category
                 if (categoriesResponse.data.length) {
                     setFormData(prevData => ({ ...prevData, shelfCategory: categoriesResponse.data[0].id }));
                 }

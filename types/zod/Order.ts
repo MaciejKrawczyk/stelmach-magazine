@@ -24,6 +24,7 @@ export const OrderSchema = z.object({
     }),
     orderCategoryId: z.number(),
     parcelCategoryId: z.number(),
+    quantity: z.number()
 })
 
 export type Order = z.infer<typeof OrderSchema>

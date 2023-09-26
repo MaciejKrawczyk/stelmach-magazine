@@ -8,6 +8,7 @@ const App = () => {
 
     const [formData, setFormData] = useState({
         orderCategoryId: "",
+        isDeleted: false,
         isOrder: true,
         quantity: 1,
         name: `ORDER`,

@@ -46,7 +46,8 @@ const page = () => {
         isOrder: false,
         isDeleted: false,
         typeAttributes: undefined,
-        shelfType: undefined
+        shelfType: undefined,
+        // itemSentCategoryId: null
     });
 
 

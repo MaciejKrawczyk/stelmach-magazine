@@ -3,10 +3,9 @@ import {db} from "@/lib/db/db";
 
 export async function GET(req: Request) {
     try {
-
-        const objects = await db.shelfCategory.findMany({
+        const objects = await db.parcelCategory.findMany({
             include: {
-                shelf: true
+                company: true
             }
         })
 
@@ -17,32 +16,34 @@ export async function GET(req: Request) {
     }
 }
 
-
-// export async function
-
-
 export async function POST(req: Request) {
 
     try {
 
         const body = await req.json()
-        const { name, color, notes } = body
+        const { name, color, description, companyId } = body
 
-        const objectExists = await db.shelfCategory.findFirst({
+        const objectExists = await db.parcelCategory.findFirst({
             where: {
-                name: name
+                name,
+                color
             }
         })
 
         if (objectExists) {
-            return new Response('category already exists', { status: 409 })
+            return new Response('shelf-category already exists', { status: 409 })
         }
 
-        const object = await db.shelfCategory.create({
+        const object = await db.parcelCategory.create({
             data: {
                 name: name,
                 color: color,
-                notes: notes,
+                description: description,
+                company: {
+                    connect: {
+                        id: Number(companyId)
+                    }
+                }
             }
         })
 
@@ -51,4 +52,7 @@ export async function POST(req: Request) {
     } catch (error) {
         console.error(error)
     }
+
+
+
 }

@@ -9,48 +9,29 @@ import settings from '../public/Setting_alt_line.svg';
 import { Places } from "@/objects/Places";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import ItemTile from "@/components/ItemTile";
+import {useItems} from "@/components/hooks/useItems";
 
 export default function Home() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [expandedPlace, setExpandedPlace] = useState(null);
 
-  useEffect(() => {
-    let isMounted = true;
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/item');
-        if (isMounted) {
-          setData(response.data);
-          setLoading(false);
-        }
-      } catch (e) {
-        console.error('Failed to fetch data:', e);
-        if (isMounted) {
-          setError(e);
-          setLoading(false);
-        }
-      }
-    };
-    fetchData();
-    return () => { isMounted = false; };
-  }, []);
+    const [expandedPlace, setExpandedPlace] = useState(null);
 
-  if (loading) {
-    return (
-        <div className="flex justify-center items-center min-h-screen">
-          <Image priority alt={'loading...'} src={loadingSVG} />
-        </div>
-    );
-  }
+    const { data, loading, error } = useItems()
 
-  if (error) return <div>Error loading data</div>;
+    const itemCount = data ? data.reduce((acc, item) => {
+        acc[item.placeId] = (acc[item.placeId] || 0) + 1;
+        return acc;
+    }, {}) : {};
 
-  const itemCount = data.reduce((acc, item) => {
-    acc[item.placeId] = (acc[item.placeId] || 0) + 1;
-    return acc;
-  }, {});
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Image priority alt={'loading...'} src={loadingSVG} />
+            </div>
+        );
+    }
+
+    if (error) return <div>Error loading data</div>;
+
 
   return (
       <div className='flex justify-center'>

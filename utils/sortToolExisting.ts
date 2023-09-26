@@ -36,7 +36,7 @@ export const sortToolExisting = async (shelfType, shelfCategoryId, itemType, att
 
         const category = categoriesShelvesResponse.data.find(cat => Number(cat.id) === Number(shelfCategoryId));
         if (!category) {
-            throw new Error("No shelf found in the category.");
+            throw new Error("No shelf found in the shelf-category.");
         }
 
         const occupiedShelfIds = getOccupiedShelfIds(itemsResponse.data);

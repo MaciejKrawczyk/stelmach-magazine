@@ -15,6 +15,7 @@ import {formatCommasToDots} from "@/utils/formatCommaToDots";
 import {universalHandleSubmit} from "@/components/form/HandleSubmit";
 import useFormStatus from "@/components/hooks/useFormStatus";
 import axios from "axios";
+import {createParcelCategory} from "@/lib/db/parcelCategory/functions";
 
 // Defining component props type
 interface ParcelCategoryFormProps {
@@ -46,11 +47,17 @@ const ParcelCategoryForm: FC<ParcelCategoryFormProps> = ({
             try {
                 const companiesResponse = await axios.get('/api/company');
                 setCompanies(companiesResponse.data);
+
+                if (companiesResponse.data.length) {
+                    setFormData(prevData => ({ ...prevData, companyId: companiesResponse.data[0].id }));
+                }
+
             } catch (error) {
                 console.error("Error fetching data", error);
             }
         };
         fetchData();
+
         console.log(companies)
     }, []);
 
@@ -78,7 +85,10 @@ const ParcelCategoryForm: FC<ParcelCategoryFormProps> = ({
                     // throw new Error('ciul');
 
                     console.log('posting...')
-                    console.log('post', data)
+
+                    const object = await createParcelCategory(data)
+
+                    console.log('post', object)
 
                 } catch (e) {
                     setValidationError(e.message); // Display the error message in the ToastNotification
@@ -128,7 +138,7 @@ const ParcelCategoryForm: FC<ParcelCategoryFormProps> = ({
                 note={fieldErrors.companyId || ''}
                 description={'Producent przedmiotu jest wybierany z listy wszystkich firm dodanych do bazy.'}
                 title={'Producent'}
-                value={company}
+                value={formData.companyId}
                 onChange={handleChange}
                 objectList={companies}
             />

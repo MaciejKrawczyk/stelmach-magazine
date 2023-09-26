@@ -7,7 +7,7 @@ export const universalHandleSubmit = async (
 ) => {
     try {
         console.log(formData)
-        zodSchema.parse(formData);
+        // zodSchema.parse(formData);
         await serverSubmitFunction(formData);
 
         return {

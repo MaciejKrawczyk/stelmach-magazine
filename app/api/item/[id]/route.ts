@@ -16,7 +16,7 @@ export async function GET(req: Request, {params}) {
             include: {
                 attributeValue: {
                     include: {
-                        typeattribute: true
+                        typeAttribute: true
                     }
                 },
                 company: true,
@@ -80,7 +80,7 @@ export async function PUT(request, {params}) {
                 id: Number(id)
             },
             data: {
-                itemSentCategory: {
+                parcelCategory: {
                     connect: {
                         id: Number(itemSentCategoryId)
                     }
@@ -91,7 +91,7 @@ export async function PUT(request, {params}) {
                 orderCategory: {
                   disconnect: true,
                 },
-                placeId: placeId,
+                placeId: Number(placeId),
                 shelf: {
                     connect: {
                         id: Number(shelfId)
@@ -107,7 +107,7 @@ export async function PUT(request, {params}) {
             },
             include: {
                 shelf: true,
-                itemSentCategory: true
+                parcelCategory: true
             }
         })
         return NextResponse.json({ object }, { status: 200 })

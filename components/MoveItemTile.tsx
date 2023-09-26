@@ -23,7 +23,7 @@ const MoveItemTile = ({ itemType, name, company, description, attributes, ...pro
                     {attributes.map((attribute) => {
                         return (
                             <div key={attribute.id}>
-                                <p>{attribute.typeattribute.name}: {attribute.value}</p>
+                                <p>{attribute.typeAttribute.name}: {attribute.value}</p>
                                 <hr/>
                             </div>
                         )

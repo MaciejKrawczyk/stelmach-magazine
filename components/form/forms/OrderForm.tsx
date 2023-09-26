@@ -15,6 +15,7 @@ import {formatCommasToDots} from "@/utils/formatCommaToDots";
 import useFormStatus from "@/components/hooks/useFormStatus";
 import {universalHandleSubmit} from "@/components/form/HandleSubmit";
 import {OrderSchema} from "@/types/zod/Order";
+import {createOrder} from "@/lib/db/order/functions";
 
 interface OrderFormProps {
     formData: any
@@ -73,8 +74,10 @@ const OrderForm: FC<OrderFormProps> = ({
                     // This is a placeholder for the actual server submit functionality
                     // e.g., an API call.
                     // throw new Error('ciul');
-
                     console.log('posting...')
+
+                    const object = await createOrder(data)
+
                     console.log('post', data)
 
                 } catch (e) {

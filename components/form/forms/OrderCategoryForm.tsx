@@ -13,6 +13,8 @@ import SuccessModal from "@/components/form/modal/SuccessModal";
 import useFormStatus from "@/components/hooks/useFormStatus";
 import {formatCommasToDots} from "@/utils/formatCommaToDots";
 import {universalHandleSubmit} from "@/components/form/HandleSubmit";
+import {createOrder} from "@/lib/db/order/functions";
+import {createOrderCategory} from "@/lib/db/orderCategory/functions";
 
 // Defining component props type
 interface OrderCategoryFormProps {
@@ -56,7 +58,8 @@ const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
                     // throw new Error('ciul');
 
                     console.log('posting...')
-                    console.log('post', data)
+                    const object = await createOrderCategory(data)
+                    console.log('post', object)
 
                 } catch (e) {
                     setValidationError(e.message); // Display the error message in the ToastNotification

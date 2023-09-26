@@ -64,9 +64,9 @@ const App = () => {
     // useEffect(() => {
     //     const fetchData = async () => {
     //         try {
-    //             const itemTypesResponse = await axios.get('/api/itemtype');
+    //             const itemTypesResponse = await axios.get('/api/item-type');
     //             const companiesResponse = await axios.get('/api/company');
-    //             const categoriesResponse = await axios.get('/api/category')
+    //             const categoriesResponse = await axios.get('/api/shelf-category')
     //             // const attributesResponse = await axios.get('/api/typeattribute')
     //             console.log(itemTypesResponse.data)
     //             // setTypeAttribute(attributesResponse.data)
@@ -159,7 +159,7 @@ const App = () => {
     //         console.log(formData)
     //
     //         const shelfResult = await sortTool(
-    //             formData.shelfCategory,
+    //             formData.shelf-category,
     //             formData.shelfType,
     //             formData.itemType,
     //             formData.typeAttributes

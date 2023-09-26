@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         }
 
         let attributes = []
-        for (let i=0;i<body.list.length;i++) {
+        for (let i=1;i<body.list.length;i++) {
             const attributeName = body.list[i].value
             attributes.push({name: attributeName})
         }
