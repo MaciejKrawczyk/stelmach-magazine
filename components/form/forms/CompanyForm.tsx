@@ -12,13 +12,10 @@ import {universalHandleSubmit} from "@/components/form/HandleSubmit";
 import {ShelfCategorySchema} from "@/types/zod/Shelf";
 import {createCompany} from "@/lib/db/company/functions";
 
-
-
 interface CompanyFormProps {
     formData: Company;
     setFormData: any;
 }
-
 
 const CompanyForm: FC<CompanyFormProps> = ({
     formData, setFormData
@@ -49,16 +46,9 @@ const CompanyForm: FC<CompanyFormProps> = ({
             CompanySchema,
             async (data) => {
                 try {
-                    // This is a placeholder for the actual server submit functionality
-                    // e.g., an API call.
-                    // throw new Error('ciul');
-
-                    // console.log('posting...')
-
+                    console.log('posting...', data)
                     const object = await createCompany(data)
                     console.log('post', object)
-
-
                 } catch (e) {
                     setValidationError(e.message); // Display the error message in the ToastNotification
                     throw e; // Re-throw the error so it can be caught in universalHandleSubmit
@@ -80,9 +70,7 @@ const CompanyForm: FC<CompanyFormProps> = ({
 
 
     return (
-
             <form onSubmit={handleSubmit}>
-
                 <TextInput
                     id={'name'}
                     note={fieldErrors.name || ''}
@@ -92,9 +80,7 @@ const CompanyForm: FC<CompanyFormProps> = ({
                     title={'Nazwa firmy'}
                     description={'Nazwa firmy np. producent, firma, która ostrzy, firma świadcząca jakąś usługę'}
                 />
-
                 <InputDivider />
-
                 <TextAreaInput
                     description={'Ważne informacje o firmie np. telefon kontaktowy, adres, email, opis'}
                     title={'Opis przedmiotu'}
@@ -104,17 +90,12 @@ const CompanyForm: FC<CompanyFormProps> = ({
                     placeholder={'Notatki'}
                     id={'notes'}
                 />
-
                 <SubmitButton pending={pending} />
-
                 {validationError && <ToastNotification key={lastErrorTimestamp} text={validationError} />}
                 {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={formData} />}
-
             </form>
-
     );
 }
 
-// Exporting the component
 export default CompanyForm;
 
