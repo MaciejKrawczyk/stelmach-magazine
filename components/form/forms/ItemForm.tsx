@@ -1,6 +1,5 @@
 'use client'
 
-// Importing required modules and types
 import React, {FC, useEffect, useState} from 'react';
 import TextInput from "@/components/form/TextInput";
 import InputDivider from "@/components/form/InputDivider";
@@ -22,136 +21,71 @@ import axios from "axios";
 import {Shelves} from "@/objects/Shelves";
 import {createItem} from "@/lib/db/item/functions";
 import {sortTool} from "@/utils/sortToolShelf";
+import {useCompanies} from "@/components/hooks/useCompanies";
+import {useShelfCategories} from "@/components/hooks/useShelfCategories";
+import {FieldValues, useForm} from "react-hook-form";
+import {ShelfCategory, ShelfCategorySchema} from "@/types/zod/Shelf";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {registerAll} from "sucrase/dist/types/register";
 
-// Defining component props type
-interface ItemFormProps {
-    formData: Item;
-    setFormData: any;
-}
 
 // Component definition
-const ItemForm: FC<ItemFormProps> = ({
-                                                           formData,
-                                                           setFormData
-                                                       }) => {
-    const [isLoading, setIsLoading] = useState(true);
+const ItemForm = () => {
+// TODO
+    // const {companies, loading, error} = useCompanies()
+    // const {shelfCategories, loading, error} = useShelfCategories()
 
-    const [companyIds, setCompanyIds] = useState([])
-    const [shelfCategories, setShelfCategories] = useState([])
-    const shelfIds = Object.keys(Shelves);
-    const placeIds = Places
+    // const handleDivClick = (id) => {
+    //     // console.log("Setting shelf type to:", id);
+    //     setFormData(prevState => ({ ...prevState, shelfType: id }));
+    // };
 
-    const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
-    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
-    const [validationError, setValidationError] = useState<string | null>(null);
+    const [showErrorModal, setShowErrorModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [formData, setFormData] = useState({});
 
-    const { pending, startSubmit, finishSubmit } = useFormStatus();
+    const {
+        control,
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm<ShelfCategory>({
+        resolver: zodResolver(ShelfCategorySchema)
+    })
 
-    const handleChange = (e) => {
-        console.log(e.target.name, e.target.value); // Log the change event details
-        const { name, value } = e.target;
-        let newValue = name === 'companyId' ? value : formatCommasToDots(value); // Ensure companyId doesn't get processed with formatCommasToDots
-        setFormData({
-            ...formData,
-            [name]: newValue,
-        });
-    };
+    const onSubmit = async (data: FieldValues) => {
+        try {
+            setShowErrorModal(false)
+            setErrorMessage('')
 
-    const handleDivClick = (id) => {
-        // console.log("Setting shelf type to:", id);
-        setFormData(prevState => ({ ...prevState, shelfType: id }));
-    };
-
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const companiesResponse = await axios.get('/api/company');
-                const categoriesResponse = await axios.get('/api/category');
-                setCompanyIds(companiesResponse.data);
-                setShelfCategories(categoriesResponse.data);
-
-                // Set the formData.companyId to the first company ID
-                if (companiesResponse.data.length) {
-                    setFormData(prevData => ({ ...prevData, companyId: companiesResponse.data[0].id }));
-                }
-
-                // Set the formData.shelf-category to the first shelf-category
-                if (categoriesResponse.data.length) {
-                    setFormData(prevData => ({ ...prevData, shelfCategory: categoriesResponse.data[0].id }));
-                }
-
-            } catch (error) {
-                console.error("Error fetching data", error);
-            } finally {
-                setIsLoading(false); // Set loading to false when done fetching
-            }
-        };
-        fetchData();
-    }, []);
-
-
-
-
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        startSubmit();
-
-        const result = await universalHandleSubmit(
-            formData,
-            ItemSchema,
-            async (data) => {
-                try {
-                    // This is a placeholder for the actual server submit functionality
-                    // e.g., an API call.
-                    // throw new Error('ciul');
-                    // console.log('posting...')
-                    // console.log(data)
-
-                    const shelfResult = await sortTool(
-                        formData.shelfCategory,
-                        formData.shelfType,
-                        formData.itemType,
-                        formData.typeAttributes
-                    )
-                    console.log(shelfResult)
-                    let updatedFormData = { ...formData, shelfId: shelfResult.shelfId };
-
-                    const object = await createItem(updatedFormData)
-                    console.log('post', object)
-
-                } catch (e) {
-                    setValidationError(e.message); // Display the error message in the ToastNotification
-                    throw e; // Re-throw the error so it can be caught in universalHandleSubmit
-                }
-            }
-        );
-
-        if (result.success) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            console.log(data)
             setShowSuccessModal(true);
-        } else {
-            setLastErrorTimestamp(Date.now());
-            setShowSuccessModal(false);
-        }
-        setFieldErrors(result.errors);
-        setValidationError(result.validationError || validationError); // Use the existing validationError if result doesn't provide a new one
+            setFormData(data);
+        } catch (error) {
 
-        finishSubmit();
-    }
+            setShowErrorModal(true);
+            setErrorMessage(error.message || 'Something went wrong!');
+        } finally {
+            reset();
+        }
+    };
+
 
 
     return (
         isLoading ? (
             <div>Loading...</div> // Display a loading indicator or any other placeholder
         ) : (
-        <form onSubmit={handleSubmit}>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+            >
 
             <TextInput
-                id={'name'}
-                note={fieldErrors.name || ''}
-                value={formData.name}
-                onChange={handleChange}
+                {...register('name')}
+                note={errors.name && `${errors.name.message}` || ''}
                 description={'Każdy przedmiot musi mieć swój numer identyfikacjny, który wyróżnia go od całej reszty'}
                 placeholder={'Numer identyfikacyjny'}
                 title={'Numer identyfikacyjny przedmiotu'}
@@ -160,34 +94,30 @@ const ItemForm: FC<ItemFormProps> = ({
             <InputDivider />
 
             <TextAreaInput
-                note={''}
+                {...register('description')}
+                note={errors.description && `${errors.description.message}` || ''}
                 title={'Opis przedmiotu'}
-                value={formData.description}
                 placeholder={'Opis'}
                 description={'Opis jest dla Ciebie - cechy szczególne, ważne dodatkowe informacje'}
-                onChange={handleChange}
-                id={'description'}
             />
 
             <InputDivider />
 
-            <ItemTypeAttributesInput
-                description={'Typ przedmiotu - dodawany w dodaj -> dodaj typ przedmiotów. Sposób tworzenia typów jest pozostawiony użytkownikowi.'}
-                note={fieldErrors.itemType || 'Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty'}
-                title={'Typ przedmiotu'}
-                id={'itemType'}
-                formData={formData}
-                setFormData={setFormData}
-            />
+            {/*<ItemTypeAttributesInput*/}
+            {/*    description={'Typ przedmiotu - dodawany w dodaj -> dodaj typ przedmiotów. Sposób tworzenia typów jest pozostawiony użytkownikowi.'}*/}
+            {/*    note={fieldErrors.itemType || 'Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty'}*/}
+            {/*    title={'Typ przedmiotu'}*/}
+            {/*    id={'itemType'}*/}
+            {/*    formData={formData}*/}
+            {/*    setFormData={setFormData}*/}
+            {/*/>*/}
 
             <InputDivider />
 
             <SelectInput
-                id={'companyId'}
+                control={control}
                 title={'Producent'}
-                note={fieldErrors.companyId || 'Wybierz producenta z listy'}
-                value={String(formData.companyId)}
-                onChange={handleChange}
+                note={errors.companyId && `${errors.companyId.message}` || ''}
                 description={'Producent przedmiotu jest wybierany z listy wszystkich firm dodanych do bazy.'}
                 objectList={companyIds}
             />
@@ -195,11 +125,9 @@ const ItemForm: FC<ItemFormProps> = ({
             <InputDivider />
 
             <SelectInput
-                id={'placeId'}
+                control={control}
                 title={'Miejsce docelowe przedmiotu'}
-                note={fieldErrors.placeId || 'Domyślna opcja - nie można jej zmienić'}
-                value={String(formData.placeId)}
-                onChange={handleChange}
+                note={errors.placeId && `${errors.placeId.message}` || 'Domyślna opcja - nie można jej zmienić'}
                 objectList={placeIds}
                 description={'Domyślnie przedmiot trafi do magazynu i zostanie przydzielony do odpowiedniej szuflady automatycznie'}
                 enabledOptions={[1]}
@@ -250,10 +178,10 @@ const ItemForm: FC<ItemFormProps> = ({
                 </div>
             </div>
 
-            <SubmitButton pending={pending} />
+            <SubmitButton pending={isSubmitting} />
 
-            {validationError && <ToastNotification key={lastErrorTimestamp} text={validationError} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={formData} />}
+            {showErrorModal && <ToastNotification key={Date.now()} text={errorMessage} />}
+            {showSuccessModal && <SuccessModal isOpen={true} text={'Success!'} bigText={'Success!'} objectData={formData} />}
 
         </form>
         )

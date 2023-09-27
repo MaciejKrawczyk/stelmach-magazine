@@ -1,0 +1,45 @@
+const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        startSubmit();
+
+        const result = await universalHandleSubmit(
+            formData,
+            ItemSchema,
+            async (data) => {
+                try {
+                    // This is a placeholder for the actual server submit functionality
+                    // e.g., an API call.
+                    // throw new Error('ciul');
+                    // console.log('posting...')
+                    // console.log(data)
+
+                    const shelfResult = await sortTool(
+                        formData.shelfCategory,
+                        formData.shelfType,
+                        formData.itemType,
+                        formData.typeAttributes
+                    )
+                    console.log(shelfResult)
+                    let updatedFormData = { ...formData, shelfId: shelfResult.shelfId };
+
+                    const object = await createItem(updatedFormData)
+                    console.log('post', object)
+
+                } catch (e) {
+                    setValidationError(e.message); // Display the error message in the ToastNotification
+                    throw e; // Re-throw the error so it can be caught in universalHandleSubmit
+                }
+            }
+        );
+
+        if (result.success) {
+            setShowSuccessModal(true);
+        } else {
+            setLastErrorTimestamp(Date.now());
+            setShowSuccessModal(false);
+        }
+        setFieldErrors(result.errors);
+        setValidationError(result.validationError || validationError); // Use the existing validationError if result doesn't provide a new one
+
+        finishSubmit();
+    }

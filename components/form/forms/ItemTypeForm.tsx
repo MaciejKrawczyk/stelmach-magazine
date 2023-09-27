@@ -4,7 +4,7 @@ import InputDivider from "@/components/form/InputDivider";
 import SubmitButton from "@/components/form/SubmitButton";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
-import {FieldValues, useForm, Controller} from "react-hook-form";
+import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import ListInput from "@/components/form/ListInput";
 import {ItemType, ItemTypeSchema} from "@/types/zod/ItemType";
@@ -17,7 +17,6 @@ const ItemTypeForm = () => {
 
     const {
         register,
-        watch,
         handleSubmit,
         setValue,
         formState: { errors, isSubmitting },
@@ -58,7 +57,6 @@ const ItemTypeForm = () => {
 
             <InputDivider />
 
-            {/* Use the ListInput and pass a name prop to it */}
             <ListInput
                 name="list"
                 title="Cechy szczególne typu przedmiotu"
