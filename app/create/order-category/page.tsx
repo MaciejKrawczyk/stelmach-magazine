@@ -2,13 +2,15 @@
 
 import React from 'react';
 import Container from "@/components/Container";
-import ShelfCategoryForm from "@/components/form/forms/ShelfCategoryForm";
+import OrderCategoryForm from "@/components/form/forms/OrderCategoryForm";
 
 const MyForm = () => {
 
     return (
-        <Container title={'Dodawanie kategorii szuflad'}>
-                <ShelfCategoryForm />
+        <Container title={'Dodawanie Zamówienia'}>
+
+            <OrderCategoryForm />
+
         </Container>
     );
 };

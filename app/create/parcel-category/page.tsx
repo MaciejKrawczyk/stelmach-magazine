@@ -2,15 +2,16 @@
 
 import React from 'react';
 import Container from "@/components/Container";
-import ShelfCategoryForm from "@/components/form/forms/ShelfCategoryForm";
+import ParcelCategoryForm from "@/components/form/forms/ParcelCategoryForm";
 
 const MyForm = () => {
 
     return (
-        <Container title={'Dodawanie kategorii szuflad'}>
-                <ShelfCategoryForm />
+        <Container title={'Dodawanie Wysyłki'}>
+                <ParcelCategoryForm />
         </Container>
     );
+
 };
 
 export default MyForm;

@@ -1,28 +1,22 @@
-import React, {ChangeEvent, FC} from 'react'
-import {formatCommasToDots} from "@/utils/formatCommaToDots";
-
+import React, { ForwardRefRenderFunction } from 'react';
 
 interface TextInputProps {
-    id: string;
-    value: string;
-    onChange: any;
     placeholder: string;
     title: string;
     description: string;
     note: string;
 }
 
-const TextAreaInput: FC<TextInputProps> = ({
-   id,
-   value,
-   onChange,
-   placeholder,
-   title,
-   description,
-   note
-}) => {
-
-
+const TextAreaInput: ForwardRefRenderFunction<HTMLTextAreaElement, TextInputProps> = (
+    {
+        placeholder,
+        title,
+        description,
+        note,
+        ...props
+    },
+    ref
+) => {
     return (
         <div className={'w-full flex justify-between'}>
             <div className={'w-2/5'}>
@@ -31,20 +25,17 @@ const TextAreaInput: FC<TextInputProps> = ({
             </div>
             <div className={'w-1/3 text-xs text-red-600'}>
                 <div className={'flex flex-col'}>
-                                <textarea
-                                    placeholder={placeholder}
-                                    className="border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
-                                    id={id}
-                                    name={id}
-                                    value={value}
-                                    onChange={onChange}
-                                >
-                                </textarea>
+                    <textarea
+                        {...props}
+                        ref={ref}
+                        placeholder={placeholder}
+                        className="border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
+                    />
                     <span className={'pt-3 pl-1'}>{note}</span>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default TextAreaInput
+export default React.forwardRef(TextAreaInput);

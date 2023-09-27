@@ -1,164 +1,114 @@
 'use client'
 
-// Importing required modules and types
-import React, {FC, useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import TextInput from "@/components/form/TextInput";
 import InputDivider from "@/components/form/InputDivider";
 import TextAreaInput from "@/components/form/TextAreaInput";
 import SubmitButton from "@/components/form/SubmitButton";
 import ColorPickerInput from "@/components/form/ColorPickerInput";
 import SelectInput from "@/components/form/SelectInput";
-import {ParcelCategory, ParcelCategorySchema} from "@/types/zod/ParcelCategory";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
-import {formatCommasToDots} from "@/utils/formatCommaToDots";
-import {universalHandleSubmit} from "@/components/form/HandleSubmit";
-import useFormStatus from "@/components/hooks/useFormStatus";
-import axios from "axios";
-import {createParcelCategory} from "@/lib/db/parcelCategory/functions";
+import {FieldValues, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {ParcelCategory, ParcelCategorySchema} from "@/types/zod/ParcelCategory";
+import {useCompanies} from "@/components/hooks/useCompanies";
+import Image from "next/image";
+import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 
-// Defining component props type
-interface ParcelCategoryFormProps {
-    formData: ParcelCategory,
-    setFormData: any;
-}
 
-// Component definition
-const ParcelCategoryForm: FC<ParcelCategoryFormProps> = ({
-    formData,
-    setFormData
-                                                       }) => {
+const ParcelCategoryForm = () => {
 
-    // Local state to check if the form has been submitted
-    const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
-    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
-    const [validationError, setValidationError] = useState<string | null>(null);
+    const { companies, loading, error } = useCompanies()
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [formData, setFormData] = useState({});
 
-    const { pending, startSubmit, finishSubmit } = useFormStatus();
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm<ParcelCategory>({
+        resolver: zodResolver(ParcelCategorySchema),
+    })
 
+    const onSubmit = async (data: FieldValues) => {
+        try {
+            setShowErrorModal(false)
+            setErrorMessage('')
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            console.log(data)
+            setShowSuccessModal(true);
+            setFormData(data);
+        } catch (error) {
 
-    const [company, setCompany] = useState('')
-
-    const [companies, setCompanies] = useState([])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const companiesResponse = await axios.get('/api/company');
-                setCompanies(companiesResponse.data);
-
-                if (companiesResponse.data.length) {
-                    setFormData(prevData => ({ ...prevData, companyId: companiesResponse.data[0].id }));
-                }
-
-            } catch (error) {
-                console.error("Error fetching data", error);
-            }
-        };
-        fetchData();
-
-        console.log(companies)
-    }, []);
-
-
-    const handleChange = (e) => {
-        const { name } = e.target;
-        let newValue = formatCommasToDots(e.target.value)
-        setFormData({
-            ...formData,
-            [name]: newValue,
-        });
+            setShowErrorModal(true);
+            setErrorMessage(error.message || 'Something went wrong!');
+        } finally {
+            reset();
+        }
     };
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        startSubmit();
+    // Render a loading indicator when fetching data
+    if (loading) return <div className="flex justify-center items-center min-h-screen">
+        <Image priority alt={'loading...'} src={loadingSVG} />
+    </div>
 
-        const result = await universalHandleSubmit(
-            formData,
-            ParcelCategorySchema,
-            async (data) => {
-                try {
-                    // This is a placeholder for the actual server submit functionality
-                    // e.g., an API call.
-                    // throw new Error('ciul');
-
-                    console.log('posting...')
-
-                    const object = await createParcelCategory(data)
-
-                    console.log('post', object)
-
-                } catch (e) {
-                    setValidationError(e.message); // Display the error message in the ToastNotification
-                    throw e; // Re-throw the error so it can be caught in universalHandleSubmit
-                }
-            }
-        );
-
-        if (result.success) {
-            setShowSuccessModal(true);
-        } else {
-            setLastErrorTimestamp(Date.now());
-            setShowSuccessModal(false);
-        }
-        setFieldErrors(result.errors);
-        setValidationError(result.validationError || validationError); // Use the existing validationError if result doesn't provide a new one
-
-        finishSubmit();
-    }
+    // Render an error message if there's an error fetching companies
+    if (error) return <p>Error: {error.message}</p>;
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+        >
             <TextInput
-                id={'name'}
+                {...register('name')}
                 title={'Nazwa wysyłki'}
-                value={formData.name}
-                onChange={handleChange}
                 description={'Nazwa wysyłki lub numer, który ułatwi Tobie jej wyszukanie'}
                 placeholder={'Nazwa wysyłki'}
-                note={fieldErrors.name || ''}
+                note={errors.name && `${errors.name.message}` || ''}
             />
 
             <InputDivider />
 
             <ColorPickerInput
-                title={'Kolor wysyłki'}
-                value={formData.color}
-                note={fieldErrors.color || ''}
-                onChange={handleChange}
-                description={'Ustaw kolor, aby dane wysyłki wyróżniały się na tle innych'}
+                defaultValue={"#FF33FF"}
+                name={'color'}
+                control={control}
+                title='Kolor wysyłki'
+                note={errors.color && `${errors.color.message}` || ''}
+                description='Ustaw kolor, aby dane wysyłki wyróżniały się na tle innych'
             />
 
             <InputDivider />
 
             <SelectInput
-                id={'companyId'}
-                note={fieldErrors.companyId || ''}
+                control={control}
+                id={"companyId"}
+                note={errors.companyId && `${errors.companyId.message}` || ''}
                 description={'Producent przedmiotu jest wybierany z listy wszystkich firm dodanych do bazy.'}
                 title={'Producent'}
-                value={formData.companyId}
-                onChange={handleChange}
                 objectList={companies}
             />
 
             <InputDivider />
 
             <TextAreaInput
-                note={fieldErrors.description || ''}
-                value={formData.description}
+                {...register('description')}
+                note={errors.description && `${errors.description.message}` || ''}
                 title={'Opis wysyłki'}
-                onChange={handleChange}
                 description={'Opis wysyłki, ważna informacja dla obsługującego szafy'}
-                id={'description'}
                 placeholder={'Opis'}
             />
 
-            <SubmitButton pending={pending} />
+            <SubmitButton pending={isSubmitting} />
 
-            {validationError && <ToastNotification key={lastErrorTimestamp} text={validationError} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={formData} />}
+            {showErrorModal && <ToastNotification key={Date.now()} text={errorMessage} />}
+            {showSuccessModal && <SuccessModal isOpen={true} text={'Success!'} bigText={'Success!'} objectData={formData} />}
 
         </form>
     );

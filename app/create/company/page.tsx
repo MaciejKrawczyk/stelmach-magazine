@@ -6,18 +6,10 @@ import CompanyForm from "@/components/form/forms/CompanyForm";
 
 const MyForm = () => {
 
-    const [formData, setFormData] = useState({
-        name: "",
-        notes: ""
-    })
-
     return (
         <Container title={'Dodawanie Firm'}>
 
-            <CompanyForm
-                setFormData={setFormData}
-                formData={formData}
-            />
+            <CompanyForm />
 
         </Container>
     );

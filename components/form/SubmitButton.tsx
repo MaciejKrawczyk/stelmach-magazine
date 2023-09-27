@@ -16,7 +16,7 @@ const SubmitButton = ({ pending, ...props }) => {
         <>
             <button
                 type={'submit'}
-                disabled={pending}
+                // disabled={pending}
                 className={`${defaultStyles} ${props.className}`}
             >
                 {pending ? (<Image

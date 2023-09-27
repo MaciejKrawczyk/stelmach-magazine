@@ -75,7 +75,7 @@
               "description": "Przenieś przedmiot do paczki do wysłania",
               "icon": "move",
               "alt": "transfer",
-              "url": "/moveSharpening"
+              "url": "/move-sharpening"
             }
           ],
           "url": "/"
@@ -106,7 +106,7 @@
               "description": "Dodaj nowy typ przedmiotów",
               "icon": "type",
               "alt": "typ",
-              "url": "/create/itemtype"
+              "url": "/create/item-type"
             },
             {
               "id": 4,
@@ -130,7 +130,7 @@
               "description": "Dodaj zamówienie, do którego będziesz mógł dodać zamówione przedmioty",
               "icon": "type",
               "alt": "typ",
-              "url": "/create/orderCategory"
+              "url": "/create/order-category"
             },
             {
               "id": 7,
@@ -138,7 +138,7 @@
               "description": "Dodaj wysyłkę, do którego będziesz mógł dodać przedmioty do wysyłki",
               "icon": "type",
               "alt": "typ",
-              "url": "/create/itemSent"
+              "url": "/create/parcel-category"
             }
           ],
           "url": "/"

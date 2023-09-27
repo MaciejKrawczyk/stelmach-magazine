@@ -1,7 +1,6 @@
 'use client'
 
-// Importing required modules and types
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import TextInput from "@/components/form/TextInput";
 import InputDivider from "@/components/form/InputDivider";
 import TextAreaInput from "@/components/form/TextAreaInput";
@@ -10,116 +9,77 @@ import ColorPickerInput from "@/components/form/ColorPickerInput";
 import {OrderCategory, OrderCategorySchema} from "@/types/zod/OrderCategory";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
-import useFormStatus from "@/components/hooks/useFormStatus";
-import {formatCommasToDots} from "@/utils/formatCommaToDots";
-import {universalHandleSubmit} from "@/components/form/HandleSubmit";
-import {createOrder} from "@/lib/db/order/functions";
-import {createOrderCategory} from "@/lib/db/orderCategory/functions";
+import {FieldValues, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 
-// Defining component props type
-interface OrderCategoryFormProps {
-    formData: OrderCategory;
-    setFormData: any;
-}
 
-// Component definition
-const OrderCategoryForm: FC<OrderCategoryFormProps> = ({
-    formData,
-    setFormData
-   }) => {
+const OrderCategoryForm = () => {
 
-    const [lastErrorTimestamp, setLastErrorTimestamp] = useState<number | null>(null);
-    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
-    const [validationError, setValidationError] = useState<string | null>(null);
+    const [showErrorModal, setShowErrorModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [formData, setFormData] = useState({});
 
-    const { pending, startSubmit, finishSubmit } = useFormStatus();
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm<OrderCategory>({
+        resolver: zodResolver(OrderCategorySchema),
+    })
 
-    const handleChange = (e) => {
-        const { name } = e.target;
-        let newValue = formatCommasToDots(e.target.value)
-        setFormData({
-            ...formData,
-            [name]: newValue,
-        });
+    const onSubmit = async (data: FieldValues) => {
+        try {
+            setShowErrorModal(false)
+            setErrorMessage('')
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            console.log(data)
+            setShowSuccessModal(true);
+            setFormData(data);
+        } catch (error) {
+
+            setShowErrorModal(true);
+            setErrorMessage(error.message || 'Something went wrong!');
+        } finally {
+            reset();
+        }
     };
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        startSubmit();
-
-        const result = await universalHandleSubmit(
-            formData,
-            OrderCategorySchema,
-            async (data) => {
-                try {
-                    // This is a placeholder for the actual server submit functionality
-                    // e.g., an API call.
-                    // throw new Error('ciul');
-
-                    console.log('posting...')
-                    const object = await createOrderCategory(data)
-                    console.log('post', object)
-
-                } catch (e) {
-                    setValidationError(e.message); // Display the error message in the ToastNotification
-                    throw e; // Re-throw the error so it can be caught in universalHandleSubmit
-                }
-            }
-        );
-
-        if (result.success) {
-            setShowSuccessModal(true);
-        } else {
-            setLastErrorTimestamp(Date.now());
-            setShowSuccessModal(false);
-        }
-        setFieldErrors(result.errors);
-        setValidationError(result.validationError || validationError); // Use the existing validationError if result doesn't provide a new one
-
-        finishSubmit();
-    }
-
-
     return (
-        <form onSubmit={handleSubmit}>
-
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+        >
             <TextInput
-                id={'name'}
-                note={fieldErrors.name || ''}
-                value={formData.name}
-                onChange={handleChange}
+                {...register('name')}
+                note={errors.name && `${errors.name.message}` || ''}
                 description={'Nazwa zamówienia lub numer, który ułatwi Tobie wyszukanie zamówienia'}
                 placeholder={'Nazwa zamówienia'}
                 title={'Nazwa zamówienia'}
             />
-
             <InputDivider />
-
             <ColorPickerInput
-                value={formData.color}
+                name={'color'}
+                defaultValue={"#FF33FF"}
                 title='Kolor kategorii'
-                note={fieldErrors.color || ''}
-                onChange={handleChange}
+                control={control}
+                note={errors.color && `${errors.color.message}` || ''}
                 description='Ustaw kolor, który ułatwi wizualne rozpoznanie szuflad w kategorii'
             />
-
             <InputDivider />
-
             <TextAreaInput
-                note={fieldErrors.description || ''}
+                {...register('description')}
+                note={errors.description && `${errors.description.message}` || ''}
                 title={'Opis zamówienia'}
                 description={'Opis zamówienia, ważna informacja dla obsługującego szafy'}
                 placeholder={'Opis'}
-                value={formData.description}
-                onChange={handleChange}
-                id={'description'}
             />
 
-            <SubmitButton pending={pending} />
+            <SubmitButton pending={isSubmitting} />
 
-            {validationError && <ToastNotification key={lastErrorTimestamp} text={validationError} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'udalo sie'} bigText={'udalo sie'} objectData={formData} />}
+            {showErrorModal && <ToastNotification key={Date.now()} text={errorMessage} />}
+            {showSuccessModal && <SuccessModal isOpen={true} text={'Success!'} bigText={'Success!'} objectData={formData} />}
 
         </form>
 
