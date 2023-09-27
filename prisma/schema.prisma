@@ -57,8 +57,8 @@ model Item {
   name             String
   description      String
   placeId          Int
-  shelfId          Int
-  shelf            Shelf            @relation(fields: [shelfId], references: [id])
+  shelfId          Int?
+  shelf            Shelf?           @relation(fields: [shelfId], references: [id])
   shelfType        String
   itemTypeId       Int
   itemType         ItemType         @relation(fields: [itemTypeId], references: [id])
