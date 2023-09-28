@@ -24,8 +24,6 @@ const SelectInput: FC<SelectInputProps> = ({
                                                ...props
                                            }) => {
 
-    const firstAvailableValue = objectList.length ? objectList[0].id : null;
-
     return (
         <div className="w-full flex justify-between">
             <div className="w-1/3">

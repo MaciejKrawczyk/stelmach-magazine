@@ -4,7 +4,7 @@ import {db} from "@/lib/db/db";
 // export async function GET(req: Request) {
 //     try {
 //
-//         const objects = await db.shelf-category.findMany()
+//         const objects = await db.shelf-shelf-category.findMany()
 //
 //         return new Response( JSON.stringify(objects))
 //

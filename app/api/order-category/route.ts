@@ -28,7 +28,7 @@ export async function POST(req: Request) {
         })
 
         if (objectExists) {
-            return new Response('shelf-category already exists', { status: 409 })
+            return new Response('shelf-shelf-category already exists', { status: 409 })
         }
 
         const object = await db.orderCategory.create({

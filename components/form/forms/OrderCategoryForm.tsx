@@ -47,6 +47,7 @@ const OrderCategoryForm = () => {
         }
     };
 
+    // @ts-ignore
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}

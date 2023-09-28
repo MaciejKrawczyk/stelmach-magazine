@@ -1,39 +1,34 @@
 'use client'
 
-import React, {FC, useEffect, useState} from 'react';
+import React, {useState, useRef} from 'react';
 import TextInput from "@/components/form/TextInput";
 import InputDivider from "@/components/form/InputDivider";
 import TextAreaInput from "@/components/form/TextAreaInput";
 import SubmitButton from "@/components/form/SubmitButton";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
-import useFormStatus from "@/components/hooks/useFormStatus";
-import {formatCommasToDots} from "@/utils/formatCommaToDots";
-import {universalHandleSubmit} from "@/components/form/HandleSubmit";
-import ItemTypeAttributesInput from "@/components/form/ItemTypeAttributesInput";
 import SelectInput from "@/components/form/SelectInput";
 import {Places} from "@/objects/Places";
 import Image from "next/image";
 import shelfSmall from "@/public/shelfSmall.svg";
 import shelfBig from "@/public/shelfBig.svg";
-import {Item, ItemSchema} from "@/types/zod/Item";
-import axios from "axios";
-import {Shelves} from "@/objects/Shelves";
-import {createItem} from "@/lib/db/item/functions";
-import {sortTool} from "@/utils/sortToolShelf";
 import {useCompanies} from "@/components/hooks/useCompanies";
 import {useShelfCategories} from "@/components/hooks/useShelfCategories";
-import {FieldValues, useForm} from "react-hook-form";
+import {Controller, FieldValues, FormProvider, useForm} from "react-hook-form";
 import {ShelfCategory, ShelfCategorySchema} from "@/types/zod/Shelf";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {registerAll} from "sucrase/dist/types/register";
+import {useShelves} from "@/components/hooks/useShelves";
+import {Item, ItemSchema} from "@/types/zod/Item";
+import ListInput from "@/components/form/ListInput";
+import ItemTypeAttributesInput from "@/components/form/ItemTypeAttributesInput";
+import {registerJS} from "sucrase/dist/types/register";
 
-
-// Component definition
 const ItemForm = () => {
-// TODO
-    // const {companies, loading, error} = useCompanies()
-    // const {shelfCategories, loading, error} = useShelfCategories()
+
+    const { companies, loading: companiesLoading, error: companiesError} = useCompanies()
+    const { shelfCategories, loading:shelfCategoriesLoading, error: shelfCategoriesError} = useShelfCategories()
+    const places = Places
+
 
     // const handleDivClick = (id) => {
     //     // console.log("Setting shelf type to:", id);
@@ -46,46 +41,46 @@ const ItemForm = () => {
     const [formData, setFormData] = useState({});
 
     const {
-        control,
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        reset,
-    } = useForm<ShelfCategory>({
-        resolver: zodResolver(ShelfCategorySchema)
+        ...methods
+    } = useForm({
+        resolver: zodResolver(ItemSchema)
     })
 
-    const onSubmit = async (data: FieldValues) => {
+    const onSubmit = async (data) => {
         try {
             setShowErrorModal(false)
             setErrorMessage('')
-
             await new Promise((resolve) => setTimeout(resolve, 1000));
             console.log(data)
             setShowSuccessModal(true);
             setFormData(data);
         } catch (error) {
-
             setShowErrorModal(true);
             setErrorMessage(error.message || 'Something went wrong!');
         } finally {
-            reset();
+            methods.reset();
         }
     };
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+        console.log(formData);
+    };
 
 
     return (
-        isLoading ? (
-            <div>Loading...</div> // Display a loading indicator or any other placeholder
+        companiesLoading && shelfCategoriesLoading ? (
+            <div>Loading...</div>
         ) : (
+            <FormProvider {...methods}>
             <form
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={methods.handleSubmit(onSubmit)}
             >
 
             <TextInput
-                {...register('name')}
-                note={errors.name && `${errors.name.message}` || ''}
+                {...methods.register('name')}
+                note={methods.formState.errors.name && `${methods.formState.errors.name.message}` || ''}
                 description={'Każdy przedmiot musi mieć swój numer identyfikacjny, który wyróżnia go od całej reszty'}
                 placeholder={'Numer identyfikacyjny'}
                 title={'Numer identyfikacyjny przedmiotu'}
@@ -94,8 +89,8 @@ const ItemForm = () => {
             <InputDivider />
 
             <TextAreaInput
-                {...register('description')}
-                note={errors.description && `${errors.description.message}` || ''}
+                {...methods.register('description')}
+                note={methods.formState.errors.description && `${methods.formState.errors.description.message}` || ''}
                 title={'Opis przedmiotu'}
                 placeholder={'Opis'}
                 description={'Opis jest dla Ciebie - cechy szczególne, ważne dodatkowe informacje'}
@@ -103,32 +98,32 @@ const ItemForm = () => {
 
             <InputDivider />
 
-            {/*<ItemTypeAttributesInput*/}
-            {/*    description={'Typ przedmiotu - dodawany w dodaj -> dodaj typ przedmiotów. Sposób tworzenia typów jest pozostawiony użytkownikowi.'}*/}
-            {/*    note={fieldErrors.itemType || 'Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty'}*/}
-            {/*    title={'Typ przedmiotu'}*/}
-            {/*    id={'itemType'}*/}
-            {/*    formData={formData}*/}
-            {/*    setFormData={setFormData}*/}
-            {/*/>*/}
 
-            <InputDivider />
-
-            <SelectInput
-                control={control}
-                title={'Producent'}
-                note={errors.companyId && `${errors.companyId.message}` || ''}
-                description={'Producent przedmiotu jest wybierany z listy wszystkich firm dodanych do bazy.'}
-                objectList={companyIds}
+            <ItemTypeAttributesInput
+                description={'Typ przedmiotu - dodawany w dodaj -> dodaj typ przedmiotów. Sposób tworzenia typów jest pozostawiony użytkownikowi.'}
+                note={methods.formState.errors.itemTypId && `${methods.formState.errors.itemTypeId.message}` || 'Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty'}
+                title={'Typ przedmiotu'}
             />
 
             <InputDivider />
 
             <SelectInput
-                control={control}
+                id={'companyId'}
+                control={methods.control}
+                title={'Producent'}
+                note={methods.formState.errors.companyId && `${methods.formState.errors.companyId.message}` || ''}
+                description={'Producent przedmiotu jest wybierany z listy wszystkich firm dodanych do bazy.'}
+                objectList={companies}
+            />
+
+            <InputDivider />
+
+            <SelectInput
+                id={'placeId'}
+                control={methods.control}
                 title={'Miejsce docelowe przedmiotu'}
-                note={errors.placeId && `${errors.placeId.message}` || 'Domyślna opcja - nie można jej zmienić'}
-                objectList={placeIds}
+                note={methods.formState.errors.placeId && `${methods.formState.errors.placeId.message}` || 'Domyślna opcja - nie można jej zmienić'}
+                objectList={places}
                 description={'Domyślnie przedmiot trafi do magazynu i zostanie przydzielony do odpowiedniej szuflady automatycznie'}
                 enabledOptions={[1]}
             />
@@ -144,46 +139,71 @@ const ItemForm = () => {
                 </div>
                 <div className="w-1/3 text-xs">
                     <div className="flex flex-col">
+
                         <div className={'flex justify-between'}>
-                            {shelfIds.map((id, index) => (
-                                <div
-                                    key={index}
-                                    className={`w-2/5 rounded-xl flex-wrap aspect-square flex items-center justify-center p-2 border border-gray-300 my-1 cursor-pointer hover:bg-gray-100 ${formData.shelfType === id ? "bg-gray-200" : ""}`}
-                                    onClick={() => handleDivClick(id)}
-                                >
+                            <label className="flex items-center">
+                                <input
+                                    {...methods.register('shelfSize')}
+                                    type="radio"
+                                    value={'small'}
+                                    onChange={handleChange} // Add this line
+                                />
+                                <span className="ml-2">
                                     <div className={'flex justify-center items-center flex-col'}>
-                                        <Image className={'mb-3'} priority src={id === 'small' ? shelfSmall : shelfBig} alt={'shelf svg'} />
-                                        {id}
+                                    <Image
+                                        className={'mb-3'} priority src={ shelfSmall }
+                                        alt={'shelf svg'}/>
+                                        mała
                                     </div>
-                                </div>
-                            ))}
+                                </span>
+                            </label>
+                            <label className="flex items-center">
+                                <input
+                                    {...methods.register('shelfSize')}
+                                    type="radio"
+                                    value={'big'}
+                                    onChange={handleChange} // Add this line
+                                />
+                                <span className="ml-2">
+                                    <div className={'flex justify-center items-center flex-col'}>
+                                    <Image
+                                        className={'mb-3'} priority src={ shelfBig }
+                                        alt={'shelf svg'}/>
+                                        duża
+                                    </div>
+                                </span>
+                            </label>
                         </div>
-                        <span className={'pt-3 pl-1'} ></span>
-                        <div className="flex flex-col">
+
+                        <span className={'pt-3 pl-1 text-gray-500'} >{methods.formState.errors.shelfSize && methods.formState.errors.shelfSize.message || ``}</span>
+
+                        <div className="flex flex-col mt-5">
                             <select
+                                {...methods.register('shelfCategoryId')}
                                 className="w-full border-gray-300 p-3 rounded-lg text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
-                                name="shelfCategory"
-                                value={formData.shelfCategory}
-                                onChange={handleChange}
                             >
+                                <option value="">Wybierz kategorię szuflad</option>
                                 {shelfCategories && shelfCategories.map((category, index) => (
                                     <option key={index} value={category.id}>
                                         {category.name}
                                     </option>
                                 ))}
                             </select>
-                            <span className="pt-3 pl-1 mb-2 text-gray-500">Wybierz kategorię szuflady</span>
+                            <span className="pt-3 pl-1 mb-2 text-gray-500">{methods.formState.errors.shelfCategoryId && methods.formState.errors.shelfCategoryId.message || `wybierz kategorię szuflad`}</span>
                         </div>
+
+
                     </div>
                 </div>
             </div>
 
-            <SubmitButton pending={isSubmitting} />
+            <SubmitButton pending={methods.formState.isSubmitting} />
 
             {showErrorModal && <ToastNotification key={Date.now()} text={errorMessage} />}
             {showSuccessModal && <SuccessModal isOpen={true} text={'Success!'} bigText={'Success!'} objectData={formData} />}
 
         </form>
+        </FormProvider>
         )
     );
 }

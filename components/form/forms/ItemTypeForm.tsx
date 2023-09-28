@@ -26,9 +26,6 @@ const ItemTypeForm = () => {
     });
 
     const onSubmit = async (data: FieldValues) => {
-        // I noticed you're using some functions like setPending,
-        // setLastErrorTimestamp, setValidationError which aren't defined in the provided code.
-        // Make sure you've defined them somewhere.
 
         try {
             setShowErrorModal(false);

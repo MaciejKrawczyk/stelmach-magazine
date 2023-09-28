@@ -49,7 +49,7 @@ export const sortTool = async (shelfCategoryId, shelfType, itemType, attributes)
         const category = categories.find(cat => Number(cat.id) === Number(shelfCategoryId));
 
         if (!category) {
-            throw new Error("No shelf found in the shelf-category.");
+            throw new Error("No shelf found in the shelf-shelf-category.");
         }
 
         const occupiedShelfIds = getOccupiedShelfIds(items);
