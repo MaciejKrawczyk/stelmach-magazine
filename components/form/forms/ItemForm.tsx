@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import TextInput from "@/components/form/TextInput";
 import InputDivider from "@/components/form/InputDivider";
 import TextAreaInput from "@/components/form/TextAreaInput";
@@ -14,26 +14,17 @@ import shelfSmall from "@/public/shelfSmall.svg";
 import shelfBig from "@/public/shelfBig.svg";
 import {useCompanies} from "@/components/hooks/useCompanies";
 import {useShelfCategories} from "@/components/hooks/useShelfCategories";
-import {Controller, FieldValues, FormProvider, useForm} from "react-hook-form";
-import {ShelfCategory, ShelfCategorySchema} from "@/types/zod/Shelf";
+import { FormProvider, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useShelves} from "@/components/hooks/useShelves";
 import {Item, ItemSchema} from "@/types/zod/Item";
-import ListInput from "@/components/form/ListInput";
 import ItemTypeAttributesInput from "@/components/form/ItemTypeAttributesInput";
-import {registerJS} from "sucrase/dist/types/register";
+import {sortTool} from "@/utils/sortToolShelf";
 
 const ItemForm = () => {
 
     const { companies, loading: companiesLoading, error: companiesError} = useCompanies()
     const { shelfCategories, loading:shelfCategoriesLoading, error: shelfCategoriesError} = useShelfCategories()
     const places = Places
-
-
-    // const handleDivClick = (id) => {
-    //     // console.log("Setting shelf type to:", id);
-    //     setFormData(prevState => ({ ...prevState, shelfType: id }));
-    // };
 
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -46,10 +37,24 @@ const ItemForm = () => {
         resolver: zodResolver(ItemSchema)
     })
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: Item) => {
         try {
             setShowErrorModal(false)
             setErrorMessage('')
+
+            const shelfResult = await sortTool(
+                // formData.shelfCategory,
+                // formData.shelfType,
+                // formData.itemType,
+                // formData.typeAttributes
+                data.shelfCategoryId,
+                data.shelfSize,
+                data.itemTypeId,
+                data.attributes
+            )
+
+            data.shelfId = shelfResult.shelfId
+
             await new Promise((resolve) => setTimeout(resolve, 1000));
             console.log(data)
             setShowSuccessModal(true);
@@ -97,7 +102,6 @@ const ItemForm = () => {
             />
 
             <InputDivider />
-
 
             <ItemTypeAttributesInput
                 description={'Typ przedmiotu - dodawany w dodaj -> dodaj typ przedmiotów. Sposób tworzenia typów jest pozostawiony użytkownikowi.'}

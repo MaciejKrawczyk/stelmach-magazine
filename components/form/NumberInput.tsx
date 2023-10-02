@@ -1,22 +1,20 @@
-import React, { FC } from 'react'
+import React, {FC, ForwardRefRenderFunction} from 'react'
 
-interface TextInputProps {
+interface NumberInputProps {
     id: string;
-    value: number;
-    onChange: any;
     title: string;
     description: string;
     note: string;
 }
 
-const TextInput: FC<TextInputProps> = ({
-       id,
-       value,
-       onChange,
-       title,
-       description,
-       note
-}) => {
+const NumberInput: ForwardRefRenderFunction<HTMLInputElement, NumberInputProps> = ({
+        id,
+        title,
+        description,
+        note,
+        ...props},
+        ref
+) => {
 
 
     return (
@@ -28,12 +26,11 @@ const TextInput: FC<TextInputProps> = ({
             <div className={'w-1/3 text-xs text-red-600'}>
                 <div className={'flex flex-col'}>
                     <input
+                        ref={ref}
+                        {...props}
                         className="border-2 w-full border-gray-300 rounded-lg p-3 text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
                         type="number"
-                        name={id}
                         id={id}
-                        value={value}
-                        onChange={onChange}
                     />
                     <span className={'pt-3 pl-1'}>{note}</span>
                 </div>
@@ -42,4 +39,4 @@ const TextInput: FC<TextInputProps> = ({
     )
 }
 
-export default TextInput
+export default React.forwardRef(NumberInput);

@@ -11,7 +11,7 @@ const getItemsFromApi = async () => {
 
 const getCategoriesFromApi = async () => {
     try {
-        const response = await axios.get('/api/category');
+        const response = await axios.get('/api/shelf-category');
         return response.data;
     } catch (error) {
         throw new Error(`Failed to get categories: ${error.message}`);

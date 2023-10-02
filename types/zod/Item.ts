@@ -30,7 +30,9 @@ export const ItemSchema = z.object({
     //     message: "Parcel Category ID should be a positive number or null"
     // }), // TODO TO JEST PROBLEM
     shelfCategoryId: z.coerce.number(),
-    attributes: z.object({}).optional()
+    // attributes: z.object({}).optional()
+    attributes: z.record(z.union([z.string(), z.number()])),
+    shelfId: z.number().nullable().optional()
 })
 
 export type Item = z.infer<typeof ItemSchema>

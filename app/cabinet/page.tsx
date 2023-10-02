@@ -84,7 +84,7 @@ const page = () => {
                     'Expires': '0',
                 }
             })
-            const responseCategory = await axios.get('/api/category', {
+            const responseCategory = await axios.get('/api/shelf-category', {
                 headers: {
                     'Cache-Control': 'no-cache',
                     'Pragma': 'no-cache',

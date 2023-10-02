@@ -1,4 +1,5 @@
 import {db} from "@/lib/db/db";
+import {randomUUID} from "crypto";
 
 
 export async function GET(req: Request) {
@@ -75,7 +76,7 @@ export async function POST(req: Request) {
                             id: Number(orderCategoryId)
                         }
                     },
-                    name: name,
+                    name: `ORDER_${randomUUID()}`,
                     description: description,
                     itemType: {
                         connect: {

@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import {useItemTypes} from "@/components/hooks/useItemType";
-import {Controller, useFormContext} from "react-hook-form";
+import {Control, Controller, useFormContext} from "react-hook-form";
 
 interface ItemTypeAttributesInputProps {
     title: string;
@@ -28,10 +28,8 @@ const ItemTypeAttributesInput: React.FC<ItemTypeAttributesInputProps> = ({
     const {itemTypes, loading: itemTypesLoading, error: itemTypesError} = useItemTypes()
 
     const {
-        register,
         watch,
         setValue,
-        getValues
     } = useFormContext();
 
 
@@ -102,8 +100,10 @@ const ItemTypeAttributesInput: React.FC<ItemTypeAttributesInputProps> = ({
                                 type="text"
                                 defaultValue={""}
                                 onChange={(e) => {
-                                    setTypeAttributesForm({...typeAttributesForm, [`${attribute.id}`]:e.target.value})
-                                    setValue(`attributes`, typeAttributesForm);
+                                    const attributeIdNumber = Number(attribute.id);
+                                    const updatedAttributes = { ...typeAttributesForm, [attributeIdNumber]: e.target.value };
+                                    setTypeAttributesForm(updatedAttributes);
+                                    setValue('attributes', updatedAttributes);
                                 }}
                             />
                             <label
