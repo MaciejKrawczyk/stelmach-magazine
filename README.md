@@ -1,4 +1,10 @@
 <div align="center">
+
+
+🚧 **Under Construction** 🚧
+
+This repository is still a work in progress.
+
    <h1>Item Magazine 🛠️</h1>
    <img src="./logo.png" alt="">
   <hr />
@@ -66,6 +72,15 @@ Every pixel, every interaction, every animation is meticulously crafted. I've pe
    ```bash
    npm run dev
    ```
+
+Warning!
+Now anytime you need to run a prisma command, you can use the scripts you just added to your package.json file.
+ - prisma migrate dev > npm migrate:dev
+ - prisma db push > npm db:push
+ - prisma migrate reset > npm migrate:reset
+ - prisma db seed > npm db:seed
+ - prisma generate > npm prisma:generate
+ - prisma studio > npm prisma:studio
 
 ## Contribution & Support 🤝
 
