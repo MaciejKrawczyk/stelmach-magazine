@@ -77,7 +77,7 @@ const page = () => {
 
             const payload = {
                 placeId: rightSelectedPlaceId,
-                shelfId: -1,
+                shelfId: null,
                 from: PlaceNameById(from),
                 to: PlaceNameById(rightSelectedPlaceId)
             };

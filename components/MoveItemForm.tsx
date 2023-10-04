@@ -38,7 +38,7 @@ const MoveItemForm = ({ id }) => {
 
             const payload = {
                 placeId: placeId,
-                shelfId: -1,
+                shelfId: null,
                 to: PlaceNameById(placeId),
                 from: PlaceNameById(1)
             }
