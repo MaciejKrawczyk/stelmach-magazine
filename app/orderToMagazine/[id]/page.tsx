@@ -54,7 +54,7 @@ const page = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const categoriesResponse = await axios.get('/api/category');
+                const categoriesResponse = await axios.get('/api/shelf-category');
                 const itemResponse = await axios.get(`/api/item/${id}`);
                 setShelfCategories(categoriesResponse.data);
                 setItem(itemResponse.data)
@@ -119,6 +119,8 @@ const page = () => {
             const payload = updatedFormData;
 
             try {
+                console.log(payload)
+
                 const data = await axios.put(`/api/item/${id}`, payload)
                 console.log(data)
 

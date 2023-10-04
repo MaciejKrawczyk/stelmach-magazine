@@ -5,6 +5,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 
 
+
 const font = Merriweather_Sans({subsets: ["latin"]})
 
 export const metadata: Metadata = {

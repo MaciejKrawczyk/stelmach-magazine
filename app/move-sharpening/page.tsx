@@ -67,8 +67,8 @@ const page = () => {
             }
 
             const payload = {
-                placeId: selectedPlaceId,
-                shelfId: -1,
+                placeId: 2,
+                shelfId: null,
                 from: 'poczekalnia do ostrzenia',
                 to: `ostrzenia w paczce: ${PlaceNameById(selectedPlaceId)}`,
                 itemSentCategoryId: selectedItemSentCategory
@@ -111,7 +111,7 @@ const page = () => {
 
                             <select
                                 className="w-full border-gray-300 p-3 rounded-lg text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
-                                name="itemSentCategoryId"
+                                name="parcelCategoryId"
                                 value={selectedItemSentCategory} // Use selectedItemSentCategory here
                                 onChange={handleLeftChange}
                             >

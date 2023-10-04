@@ -73,9 +73,9 @@ const page = () => {
             const response = await axios.get('/api/shelf');
             const responseItem = await axios.get('/api/item', )
             const responseCategory = await axios.get('/api/shelf-category')
-            console.log(response.data)
-            console.log(responseItem.data)
-            console.log(responseCategory.data)
+            // console.log(response.data)
+            // console.log(responseItem.data)
+            // console.log(responseCategory.data)
             setShelves(response.data);
             setItems(responseItem.data)
             setCategories(responseCategory.data)
@@ -106,9 +106,9 @@ const page = () => {
             const update = async () => {
                 for (let i = 0; i < result.selectedShelves.length; i++) {
                     const shelf = await axios.put(`/api/shelf/${result.selectedShelves[i]}`, payload)
-                    console.log(`/api/shelf/${result.selectedShelves[i]}`)
-                    console.log(result.selectedCategoryId)
-                    console.log(shelf.data)
+                    // console.log(`/api/shelf/${result.selectedShelves[i]}`)
+                    // console.log(result.selectedCategoryId)
+                    // console.log(shelf.data)
                 }
             }
             await update();
