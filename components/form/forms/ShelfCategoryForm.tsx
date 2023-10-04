@@ -10,6 +10,7 @@ import {ShelfCategory, ShelfCategorySchema} from "@/types/zod/Shelf";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import axios from "axios";
+import FormEnding from "@/components/form/FormEnding";
 
 
 const ShelfCategoryForm = () => {
@@ -83,6 +84,8 @@ const ShelfCategoryForm = () => {
                 title='Opis kategorii'
                 placeholder='Notatki'
             />
+
+            <FormEnding />
 
             <SubmitButton pending={isSubmitting} />
 

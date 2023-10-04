@@ -38,7 +38,21 @@ export async function POST(req: Request) {
 
         const body = await req.json()
 
-        let {companyId, description, itemType, name, placeId, shelfType, typeAttributes, shelfId, isOrder, orderCategoryId } = body
+        let {
+            companyId,
+            description,
+            itemTypeId,
+            name,
+            placeId,
+            shelfSize,
+            typeAttributes,
+            shelfId,
+            isOrder,
+            orderCategoryId
+        } = body
+
+        // console.log(itemTypeId)
+        console.log(orderCategoryId)
 
         // const isOrder = placeId === 18
         let status
@@ -80,16 +94,16 @@ export async function POST(req: Request) {
                     description: description,
                     itemType: {
                         connect: {
-                            id: Number(itemType)
+                            id: Number(itemTypeId)
                         }
                     },
-                    shelf: {
-                        connect: {
-                            id: shelfId
-                        }
-                    },
+                    // shelf: {
+                    //     connect: {
+                    //         id: shelfId
+                    //     }
+                    // },
                     placeId: Number(placeId),
-                    shelfType: shelfType,
+                    shelfSize: shelfSize,
                     isDeleted: false,
                     isOrder: isOrder,
                     company: {
@@ -117,7 +131,7 @@ export async function POST(req: Request) {
                     description: description,
                     itemType: {
                         connect: {
-                            id: Number(itemType)
+                            id: Number(itemTypeId)
                         }
                     },
                     shelf: {
@@ -126,7 +140,7 @@ export async function POST(req: Request) {
                         }
                     },
                     placeId: Number(placeId),
-                    shelfType: shelfType,
+                    shelfSize: shelfSize,
                     isDeleted: false,
                     isOrder: isOrder,
                     company: {

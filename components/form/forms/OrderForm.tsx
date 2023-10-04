@@ -15,6 +15,10 @@ import {FormProvider, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useOrderCategories} from "@/components/hooks/useOrderCategories";
 import {OrderSchema, Order} from "@/types/zod/Order";
+import FormEnding from "@/components/form/FormEnding";
+import axios from "axios";
+import {randomUUID} from "crypto";
+import {generateRandomUUID} from "@/utils/generateRandomUUID";
 
 const OrderForm = () => {
 
@@ -38,15 +42,24 @@ const OrderForm = () => {
             setShowErrorModal(false)
             setErrorMessage('')
 
-            // data.shelfId = null
+            for (let i=0;i<data.quantity; i++) {
+                data.name = generateRandomUUID()
+                const object = await axios.post('/api/item', data)
+                setFormData(object.data)
+            }
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log(data)
+            // console.log(data)
+
             setShowSuccessModal(true);
-            setFormData(data);
+            // setFormData(object.data);
         } catch (error) {
-            setShowErrorModal(true);
-            setErrorMessage(error.message || 'Something went wrong!');
+            if (error instanceof Error) {
+                setShowErrorModal(true);
+                setErrorMessage(error.message || 'Something went wrong!');
+            } else {
+                setShowErrorModal(true);
+                setErrorMessage('Something went wrong!');
+            }
         } finally {
             methods.reset();
         }
@@ -61,15 +74,6 @@ const OrderForm = () => {
             onSubmit={methods.handleSubmit(onSubmit)}
         >
 
-            {/*<SelectInput*/}
-            {/*    id={'orderCategoryId'}*/}
-            {/*    value={formData.orderCategoryId}*/}
-            {/*    onChange={handleChange}*/}
-            {/*    description={'Zamówienie, które jest tworzone w dodaj zamówienie. W tym wybranym zamówieniu będą się znajdować zamówione tutaj narzędzia'}*/}
-            {/*    title={'Zamówienie'}*/}
-            {/*    note={'Wybierz zamówienie z listy'}*/}
-            {/*    objectList={orderCategories}*/}
-            {/*/>*/}
             <SelectInput
                 id={'orderCategoryId'}
                 control={methods.control}
@@ -83,7 +87,7 @@ const OrderForm = () => {
 
             <NumberInput
                 {...methods.register('quantity')}
-                note={methods.formState.errors.quantity && `${methods.formState.errors.quantity}` || 'Wybierz ilość narzędzi tego typu, które zostaną dodane do zamówienia'}
+                note={methods.formState.errors.quantity && `${methods.formState.errors.quantity.message}` || 'Wybierz ilość narzędzi tego typu, które zostaną dodane do zamówienia'}
                 title={'Ilość'}
                 description={'Wpisz ilość przedmiotów tego samego typu, które zamawiasz.'}
                 id={'quantity'}
@@ -109,15 +113,6 @@ const OrderForm = () => {
 
             <InputDivider />
 
-            {/*<SelectInput*/}
-            {/*    id={'companyId'}*/}
-            {/*    title={'Producent'}*/}
-            {/*    note={fieldErrors.companyId || 'Wybierz producenta z listy'}*/}
-            {/*    value={formData.companyId}*/}
-            {/*    onChange={handleChange}*/}
-            {/*    description={'Producent przedmiotu jest wybierany z listy wszystkich firm dodanych do bazy.'}*/}
-            {/*    objectList={companyIds}*/}
-            {/*/>*/}
             <SelectInput
                 id={'companyId'}
                 control={methods.control}
@@ -129,16 +124,6 @@ const OrderForm = () => {
 
             <InputDivider />
 
-            {/*<SelectInput*/}
-            {/*    id={'placeId'}*/}
-            {/*    title={'Miejsce docelowe przedmiotu'}*/}
-            {/*    note={fieldErrors.placeId || 'Domyślna opcja - nie można jej zmienić'}*/}
-            {/*    value={formData.placeId}*/}
-            {/*    onChange={handleChange}*/}
-            {/*    objectList={Places}*/}
-            {/*    description={'Jest to zamówiony przedmiot, trafi on do listy zamówionych'}*/}
-            {/*    enabledOptions={[18]}*/}
-            {/*/>*/}
             <SelectInput
                 id={'placeId'}
                 control={methods.control}
@@ -148,6 +133,8 @@ const OrderForm = () => {
                 description={'Jest to zamówiony przedmiot, trafi on do listy zamówionych'}
                 enabledOptions={[18]}
             />
+
+            <FormEnding />
 
             <SubmitButton pending={methods.formState.isSubmitting} />
 

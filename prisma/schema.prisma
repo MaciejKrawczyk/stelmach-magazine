@@ -59,7 +59,7 @@ model Item {
   placeId          Int
   shelfId          Int?
   shelf            Shelf?           @relation(fields: [shelfId], references: [id])
-  shelfType        String
+  shelfSize        String?
   itemTypeId       Int
   itemType         ItemType         @relation(fields: [itemTypeId], references: [id])
   attributeValue   AttributeValue[]

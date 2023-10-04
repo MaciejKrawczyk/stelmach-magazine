@@ -20,6 +20,7 @@ import {Item, ItemSchema} from "@/types/zod/Item";
 import ItemTypeAttributesInput from "@/components/form/ItemTypeAttributesInput";
 import {sortTool} from "@/utils/sortToolShelf";
 import axios from "axios";
+import FormEnding from "@/components/form/FormEnding";
 
 const ItemForm = () => {
 
@@ -111,7 +112,7 @@ const ItemForm = () => {
 
             <ItemTypeAttributesInput
                 description={'Typ przedmiotu - dodawany w dodaj -> dodaj typ przedmiotów. Sposób tworzenia typów jest pozostawiony użytkownikowi.'}
-                note={methods.formState.errors.itemTypId && `${methods.formState.errors.itemTypeId.message}` || 'Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty'}
+                note={methods.formState.errors.itemTypeId && `${methods.formState.errors.itemTypeId.message}` || 'Wybierz typ z listy, UWAGA! wpisywać wartości bez spacji i jednostek, aby algorytm odpowiednio segregował przedmoty'}
                 title={'Typ przedmiotu'}
             />
 
@@ -206,6 +207,8 @@ const ItemForm = () => {
                     </div>
                 </div>
             </div>
+
+            <FormEnding />
 
             <SubmitButton pending={methods.formState.isSubmitting} />
 

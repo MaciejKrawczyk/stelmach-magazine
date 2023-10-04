@@ -9,6 +9,7 @@ import SuccessModal from "@/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import FormEnding from "@/components/form/FormEnding";
 
 const CompanyForm = () => {
 
@@ -67,6 +68,9 @@ const CompanyForm = () => {
                     note={errors.notes && `${errors.notes.message}` || ''}
                     placeholder={'Notatki'}
                 />
+
+                <FormEnding />
+
                 <SubmitButton pending={isSubmitting} />
 
                 {showErrorModal && <ToastNotification key={Date.now()} text={errorMessage} />}

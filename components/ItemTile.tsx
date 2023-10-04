@@ -19,7 +19,7 @@ import {formatDate} from "@/utils/formatDate";
 import {useRouter} from "next/navigation";
 
 
-const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, itemId, orderCategoryColor}) => {
+const itemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, itemId, orderCategoryColor}) => {
 
     const router = useRouter()
 
@@ -76,17 +76,17 @@ const itemTile = ({placeId, itemType, name, company, date, shelfType, shelfId, i
                 <span className={'text-gray-400'}>{formatDate(date)}</span>
             </div>
             <hr className={'my-1'}/>
-            {placeId === 1 && shelfType && shelfId && (
-                <>
-                    <div className={'flex'}>
-                        <Image className={'mr-3'}  src={boxClosed} alt={'info'}></Image>
-                        <span className={'text-gray-400'}>{shelfType}</span>
-                    </div>
-                    <div className={'flex'}>
-                        <Image className={'mr-3'}  src={boxOpen} alt={'info'}></Image>
-                        <span className={'text-gray-400'}>{shelfId}</span>
-                    </div>
-                </>
+            {placeId === 1 && shelfSize && (
+                <div className={'flex'}>
+                    <Image className={'mr-3'} src={boxClosed} alt={'info'}></Image>
+                    <span className={'text-gray-400'}>{shelfSize}</span>
+                </div>
+            )}
+            {shelfId && (
+                <div className={'flex'}>
+                    <Image className={'mr-3'} src={boxOpen} alt={'info'}></Image>
+                    <span className={'text-gray-400'}>{shelfId}</span>
+                </div>
             )}
         </div>
         <div className={'flex justify-between my-4'}>

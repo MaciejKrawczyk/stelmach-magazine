@@ -9,6 +9,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import ListInput from "@/components/form/ListInput";
 import {ItemType, ItemTypeSchema} from "@/types/zod/ItemType";
 import axios from "axios";
+import FormEnding from "@/components/form/FormEnding";
 
 const ItemTypeForm = () => {
     const [showErrorModal, setShowErrorModal] = useState(false);
@@ -69,6 +70,8 @@ const ItemTypeForm = () => {
                 note={errors.list && errors.list.message ? errors.list.message : 'UWAGA! Zaleca się wpisywanie również jednostki w jakich będą wpisywane wartości cechy'}
                 onItemsChange={(items) => setValue('list', items)}
             />
+
+            <FormEnding />
 
             <SubmitButton pending={isSubmitting} />
 

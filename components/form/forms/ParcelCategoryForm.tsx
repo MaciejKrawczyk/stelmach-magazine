@@ -15,7 +15,8 @@ import {ParcelCategory, ParcelCategorySchema} from "@/types/zod/ParcelCategory";
 import {useCompanies} from "@/components/hooks/useCompanies";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
-import axios from "axios/index";
+import axios from "axios";
+import FormEnding from "@/components/form/FormEnding";
 
 
 const ParcelCategoryForm = () => {
@@ -110,6 +111,8 @@ const ParcelCategoryForm = () => {
                 description={'Opis wysyłki, ważna informacja dla obsługującego szafy'}
                 placeholder={'Opis'}
             />
+
+            <FormEnding />
 
             <SubmitButton pending={isSubmitting} />
 

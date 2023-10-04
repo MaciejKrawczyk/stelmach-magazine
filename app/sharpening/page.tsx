@@ -25,7 +25,7 @@ const page = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('/api/item');
-                const orderCategoriesResponse = await axios.get('/api/parcelCategory')
+                const orderCategoriesResponse = await axios.get('/api/parcel-category')
                 if (isMounted) {
                     setItems(response.data);
                     setItemSent(orderCategoriesResponse.data)

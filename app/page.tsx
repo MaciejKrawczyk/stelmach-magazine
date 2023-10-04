@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
 import pin from '../public/place-marker-svgrepo-com 1.svg';
 import settings from '../public/Setting_alt_line.svg';
 import { Places } from "@/objects/Places";
@@ -15,9 +14,9 @@ export default function Home() {
 
     const [expandedPlace, setExpandedPlace] = useState(null);
 
-    const { data, loading, error } = useItems()
+    const { items, loading, error } = useItems()
 
-    const itemCount = data ? data.reduce((acc, item) => {
+    const itemCount = items ? items.reduce((acc, item) => {
         acc[item.placeId] = (acc[item.placeId] || 0) + 1;
         return acc;
     }, {}) : {};
@@ -64,8 +63,9 @@ export default function Home() {
                             </div>
                           </div>
                       )}
-                      {data.filter(item => item.placeId === place.id).map((item, idx) => {
+                      {items.filter(item => item.placeId === place.id).map((item, idx) => {
                         const orderCategoryColor = item.orderCategory !== null ? item.orderCategory.color : null
+
                         return (
                         <ItemTile
                             key={idx}
@@ -75,8 +75,8 @@ export default function Home() {
                             name={item.name}
                             company={item.company.name}
                             date={item.status[0].createdAt}
-                            shelfType={item.shelfType}
-                            shelfId={item.shelf.name}
+                            shelfSize={item.shelfSize}
+                            shelfId={item.shelf ? item.shelf.name : null}
                             orderCategoryColor={orderCategoryColor}
                         />
                         )})}

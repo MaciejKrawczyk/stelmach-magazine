@@ -23,7 +23,7 @@ const page = () => {
         const fetchData = async () => {
             try {
                 const itemsResponse = await axios.get('/api/item')
-                const itemSentResponse = await axios.get('/api/parcelCategory')
+                const itemSentResponse = await axios.get('/api/parcel-category')
 
                 setItems(itemsResponse.data);
                 setItemSentCategories(itemSentResponse.data);

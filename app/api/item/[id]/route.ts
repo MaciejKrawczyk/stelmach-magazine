@@ -67,7 +67,7 @@ export async function PUT(request, {params}) {
 
 
     const { id } = params
-    let { shelfId, shelfType, orderCategoryId, name, isOrder, isDeleted, to, from, itemSentCategoryId, placeId } = await request.json()
+    let { shelfId, shelfSize, orderCategoryId, name, isOrder, isDeleted, to, from, itemSentCategoryId, placeId } = await request.json()
 
     if (!placeId) {
         placeId = 1
@@ -97,7 +97,7 @@ export async function PUT(request, {params}) {
                         id: Number(shelfId)
                     }
                 },
-                shelfType: shelfType,
+                shelfSize: shelfSize,
                 status: {
                     create: {
                         name: "zamówienie zrealizowane",

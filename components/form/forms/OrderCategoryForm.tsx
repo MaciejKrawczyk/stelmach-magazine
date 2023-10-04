@@ -12,6 +12,7 @@ import SuccessModal from "@/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import axios from "axios";
+import FormEnding from "@/components/form/FormEnding";
 
 
 const OrderCategoryForm = () => {
@@ -81,6 +82,8 @@ const OrderCategoryForm = () => {
                 description={'Opis zamówienia, ważna informacja dla obsługującego szafy'}
                 placeholder={'Opis'}
             />
+
+            <FormEnding />
 
             <SubmitButton pending={isSubmitting} />
 
