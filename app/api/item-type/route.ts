@@ -1,6 +1,4 @@
 import {db} from "@/lib/db/db";
-import axios from "axios";
-
 
 export async function GET(req: Request) {
     try {
@@ -20,6 +18,7 @@ export async function POST(req: Request) {
     try {
 
         const body = await req.json()
+        console.log(body)
 
         const objectExists = await db.itemType.findFirst({
             where: {
@@ -32,9 +31,10 @@ export async function POST(req: Request) {
         }
 
         let attributes = []
-        for (let i=1;i<body.list.length;i++) {
-            const attributeName = body.list[i].value
-            attributes.push({name: attributeName})
+        for (let i=0; i<body.list.length; i++) {
+            const typeAttribute: { name: string } = { name: "<empty>" }
+            typeAttribute.name = body.list[i]
+            attributes.push(typeAttribute)
         }
 
         const object = await db.itemType.create({
@@ -52,5 +52,6 @@ export async function POST(req: Request) {
 
     } catch (error) {
         console.error(error)
+        return new Response('An error occurred', { status: 500 })
     }
 }

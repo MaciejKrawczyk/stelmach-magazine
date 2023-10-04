@@ -19,6 +19,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Item, ItemSchema} from "@/types/zod/Item";
 import ItemTypeAttributesInput from "@/components/form/ItemTypeAttributesInput";
 import {sortTool} from "@/utils/sortToolShelf";
+import axios from "axios";
 
 const ItemForm = () => {
 
@@ -55,13 +56,18 @@ const ItemForm = () => {
 
             data.shelfId = shelfResult.shelfId
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log(data)
+            const object = await axios.post('/api/item', data)
+
             setShowSuccessModal(true);
-            setFormData(data);
+            setFormData(object.data);
         } catch (error) {
-            setShowErrorModal(true);
-            setErrorMessage(error.message || 'Something went wrong!');
+            if (error instanceof Error) {
+                setShowErrorModal(true);
+                setErrorMessage(error.message || 'Something went wrong!');
+            } else {
+                setShowErrorModal(true);
+                setErrorMessage('Something went wrong!');
+            }
         } finally {
             methods.reset();
         }

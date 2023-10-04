@@ -42,7 +42,12 @@ const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
     return null;
 };
 
-export const sortTool = async (shelfCategoryId, shelfType, itemType, attributes) => {
+export const sortTool = async (
+    shelfCategoryId,
+    shelfType,
+    itemType,
+    attributes
+) => {
     try {
         const [categories, items] = await Promise.all([getCategoriesFromApi(), getItemsFromApi()]);
 

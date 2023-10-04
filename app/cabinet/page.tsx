@@ -70,27 +70,9 @@ const page = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('/api/shelf', {
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                }
-            });
-            const responseItem = await axios.get('/api/item', {
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                }
-            })
-            const responseCategory = await axios.get('/api/shelf-category', {
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                }
-            })
+            const response = await axios.get('/api/shelf');
+            const responseItem = await axios.get('/api/item', )
+            const responseCategory = await axios.get('/api/shelf-category')
             console.log(response.data)
             console.log(responseItem.data)
             console.log(responseCategory.data)

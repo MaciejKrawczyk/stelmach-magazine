@@ -6,7 +6,7 @@
 This repository is still a work in progress.
 
    <h1>Item Magazine 🛠️</h1>
-   <img src="./logo.png" alt="">
+   <img src="examples/logo.png" alt="">
   <hr />
 </div>
 
@@ -17,16 +17,16 @@ Welcome to the Item Magazine - a sophisticated, beautifully designed, and innova
 To give you a glimpse of our intuitive design and functionality, here are some screenshots from our application:
 
 [//]: # (### **Example 4**)
-![Example 4](./example4.png)
+![Example 4](examples/example4.png)
 
 [//]: # (### **Example 2**)
-![Example 2](./example2.png)
+![Example 2](examples/example2.png)
 
 [//]: # (### **Example 4**)
-![Example 3](./example3.png)
+![Example 3](examples/example3.png)
 
 [//]: # (### **Example 1**)
-![Example 1](./example1.png)
+![Example 1](examples/example1.png)
 
 ## Features 🌟
 

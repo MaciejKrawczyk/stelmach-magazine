@@ -122,7 +122,7 @@
               "description": "Dodaj kategorię szuflad dla łatwiejszego segregowania",
               "icon": "type",
               "alt": "typ",
-              "url": "/create/category"
+              "url": "/create/shelf-category"
             },
             {
               "id": 6,

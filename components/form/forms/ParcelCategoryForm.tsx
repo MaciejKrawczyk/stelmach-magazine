@@ -15,6 +15,7 @@ import {ParcelCategory, ParcelCategorySchema} from "@/types/zod/ParcelCategory";
 import {useCompanies} from "@/components/hooks/useCompanies";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
+import axios from "axios/index";
 
 
 const ParcelCategoryForm = () => {
@@ -40,14 +41,19 @@ const ParcelCategoryForm = () => {
         try {
             setShowErrorModal(false)
             setErrorMessage('')
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log(data)
-            setShowSuccessModal(true);
-            setFormData(data);
-        } catch (error) {
 
-            setShowErrorModal(true);
-            setErrorMessage(error.message || 'Something went wrong!');
+            const object = await axios.post('/api/parcel-category', data)
+
+            setShowSuccessModal(true);
+            setFormData(object.data);
+        } catch (error) {
+            if (error instanceof Error) {
+                setShowErrorModal(true);
+                setErrorMessage(error.message || 'Something went wrong!');
+            } else {
+                setShowErrorModal(true);
+                setErrorMessage('Something went wrong!');
+            }
         } finally {
             reset();
         }

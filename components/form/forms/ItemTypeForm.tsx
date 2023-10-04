@@ -8,6 +8,7 @@ import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import ListInput from "@/components/form/ListInput";
 import {ItemType, ItemTypeSchema} from "@/types/zod/ItemType";
+import axios from "axios";
 
 const ItemTypeForm = () => {
     const [showErrorModal, setShowErrorModal] = useState(false);
@@ -30,13 +31,19 @@ const ItemTypeForm = () => {
         try {
             setShowErrorModal(false);
             setErrorMessage('');
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log(data);
+
+            const object = await axios.post('/api/item-type', data)
+            console.log(data)
             setShowSuccessModal(true);
-            setFormData(data);
+            setFormData(object.data);
         } catch (error) {
-            setShowErrorModal(true);
-            setErrorMessage(error.message || 'Something went wrong!');
+            if (error instanceof Error) {
+                setShowErrorModal(true);
+                setErrorMessage(error.message || 'Something went wrong!');
+            } else {
+                setShowErrorModal(true);
+                setErrorMessage('Something went wrong!');
+            }
         } finally {
             reset();
         }

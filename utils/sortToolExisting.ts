@@ -30,7 +30,7 @@ const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
 export const sortToolExisting = async (shelfType, shelfCategoryId, itemType, attributes) => {
     try {
         const [categoriesShelvesResponse, itemsResponse] = await Promise.all([
-            axios.get('/api/category'),
+            axios.get('/api/shelf-category'),
             axios.get('/api/item')
         ]);
 

@@ -6,9 +6,9 @@ import SubmitButton from "@/components/form/SubmitButton";
 import {Company, CompanySchema} from "@/types/zod/Company";
 import ToastNotification from "@/components/form/notification/ToastNotification";
 import SuccessModal from "@/components/form/modal/SuccessModal";
-import {createCompany} from "@/lib/db/company/functions";
 import {FieldValues, useForm} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 
 const CompanyForm = () => {
 
@@ -31,14 +31,18 @@ const CompanyForm = () => {
             setShowErrorModal(false)
             setErrorMessage('')
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            const object = await axios.post('/api/company', data)
 
             setShowSuccessModal(true);
-            setFormData(data);
+            setFormData(object.data);
         } catch (error) {
-
-            setShowErrorModal(true);
-            setErrorMessage(error.message || 'Something went wrong!');
+            if (error instanceof Error) {
+                setShowErrorModal(true);
+                setErrorMessage(error.message || 'Something went wrong!');
+            } else {
+                setShowErrorModal(true);
+                setErrorMessage('Something went wrong!');
+            }
         } finally {
             reset();
         }

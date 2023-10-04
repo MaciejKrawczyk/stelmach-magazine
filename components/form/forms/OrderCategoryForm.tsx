@@ -11,6 +11,7 @@ import ToastNotification from "@/components/form/notification/ToastNotification"
 import SuccessModal from "@/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
+import axios from "axios";
 
 
 const OrderCategoryForm = () => {
@@ -34,20 +35,24 @@ const OrderCategoryForm = () => {
         try {
             setShowErrorModal(false)
             setErrorMessage('')
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log(data)
-            setShowSuccessModal(true);
-            setFormData(data);
-        } catch (error) {
 
-            setShowErrorModal(true);
-            setErrorMessage(error.message || 'Something went wrong!');
+            const object = await axios.post('/api/order-category', data)
+
+            setShowSuccessModal(true);
+            setFormData(object.data);
+        } catch (error) {
+            if (error instanceof Error) {
+                setShowErrorModal(true);
+                setErrorMessage(error.message || 'Something went wrong!');
+            } else {
+                setShowErrorModal(true);
+                setErrorMessage('Something went wrong!');
+            }
         } finally {
             reset();
         }
     };
 
-    // @ts-ignore
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
