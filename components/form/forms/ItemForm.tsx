@@ -44,6 +44,8 @@ const ItemForm = () => {
             setShowErrorModal(false)
             setErrorMessage('')
 
+            console.log(data)
+
             const shelfResult = await sortTool(
                 data.shelfCategoryId,
                 data.shelfSize,

@@ -33,11 +33,11 @@ model Shelf {
 }
 
 model Company {
-  id             Int              @id @default(autoincrement())
-  name           String           @unique
-  notes          String
-  item           Item[]
-  ParcelCategory ParcelCategory[]
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  notes  String
+  item   Item[]
+  Parcel Parcel[]
 }
 
 model Status {
@@ -53,30 +53,30 @@ model Status {
 }
 
 model Item {
-  id               Int              @id @default(autoincrement())
-  name             String
-  description      String
-  placeId          Int
-  shelfId          Int?
-  shelf            Shelf?           @relation(fields: [shelfId], references: [id])
-  shelfSize        String?
-  itemTypeId       Int
-  itemType         ItemType         @relation(fields: [itemTypeId], references: [id])
-  attributeValue   AttributeValue[]
-  status           Status[]
-  company          Company          @relation(fields: [companyId], references: [id])
-  companyId        Int
-  isDeleted        Boolean          @default(false)
-  isOrder          Boolean          @default(false)
-  orderCategory    OrderCategory?   @relation(fields: [orderCategoryId], references: [id])
-  orderCategoryId  Int?
-  parcelCategoryId Int?
-  parcelCategory   ParcelCategory?  @relation(fields: [parcelCategoryId], references: [id])
+  id              Int              @id @default(autoincrement())
+  name            String
+  description     String
+  placeId         Int
+  shelfId         Int?
+  shelf           Shelf?           @relation(fields: [shelfId], references: [id])
+  shelfSize       String?
+  itemTypeId      Int
+  itemType        ItemType         @relation(fields: [itemTypeId], references: [id])
+  attributeValue  AttributeValue[]
+  status          Status[]
+  company         Company          @relation(fields: [companyId], references: [id])
+  companyId       Int
+  isDeleted       Boolean          @default(false)
+  isOrder         Boolean          @default(false)
+  orderCategory   OrderCategory?   @relation(fields: [orderCategoryId], references: [id])
+  orderCategoryId Int?
+  parcelId        Int?
+  parcel          Parcel?          @relation(fields: [parcelId], references: [id])
 
-  @@index([shelfId, itemTypeId, companyId, orderCategoryId, parcelCategoryId])
+  @@index([shelfId, itemTypeId, companyId, orderCategoryId, parcelId])
 }
 
-model ParcelCategory {
+model Parcel {
   id          Int     @id @default(autoincrement())
   name        String
   description String

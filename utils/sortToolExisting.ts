@@ -17,7 +17,7 @@ const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
         if (Number(itemInShelf.itemType.id) === Number(itemType)) {
             const matchedAttributes = attributes.every((attr, index) =>
                 String(attr.value) === String(itemInShelf.attributeValue[index].value) &&
-                String(attr.typeattribute.name) === String(itemInShelf.attributeValue[index].typeattribute.name)
+                String(attr.typeAttribute.name) === String(itemInShelf.attributeValue[index].typeAttribute.name)
             );
 
             if (matchedAttributes) return shelf.id;

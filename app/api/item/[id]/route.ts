@@ -73,6 +73,7 @@ export async function PUT(request, {params}) {
         placeId = 1
     }
 
+    console.log(shelfId)
 
     try {
         const object = await db.item.update({
@@ -90,10 +91,12 @@ export async function PUT(request, {params}) {
                   disconnect: true,
                 },
                 placeId: Number(placeId),
-                shelf: {
+                shelf: shelfId !== null ? {
                     connect: {
                         id: Number(shelfId)
                     }
+                } : {
+                    disconnect: true
                 },
                 shelfSize: shelfSize,
                 status: {

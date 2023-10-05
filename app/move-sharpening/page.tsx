@@ -67,7 +67,7 @@ const page = () => {
             }
 
             const payload = {
-                placeId: 2,
+                placeId: 3,
                 shelfId: null,
                 from: 'poczekalnia do ostrzenia',
                 to: `ostrzenia w paczce: ${PlaceNameById(selectedPlaceId)}`,

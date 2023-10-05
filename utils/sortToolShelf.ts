@@ -22,17 +22,17 @@ const getOccupiedShelfIds = (items) => {
     return items.filter(item => item.placeId === 1 && item.shelfId === -1).map(item => item.shelfId);
 };
 
-const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
+const findMatchingShelf = (shelves, items, shelfSize, itemType, attributes) => {
     for (let shelf of shelves) {
-        if (shelf.id === -1 || shelfType !== shelf.size) continue;
+        if (shelf.id === -1 || shelfSize !== shelf.size) continue;
 
         const itemInShelf = items.find(item => Number(item.shelfId) === Number(shelf.id));
 
         if (!itemInShelf) return shelf.id;
 
         if (Number(itemInShelf.itemType.id) === Number(itemType)) {
-            const matchedAttributes = Object.entries(attributes).every(([typeattributeId, value]) => {
-                const attribute = itemInShelf.attributeValue.find(attr => Number(attr.typeattribute.id) === Number(typeattributeId));
+            const matchedAttributes = Object.entries(attributes).every(([typeAttributeId, value]) => {
+                const attribute = itemInShelf.attributeValue.find(attr => Number(attr.typeAttribute.id) === Number(typeAttributeId));
                 return attribute && String(attribute.value) === String(value);
             });
 
@@ -44,7 +44,7 @@ const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
 
 export const sortTool = async (
     shelfCategoryId,
-    shelfType,
+    shelfSize,
     itemType,
     attributes
 ) => {
@@ -58,7 +58,7 @@ export const sortTool = async (
         }
 
         const occupiedShelfIds = getOccupiedShelfIds(items);
-        const matchingShelfId = findMatchingShelf(category.shelf, items, shelfType, itemType, attributes);
+        const matchingShelfId = findMatchingShelf(category.shelf, items, shelfSize, itemType, attributes);
 
         if (matchingShelfId !== null) return { shelfId: matchingShelfId };
 
