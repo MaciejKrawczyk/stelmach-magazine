@@ -46,7 +46,7 @@ const page = () => {
         isOrder: false,
         isDeleted: false,
         typeAttributes: undefined,
-        shelfType: undefined,
+        shelfSize: undefined,
         // itemSentCategoryId: null
     });
 
@@ -83,7 +83,7 @@ const page = () => {
 
     const handleDivClick = (id) => {
         // console.log("Setting shelf type to:", id);
-        setFormData(prevState => ({ ...prevState, shelfType: id }));
+        setFormData(prevState => ({ ...prevState, shelfSize: id }));
     };
 
     const handleSubmit = async (e) => {
@@ -99,7 +99,7 @@ const page = () => {
             console.log(formData)
 
             const shelfResult = await sortToolExisting(
-                formData.shelfType,
+                formData.shelfSize,
                 formData.shelfCategory,
                 formData.itemType,
                 formData.typeAttributes
@@ -129,7 +129,7 @@ const page = () => {
                 const objectToDisplay = {
                     shelfName: data.data.object.shelf.name,
                     shelfId: data.data.object.shelf.id,
-                    shelfType: data.data.object.shelf.size
+                    shelfSize: data.data.object.shelf.size
                 }
 
                 console.log(data)
@@ -229,7 +229,7 @@ const page = () => {
                                 {shelfIds.map((id, index) => (
                                     <div
                                         key={index}
-                                        className={`w-2/5 rounded-xl flex-wrap aspect-square flex items-center justify-center p-2 border border-gray-300 my-1 cursor-pointer hover:bg-gray-100 ${formData.shelfType === id ? "bg-gray-200" : ""}`}
+                                        className={`w-2/5 rounded-xl flex-wrap aspect-square flex items-center justify-center p-2 border border-gray-300 my-1 cursor-pointer hover:bg-gray-100 ${formData.shelfSize === id ? "bg-gray-200" : ""}`}
                                         onClick={() => handleDivClick(id)}
                                     >
                                         <div className={'flex justify-center items-center flex-col'}>

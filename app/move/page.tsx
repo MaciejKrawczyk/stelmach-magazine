@@ -93,7 +93,7 @@ const page = () => {
                     // console.log('pobrane itemWithData');
 
                     const shelfId = await sortToolExisting(
-                        itemWithData.data.shelfType,
+                        itemWithData.data.shelfSize,
                         1,
                         itemWithData.data.itemTypeId,
                         itemWithData.data.attributeValue
@@ -104,7 +104,7 @@ const page = () => {
 
                     console.log('do payloudu dodane nowy shelfId');
 
-                    const result = await axios.put(`api/item/move/${itemId}`, payload);
+                    const result = await axios.put(`api/item/toMagazine/${itemId}`, payload);
                     console.log('result zroniony');
 
                     updatedInfo[itemWithData.data.name] = shelfId.shelfId;

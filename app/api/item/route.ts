@@ -1,5 +1,5 @@
 import {db} from "@/lib/db/db";
-import {randomUUID} from "crypto";
+import {generateRandomUUID} from "@/utils/generateRandomUUID";
 
 
 export async function GET(req: Request) {
@@ -35,9 +35,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
 
     try {
-
         const body = await req.json()
-
         let {
             companyId,
             description,
@@ -45,28 +43,24 @@ export async function POST(req: Request) {
             name,
             placeId,
             shelfSize,
-            typeAttributes,
+            attributes,
             shelfId,
             isOrder,
             orderCategoryId
         } = body
 
-        // console.log(itemTypeId)
-        console.log(orderCategoryId)
-
-        // const isOrder = placeId === 18
         let status
         let object
 
         if (isOrder) {
             status = {
-                name: 'zamówiono',
+                name: 'ZAMÓWIONO',
                 description: 'zamówiono przedmiot'
             }
         } else {
             status = {
-                name: 'dodano',
-                description: 'dodano przedmiot'
+                name: 'DODANO',
+                description: 'dodano nowy przedmiot do magazynu'
             }
         }
 
@@ -80,6 +74,14 @@ export async function POST(req: Request) {
             return new Response(`object already exists ${JSON.stringify(objectExists)}`, { status: 409 })
         }
 
+        let typeAttributesArray = []
+        for (let key in attributes) {
+                const data = {
+                    value: attributes[key],
+                    typeAttributeId: Number(key)
+                }
+                typeAttributesArray.push(data)
+        }
 
         if (isOrder) {
 
@@ -90,18 +92,18 @@ export async function POST(req: Request) {
                             id: Number(orderCategoryId)
                         }
                     },
-                    name: `ORDER_${randomUUID()}`,
+                    name: `ORDER_${generateRandomUUID()}`,
                     description: description,
                     itemType: {
                         connect: {
                             id: Number(itemTypeId)
                         }
                     },
-                    // shelf: {
-                    //     connect: {
-                    //         id: shelfId
-                    //     }
-                    // },
+                    attributeValue: {
+                        createMany: {
+                            data: typeAttributesArray
+                        }
+                    },
                     placeId: Number(placeId),
                     shelfSize: shelfSize,
                     isDeleted: false,
@@ -153,6 +155,11 @@ export async function POST(req: Request) {
                             name: status.name,
                             description: status.description
                         }
+                    },
+                    attributeValue: {
+                        createMany: {
+                            data: typeAttributesArray
+                        }
                     }
                 },
                 include: {
@@ -166,27 +173,11 @@ export async function POST(req: Request) {
                     status: true,
                     shelf: true,
                     orderCategory: true
-
-                }
-            })
-        }
-
-
-
-        // attributes values!
-        for (let key in typeAttributes) {
-
-            const attributesValues = await db.attributeValue.create({
-                data: {
-                    value: typeAttributes[key],
-                    itemId: object.id,
-                    typeAttributeId: Number(key)
                 }
             })
         }
 
         return new Response(JSON.stringify(object))
-
 
     } catch (error) {
         console.error(error)

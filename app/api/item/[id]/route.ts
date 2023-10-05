@@ -98,8 +98,8 @@ export async function PUT(request, {params}) {
                 shelfSize: shelfSize,
                 status: {
                     create: {
-                        name: "zamówienie zrealizowane",
-                        description: `narzędzie z ${from} dodane do ${to}`
+                        name: "ZREALIZOWANO",
+                        description: `zamówiony przedmiot ${from} dodane do ${to}`
                     }
                 }
             },

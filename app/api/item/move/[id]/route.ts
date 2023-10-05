@@ -14,15 +14,18 @@ export async function PUT(request, {params}) {
             },
             data: {
                 placeId: Number(placeId),
+                // shelf: {
+                //     connect: {
+                //         id: shelfId
+                //     }
+                // },
                 shelf: {
-                    connect: {
-                        id: shelfId
-                    }
+                    disconnect: true
                 },
                 status: {
                     create: {
-                        name: "przeniesiono",
-                        description: `przeniesiono przedmiot z ${from} do ${to}`
+                        name: "PRZENIESIONO",
+                        description: `Przeniesiono przedmiot z ${from} do ${to}`
                     }
                 }
             }

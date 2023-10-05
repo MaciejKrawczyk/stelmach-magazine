@@ -45,10 +45,6 @@ const ItemForm = () => {
             setErrorMessage('')
 
             const shelfResult = await sortTool(
-                // formData.shelfCategory,
-                // formData.shelfType,
-                // formData.itemType,
-                // formData.typeAttributes
                 data.shelfCategoryId,
                 data.shelfSize,
                 data.itemTypeId,
@@ -57,7 +53,10 @@ const ItemForm = () => {
 
             data.shelfId = shelfResult.shelfId
 
+            console.log(data)
             const object = await axios.post('/api/item', data)
+
+            object.data.shelfName = object.data.shelf.name
 
             setShowSuccessModal(true);
             setFormData(object.data);

@@ -5,6 +5,7 @@ import {NextResponse} from "next/server";
 export async function PUT(request, {params}) {
 
     const { id } = params
+    const { placeId, shelfId, from, to } = await request.json()
 
     try {
         const object = await db.item.update({
@@ -12,12 +13,16 @@ export async function PUT(request, {params}) {
                 id: Number(id)
             },
             data: {
-                shelfId: -1,
-                placeId: -1,
+                placeId: Number(placeId),
+                shelf: {
+                    connect: {
+                        id: shelfId
+                    }
+                },
                 status: {
                     create: {
-                        name: "WYJĘTO",
-                        description: "Wyjęto przedmiot z magazynu"
+                        name: "PRZENIESIONO",
+                        description: `Przeniesiono przedmiot z ${from} do ${to}`
                     }
                 }
             }
@@ -25,6 +30,9 @@ export async function PUT(request, {params}) {
         return NextResponse.json({ object }, { status: 200 })
 
     } catch (e) {
+
         console.error(e)
+
     }
+
 }

@@ -27,7 +27,12 @@ const findMatchingShelf = (shelves, items, shelfType, itemType, attributes) => {
     return null;  // Return null if no matching shelf is found.
 }
 
-export const sortToolExisting = async (shelfType, shelfCategoryId, itemType, attributes) => {
+export const sortToolExisting = async (
+    shelfType,
+    shelfCategoryId,
+    itemType,
+    attributes
+) => {
     try {
         const [categoriesShelvesResponse, itemsResponse] = await Promise.all([
             axios.get('/api/shelf-category'),
