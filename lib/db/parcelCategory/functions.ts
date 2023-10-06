@@ -1,7 +1,7 @@
 import axios from "axios";
-import {ParcelCategory} from "@/types/zod/ParcelCategory";
+import {Parcel} from "@/types/zod/Parcel";
 
-export const createParcelCategory = async (payload: ParcelCategory) => {
+export const createParcelCategory = async (payload: Parcel) => {
     const object = await axios.post('/api/parcelCategory', payload)
     return object
 }

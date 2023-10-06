@@ -2,7 +2,7 @@ import {db} from "@/lib/db/db";
 import {NextResponse} from "next/server";
 
 
-export async function GET(req: Request, {params}) {
+export async function GET(req, {params}) {
 
     const { id } = params
 
@@ -27,7 +27,7 @@ export async function GET(req: Request, {params}) {
             }
         })
 
-        return new Response( JSON.stringify(objects))
+        return new NextResponse( JSON.stringify(objects))
 
     } catch (error) {
         console.error(error)
@@ -52,7 +52,7 @@ export async function DELETE(request, {params}) {
             }
         })
 
-        return new Response( JSON.stringify(objects))
+        return new NextResponse( JSON.stringify(objects))
 
     } catch (error) {
         console.error(error)
@@ -82,7 +82,9 @@ export async function PUT(request, {params}) {
             },
             data: {
                 parcel: {
-                    disconnect: true
+                    connect: {
+                        id: parcelId
+                    }
                 },
                 name: name,
                 isOrder: isOrder,

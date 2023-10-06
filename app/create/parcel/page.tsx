@@ -2,13 +2,13 @@
 
 import React from 'react';
 import Container from "@/components/Container";
-import ParcelCategoryForm from "@/components/form/forms/ParcelCategoryForm";
+import ParcelForm from "@/components/form/forms/ParcelForm";
 
 const MyForm = () => {
 
     return (
         <Container title={'Dodawanie Wysyłki'}>
-                <ParcelCategoryForm />
+                <ParcelForm />
         </Container>
     );
 

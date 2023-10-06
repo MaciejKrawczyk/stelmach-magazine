@@ -3,9 +3,9 @@ import {db} from "@/lib/db/db";
 
 export async function GET(req: Request) {
     try {
-        const objects = await db.parcelCategory.findMany({
+        const objects = await db.parcel.findMany({
             include: {
-                company: true
+                company: true,
             }
         })
 
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         const body = await req.json()
         const { name, color, description, companyId } = body
 
-        const objectExists = await db.parcelCategory.findFirst({
+        const objectExists = await db.parcel.findFirst({
             where: {
                 name,
                 color
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
             return new Response('shelf-shelf-category already exists', { status: 409 })
         }
 
-        const object = await db.parcelCategory.create({
+        const object = await db.parcel.create({
             data: {
                 name: name,
                 color: color,

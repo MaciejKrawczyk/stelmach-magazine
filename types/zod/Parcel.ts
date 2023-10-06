@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import {formatCommasToDots} from "@/utils/formatCommaToDots";
 
-export const ParcelCategorySchema = z.object({
+export const ParcelSchema = z.object({
     id: z.number().optional(),
     name: z.string().min(1, "Pole nie moze byc puste").transform(formatCommasToDots),
     description: z.string().min(1, "Pole nie może być puste").transform(formatCommasToDots),
@@ -9,4 +9,4 @@ export const ParcelCategorySchema = z.object({
     companyId: z.number()
 })
 
-export type ParcelCategory = z.infer<typeof ParcelCategorySchema>
+export type Parcel = z.infer<typeof ParcelSchema>

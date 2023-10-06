@@ -17,7 +17,7 @@ export async function GET(req: Request) {
                 status: true,
                 shelf: true,
                 orderCategory: true,
-                parcelCategory: true
+                parcel: true
             },
             where: {
                 isDeleted: false

@@ -23,7 +23,7 @@ const page = () => {
         const fetchData = async () => {
             try {
                 const itemsResponse = await axios.get('/api/item')
-                const itemSentResponse = await axios.get('/api/parcel-category')
+                const itemSentResponse = await axios.get('/api/parcel')
 
                 setItems(itemsResponse.data);
                 setItemSentCategories(itemSentResponse.data);
@@ -71,13 +71,13 @@ const page = () => {
                 shelfId: null,
                 from: 'poczekalnia do ostrzenia',
                 to: `ostrzenia w paczce: ${PlaceNameById(selectedPlaceId)}`,
-                itemSentCategoryId: selectedItemSentCategory
+                parcelId: selectedItemSentCategory
             };
 
             console.log(payload);
 
                 const promises = movedItems.map(itemId => {
-                    return axios.put(`api/item/${itemId}`, payload);
+                    return axios.put(`api/item/toParcel/${itemId}`, payload);
                 });
 
                 await Promise.all(promises);
@@ -90,7 +90,7 @@ const page = () => {
         }
     };
 
-    const filteredItems = items.filter(item => item.placeId === selectedPlaceId);
+    const filteredItems = items.filter(item => item.placeId === selectedPlaceId && item.parcelId === null);
 
     return (
         <div className={'flex justify-center'}>
@@ -111,7 +111,7 @@ const page = () => {
 
                             <select
                                 className="w-full border-gray-300 p-3 rounded-lg text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
-                                name="parcelCategoryId"
+                                name="parcelId"
                                 value={selectedItemSentCategory} // Use selectedItemSentCategory here
                                 onChange={handleLeftChange}
                             >

@@ -83,6 +83,7 @@ model Parcel {
   color       String
   companyId   Int
   company     Company @relation(fields: [companyId], references: [id])
+  isSent      Boolean @default(false)
   Item        Item[]
 
   @@index([companyId])

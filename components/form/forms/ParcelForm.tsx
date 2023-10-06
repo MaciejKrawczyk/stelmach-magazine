@@ -11,7 +11,7 @@ import ToastNotification from "@/components/form/notification/ToastNotification"
 import SuccessModal from "@/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {ParcelCategory, ParcelCategorySchema} from "@/types/zod/ParcelCategory";
+import {Parcel, ParcelSchema} from "@/types/zod/Parcel";
 import {useCompanies} from "@/components/hooks/useCompanies";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
@@ -19,7 +19,7 @@ import axios from "axios";
 import FormEnding from "@/components/form/FormEnding";
 
 
-const ParcelCategoryForm = () => {
+const ParcelForm = () => {
 
     const { companies, loading, error } = useCompanies()
 
@@ -34,8 +34,8 @@ const ParcelCategoryForm = () => {
         control,
         formState: { errors, isSubmitting },
         reset,
-    } = useForm<ParcelCategory>({
-        resolver: zodResolver(ParcelCategorySchema),
+    } = useForm<Parcel>({
+        resolver: zodResolver(ParcelSchema),
     })
 
     const onSubmit = async (data: FieldValues) => {
@@ -43,7 +43,7 @@ const ParcelCategoryForm = () => {
             setShowErrorModal(false)
             setErrorMessage('')
 
-            const object = await axios.post('/api/parcel-category', data)
+            const object = await axios.post('/api/parcel', data)
 
             setShowSuccessModal(true);
             setFormData(object.data);
@@ -123,7 +123,7 @@ const ParcelCategoryForm = () => {
     );
 }
 
-export default ParcelCategoryForm;
+export default ParcelForm;
 
 
 
