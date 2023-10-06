@@ -12,4 +12,4 @@ export const CompanySchema = z.object({
         .transform(formatCommasToDots)
 })
 
-export type Company = z.infer<typeof CompanySchema>
+export type ICompany = z.infer<typeof CompanySchema>

@@ -7,4 +7,4 @@ export const AttributeValueSchema = z.object({
     typeAttributeId: z.number()
 })
 
-export type AttributeValue = z.infer<typeof AttributeValueSchema>
+export type IAttributeValue = z.infer<typeof AttributeValueSchema>

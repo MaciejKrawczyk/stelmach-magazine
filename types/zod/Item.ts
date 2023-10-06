@@ -35,4 +35,4 @@ export const ItemSchema = z.object({
     shelfId: z.number().nullable().optional()
 })
 
-export type Item = z.infer<typeof ItemSchema>
+export type IItem = z.infer<typeof ItemSchema>

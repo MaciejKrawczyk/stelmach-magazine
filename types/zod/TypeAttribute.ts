@@ -6,4 +6,4 @@ export const TypeAttributeSchema = z.object({
     itemTypeId: z.number().optional()
 })
 
-export type TypeAttribute = z.infer<typeof TypeAttributeSchema>
+export type ITypeAttribute = z.infer<typeof TypeAttributeSchema>

@@ -8,4 +8,4 @@ export const OrderCategorySchema = z.object({
     color: z.string().length(7).regex(/^#/),
 })
 
-export type OrderCategory = z.infer<typeof OrderCategorySchema>
+export type IOrderCategory = z.infer<typeof OrderCategorySchema>

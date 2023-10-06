@@ -9,4 +9,4 @@ export const StatusSchema = z.object({
     updatedAt: z.date().optional()
 })
 
-export type Status = z.infer<typeof StatusSchema>
+export type IStatus = z.infer<typeof StatusSchema>

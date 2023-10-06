@@ -37,4 +37,4 @@ export const OrderSchema = z.object({
     // shelfId: z.number().nullable().optional()
 })
 
-export type Order = z.infer<typeof OrderSchema>
+export type IOrder = z.infer<typeof OrderSchema>

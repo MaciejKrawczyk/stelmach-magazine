@@ -7,4 +7,4 @@ export const ItemTypeSchema = z.object({
 });
 
 
-export type ItemType = z.infer<typeof ItemTypeSchema>
+export type IItemType = z.infer<typeof ItemTypeSchema>

@@ -9,4 +9,4 @@ export const ParcelSchema = z.object({
     companyId: z.number()
 })
 
-export type Parcel = z.infer<typeof ParcelSchema>
+export type IParcel = z.infer<typeof ParcelSchema>
