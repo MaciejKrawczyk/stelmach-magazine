@@ -21,10 +21,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.3.1",
-    "@react-pdf/renderer": "^3.1.12",
     "axios": "^1.5.0",
     "dotenv-cli": "^7.3.0",
-    "html2pdf": "^0.0.11",
     "next": "^13.4.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -33,12 +31,10 @@
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.3.1",
-    "@types/jest": "^29.5.4",
     "@types/node": "^20.5.9",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "autoprefixer": "^10.4.15",
-    "axios-mock-adapter": "^1.22.0",
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.4",
     "postcss": "^8.4.29",
