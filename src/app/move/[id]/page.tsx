@@ -6,7 +6,7 @@ import {useParams} from "next/navigation";
 import SubmitButton from "@/src/components/submitButton";
 import MoveItemForm from "@/src/components/MoveItemForm";
 
-const page = () => {
+const Page = () => {
 
     const params = useParams()
     const id = params.id
@@ -14,4 +14,4 @@ const page = () => {
     return (<MoveItemForm id={id}/>)
 }
 
-export default page
+export default Page

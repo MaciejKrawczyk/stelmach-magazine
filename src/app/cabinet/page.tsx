@@ -11,7 +11,7 @@ import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import {useRouter} from "next/navigation";
 import MoveItemForm from "@/src/components/MoveItemForm";
 
-const page = () => {
+const Page = () => {
     const [categories, setCategories] = useState([])
     const [items, setItems] = useState([])
     const [shelves, setShelves] = useState([])
@@ -359,7 +359,7 @@ const page = () => {
                                 }} className={`flex cursor-pointer bg-blue-500 pr-4 pl-4 py-1 items-center justify-between w-full mt-1 mb-1 rounded-full text-xs text-white ${item.id === selectedItemId ? 'bg-red-500' : 'bg-blue-500'}`}
                                      key={item.id}>
                                     <div className={''}>{item.itemType.name}</div>
-                                    <div className={''}>-></div>
+                                    <div className={''}>-`&gt;</div>
                                 </div>
                             )
                         })}
@@ -427,4 +427,4 @@ const page = () => {
 
 
 
-export default page
+export default Page

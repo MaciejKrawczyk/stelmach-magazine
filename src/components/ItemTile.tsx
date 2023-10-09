@@ -19,7 +19,7 @@ import {formatDate} from "@/src/utils/formatDate";
 import {useRouter} from "next/navigation";
 
 
-const itemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, itemId, orderCategoryColor}) => {
+const ItemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, itemId, orderCategoryColor}) => {
 
     const router = useRouter()
 
@@ -130,4 +130,4 @@ const itemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, i
     </div>)
 }
 
-export default itemTile
+export default ItemTile

@@ -12,14 +12,13 @@ import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import '@/public/SuccessModal.css';
 import ItemTileWithoutOptions from "@/src/components/ItemTileWithoutOptions";
 
-const page = () => {
+const Page = () => {
 
     const [items, setItems] = useState([]);
     const [itemSent, setItemSent] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [expandedPlace, setExpandedPlace] = useState(null);
-    const [selectedItems, setSelectedItems] = useState([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);  // State for the modal
     const [modalData, setModalData] = useState(null); // State to store data for the modal
@@ -100,7 +99,7 @@ const page = () => {
                         <div className="flex items-center mr-2">
                             <Image className="" priority src={pin} alt="pin" />
                             <div className="mx-4">
-                                <span className='text-gray-900'>{place.name}&emsp;=>&emsp;{place.company.name}</span>
+                                <span className='text-gray-900'>{place.name}&emsp;&gt;&emsp;{place.company.name}</span>
                                 <span className='mx-1 text-gray-400 text-sm'></span>
                             </div>
                         </div>
@@ -169,4 +168,4 @@ const page = () => {
 }
 
 
-export default page
+export default Page

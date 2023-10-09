@@ -10,7 +10,7 @@ import settings from "@/public/Setting_alt_line.svg";
 import Link from "next/link";
 import ItemTile from "@/src/components/ItemTile";
 
-const page = () => {
+const Page = () => {
 
     const [items, setItems] = useState([])
     const [orderCategories, setOrderCategories] = useState([])
@@ -100,4 +100,4 @@ const page = () => {
     </div>
 }
 
-export default page
+export default Page

@@ -7,13 +7,12 @@ import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import {formatDate} from "@/src/utils/formatDate";
 
-const page = () => {
+const Page = () => {
 
     const params = useParams()
     const id = params.id
 
     const [item, setItem] = useState([])
-    const [orderCategories, setOrderCategories] = useState([])
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -37,7 +36,7 @@ const page = () => {
         };
         fetchData();
         return () => { isMounted = false; };
-    }, []);
+    }, [id]);
 
     if (loading) {
         return (
@@ -104,4 +103,4 @@ const page = () => {
     </div>
 }
 
-export default page
+export default Page

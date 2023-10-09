@@ -10,7 +10,7 @@ import SubmitButton from "@/src/components/submitButton";
 import {sortToolExisting} from "@/src/utils/sortToolExisting";
 import {PlaceNameById} from "@/src/utils/PlaceNameById";
 
-const page = () => {
+const Page = () => {
     const [items, setItems] = useState([]);
     const [selectedPlaceId, setSelectedPlaceId] = useState(null);
     const [movedItems, setMovedItems] = useState([]);
@@ -230,4 +230,4 @@ const page = () => {
     );
 }
 
-export default page;
+export default Page;

@@ -45,7 +45,12 @@ const ItemTypeAttributesInput: React.FC<ItemTypeAttributesInputProps> = ({
                             itemtypeId: selectedItemType
                         }
                     });
-                    setTypeAttributes(Object.values(response.data)); // assuming response.data is an object
+                    setTypeAttributes(Object.values(response.data));
+
+                    // Reset typeAttributesForm state
+                    setTypeAttributesForm({});
+                    // Clear the 'attributes' field in the form context
+                    setValue('attributes', {});
                 }
             } catch (error) {
                 console.error("Error fetching type attributes", error);
@@ -78,6 +83,7 @@ const ItemTypeAttributesInput: React.FC<ItemTypeAttributesInputProps> = ({
                                         field.onChange(e);
                                         setCurrentItemType(e.target.value);
                                     }}
+                                    defaultValue={""}
                                     value={currentItemType} // This ensures the selected value is bound to the currentItemType state
                                     className="w-full border-gray-300 p-3 rounded-lg text-sm focus:border-gray-500 focus:shadow-lg transition duration-150 ease-in-out"
                                 >

@@ -17,7 +17,7 @@ import {sortToolExisting} from "@/src/utils/sortToolExisting";
 import {PlaceNameById} from "@/src/utils/PlaceNameById";
 
 
-const page = () => {
+const Page = () => {
 
     const params = useParams()
     const id = params.id
@@ -70,7 +70,7 @@ const page = () => {
             }
         };
         fetchData();
-    }, []);
+    }, [id]);
 
 
     const handleChange = (e) => {
@@ -272,4 +272,4 @@ const page = () => {
     </div>
 }
 
-export default page
+export default Page

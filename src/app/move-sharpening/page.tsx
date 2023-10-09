@@ -8,7 +8,7 @@ import SubmitButton from "@/src/components/submitButton";
 import {PlaceNameById} from "@/src/utils/PlaceNameById";
 import {Place} from "@mui/icons-material";
 
-const page = () => {
+const Page = () => {
     const [itemSentCategories, setItemSentCategories] = useState([]);
     const [selectedItemSentCategory, setSelectedItemSentCategory] = useState(""); // Initialize with an empty string
     const [items, setItems] = useState([]);
@@ -170,4 +170,4 @@ const page = () => {
     );
 }
 
-export default page;
+export default Page;
