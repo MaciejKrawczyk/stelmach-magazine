@@ -1,133 +1,119 @@
 'use client'
 
 import React, {useEffect, useRef, useState} from "react";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import tool from '@/public/small-tool.svg'
 import SubmitButton from "@/src/components/submitButton";
 import Link from "next/link";
 import SuccessModal from "@/src/components/form/modal/SuccessModal";
-import {useRouter} from "next/navigation";
 import MoveItemForm from "@/src/components/MoveItemForm";
+import {useShelfCategories} from "@/src/hooks/useShelfCategories";
+import {useShelves} from "@/src/hooks/useShelves";
+import {useItems} from "@/src/hooks/useItems";
 
-const Page = () => {
-    const [categories, setCategories] = useState([])
-    const [items, setItems] = useState([])
-    const [shelves, setShelves] = useState([])
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [isClicked, setIsClicked] = useState(false)
-    const [clickedShelves, setClickedShelves] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    const [modalPosition, setModalPosition] = useState({x: 0, y: 0});
-    const [selectedShelf, setSelectedShelf] = useState(null); // To store the clicked shelf details
-    const modalRef = useRef(null);
-    const [modalState, setModalState] = useState('exited'); // new state to manage the modal transition
-    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-    const [isRadioChecked, setIsRadioChecked] = useState(false);
-    const [showItemOptionsModal, setShowItemOptionsModal] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [selectedItemId, setSelectedItemId] = useState(null);
+type ModalPosition = { x: number; y: number; };
+type Shelf = IDbResponseShelf;
+type Item = IDbResponseItem;
+type Result = { selectedShelves: string[]; selectedCategoryId: number | null; }
 
-    const [isOpen, setIsOpen] = useState(false)
-    const [object, setObject] = useState([]);
+const Page: React.FC = () => {
+    const [isClicked, setIsClicked] = useState<boolean>(false);
+    const [clickedShelves, setClickedShelves] = useState<string[]>([]); // Assuming shelfId is a string
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [modalPosition, setModalPosition] = useState<ModalPosition>({ x: 0, y: 0 });
+    const [selectedShelf, setSelectedShelf] = useState<Shelf | null>(null);
+    const modalRef = useRef<HTMLDivElement | null>(null);
+    const [modalState, setModalState] = useState<string>('exited'); // Consider using an enum
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null); // Assuming categoryId is a string
+    const [isRadioChecked, setIsRadioChecked] = useState<boolean>(false);
+    const [showItemOptionsModal, setShowItemOptionsModal] = useState<boolean>(false);
+    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    const [selectedItemId, setSelectedItemId] = useState<number | null>(null); // Assuming itemId is a string
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [object, setObject] = useState<any[]>([]); // Please replace 'any' with a more specific type
+    const [isMoveItemFormOpen, setIsMoveItemFormOpen] = useState<boolean>(false);
+    const itemOptionsModalRef = useRef<HTMLDivElement | null>(null);
 
-    const [isMoveItemFormOpen, setIsMoveItemFormOpen] = useState(false)
 
-    const [fromTo, setFromTo] = useState({
-        from: 1,
-        to: ''
-    })
+    const { items, loading: itemsLoading, error: itemsError, refetch: refetchItems } = useItems();
+    const { shelves, loading: shelvesLoading, error: shelvesError, refetch: refetchShelves } = useShelves();
+    const { shelfCategories: categories, loading: categoriesLoading, error: categoriesError, refetch: refetchCategories } = useShelfCategories();
 
-    const router = useRouter()
 
     useEffect(() => {
         setIsClicked(false)
-        fetchData();
+        // fetchData();
     }, []);
 
     const takeout = async () => {
         if (confirm("Czy na pewno chcesz wyjąć z szafy przedmiot?")) {
             setIsClicked(true)
             setIsOpen(false)
-            try {
-                const result = await axios.put(`/api/item/takeout/${selectedItem.id}`)
-                setIsClicked(false)
-                setIsOpen(true)
-                setObject(result)
-                fetchData();
-            } catch (e) {
-                console.error(e)
+            if (selectedItem) { // Add this check
+                try {
+                    const result: AxiosResponse = await axios.put(`/api/item/takeout/${selectedItem.id}`)
+                    setIsClicked(false)
+                    setIsOpen(true)
+                    setObject(result.data)
+                    refetchCategories()
+                    refetchItems()
+                    refetchShelves()
+                } catch (e) {
+                    console.error(e)
+                }
             }
         }
     }
 
-    const handleItemOptionsClick = (item) => {
+    const handleItemOptionsClick = (item: IDbResponseItem) => {
         setSelectedItem(item);
         setShowItemOptionsModal(true);
     };
 
-    const fetchData = async () => {
-        try {
-            const response = await axios.get('/api/shelf');
-            const responseItem = await axios.get('/api/item', )
-            const responseCategory = await axios.get('/api/shelf-category')
-            // console.log(response.data)
-            // console.log(responseItem.data)
-            // console.log(responseCategory.data)
-            setShelves(response.data);
-            setItems(responseItem.data)
-            setCategories(responseCategory.data)
-            setLoading(false);
-        } catch (e) {
-            console.error('Failed to fetch data:', e);
-            setError(e);
-            setLoading(false);
-        }
-    };
-
-    const handleApply = async (e) => {
-        setIsClicked(true)
+    const handleApply = async (e: React.FormEvent<HTMLFormElement>) => {
+        setIsClicked(true);
 
         if (isRadioChecked === false) {
-            alert("Zaznacz kategorię!")
-            setIsClicked(false)
+            alert("Zaznacz kategorię!");
+            setIsClicked(false);
         }
 
-        e.preventDefault(); // to prevent the form from submitting and refreshing the page
-        const result = {
+        e.preventDefault();
+        const result: Result = {
             selectedShelves: clickedShelves,
             selectedCategoryId: selectedCategoryId
         };
+
         try {
-            const payload = {categoryId: result.selectedCategoryId}
+            const payload = { categoryId: result.selectedCategoryId };
 
             const update = async () => {
                 for (let i = 0; i < result.selectedShelves.length; i++) {
-                    const shelf = await axios.put(`/api/shelf/${result.selectedShelves[i]}`, payload)
-                    // console.log(`/api/shelf/${result.selectedShelves[i]}`)
-                    // console.log(result.selectedCategoryId)
-                    // console.log(shelf.data)
+                    await axios.put(`/api/shelf/${result.selectedShelves[i]}`, payload);
                 }
             }
             await update();
-            // Call fetchData after successfully updating the data
-            fetchData();
-            setIsClicked(false)
-        } catch (e) {
-            console.error(e)
+
+            refetchItems();
+            refetchShelves();
+            refetchCategories();
+
+            setIsClicked(false);
+        } catch (e: any) {
+            console.error(e);
         }
-        setClickedShelves([])
+        setClickedShelves([]);
     }
 
-    const onRightClick = (event, shelf) => {
-        event.preventDefault(); // Prevent the default right-click menu
-        setShowModal(true); // Show the modal
-        setModalPosition({x: event.clientX, y: event.clientY}); // Get the position of the cursor
-        setSelectedShelf(shelf); // Store the shelf data
-        setShowItemOptionsModal(false)
-        setSelectedItemId(null)
+    const onRightClick = (event: React.MouseEvent<HTMLElement>, shelf: any) => {
+        event.preventDefault();
+        setShowModal(true);
+        setModalPosition({ x: event.clientX, y: event.clientY });
+        setSelectedShelf(shelf);
+        setShowItemOptionsModal(false);
+        setSelectedItemId(null);
     }
 
     useEffect(() => {
@@ -140,25 +126,20 @@ const Page = () => {
         }
     }, [showModal, modalState]);
 
-    const handleShelfClick = (shelfId) => {
-        // Check if the shelfId is already in the list
+    const handleShelfClick = (shelfId: string) => {
         if (!clickedShelves.includes(shelfId)) {
             setClickedShelves(prev => [...prev, shelfId]);
         } else {
-            // If the shelfId is already in the list, remove it (toggle behavior)
             setClickedShelves(prev => prev.filter(id => id !== shelfId));
         }
     }
 
-    // const modalRef = useRef(null);
-    const itemOptionsModalRef = useRef(null);
-
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target) &&
-                (!itemOptionsModalRef.current || !itemOptionsModalRef.current.contains(event.target))) {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node) &&
+                (!itemOptionsModalRef.current || !itemOptionsModalRef.current.contains(event.target as Node))) {
                 setShowModal(false);
-                setShowItemOptionsModal(false); // Close both modals if clicked outside
+                setShowItemOptionsModal(false);
             }
         }
 
@@ -172,13 +153,13 @@ const Page = () => {
     }, [showModal, showItemOptionsModal]);
 
 
-    if (loading) {
+    if (categoriesLoading || shelvesLoading || itemsLoading) {
         return <div className="flex justify-center items-center min-h-screen">
             <Image priority alt={'loading...'} src={loadingSVG}/>
         </div>
     }
 
-    if (error) {
+    if (categoriesError || shelvesError || itemsError) {
         return <div>Error loading data</div>;
     }
 
@@ -186,7 +167,11 @@ const Page = () => {
 
         try {
             const object = await axios.delete(`/api/item/${selectedItemId}`)
-            fetchData();
+
+            refetchShelves()
+            refetchItems()
+            refetchCategories()
+
             setShowModal(false);
             setIsClicked(false)
             setModalState('exited')
@@ -202,7 +187,7 @@ const Page = () => {
             <SuccessModal
                 isOpen={isOpen}
                 text={'przedmiot został pomyślnie wyjęty z szafy, jeśli chcesz znaleźć wyjęte narzędzia, których nie ma na żadnej pozycji, przejdź do zakładki /...'}
-                objectData={object}
+                objectData={{}}
                 bigText={'narzędzie zostało wyjęte z szuflady!'}
             />
 
@@ -226,11 +211,11 @@ const Page = () => {
                         <div className={'gap-3 border-2 border-black p-3 w-auto grid grid-cols-5 grid-rows-16'}>
                             {
                                 shelves
-                                    .filter(shelf => shelf.name >= 1 && shelf.name <= 80 && shelf.size === "small")
+                                    .filter(shelf => Number(shelf.name) >= 1 && Number(shelf.name) <= 80 && shelf.size === "small")
                                     .map(shelf => (
                                         <div
-                                            onClick={() => handleShelfClick(shelf.id)}
-                                            className={`cursor-pointer flex items-center justify-center py-1 ${clickedShelves.includes(shelf.id) ? 'border-black border-2' : ''}`}
+                                            onClick={() => handleShelfClick(String(shelf.id))}
+                                            className={`cursor-pointer flex items-center justify-center py-1 ${clickedShelves.includes(String(shelf.id)) ? 'border-black border-2' : ''}`}
                                             key={shelf.id}
                                             onContextMenu={(e) => onRightClick(e, shelf)} // Add this line
                                             style={{backgroundColor: shelf.shelfCategory.color}}
@@ -249,11 +234,11 @@ const Page = () => {
                         <div className={' gap-3 mx-3 border-2 border-black p-3 w-auto grid grid-cols-5 grid-rows-12'}>
                             {
                                 shelves
-                                    .filter(shelf => shelf.name >= 1 && shelf.name <= 72 && shelf.size === "big")
+                                    .filter(shelf => Number(shelf.name) >= 1 && Number(shelf.name) <= 72 && shelf.size === "big")
                                     .map(shelf => (
                                         <div
-                                            onClick={() => handleShelfClick(shelf.id)}
-                                            className={`cursor-pointer flex items-center justify-center ${clickedShelves.includes(shelf.id) ? 'border-black border-2' : ''}`}
+                                            onClick={() => handleShelfClick(String(shelf.id))}
+                                            className={`cursor-pointer flex items-center justify-center ${clickedShelves.includes(String(shelf.id)) ? 'border-black border-2' : ''}`}
                                             key={shelf.id}
                                             onContextMenu={(e) => onRightClick(e, shelf)} // Add this line
                                             style={{backgroundColor: shelf.shelfCategory.color}}
@@ -272,11 +257,11 @@ const Page = () => {
                         <div className={'gap-3 border-2 border-black p-3 w-auto grid grid-cols-5 grid-rows-16'}>
                             {
                                 shelves
-                                    .filter(shelf => shelf.name >= 81 && shelf.name <= 160 && shelf.size === "small")
+                                    .filter(shelf => Number(shelf.name) >= 81 && Number(shelf.name) <= 160 && shelf.size === "small")
                                     .map(shelf => (
                                         <div
-                                            onClick={() => handleShelfClick(shelf.id)}
-                                            className={`cursor-pointer flex items-center justify-center py-1 ${clickedShelves.includes(shelf.id) ? 'border-black border-2' : ''}`}
+                                            onClick={() => handleShelfClick(String(shelf.id))}
+                                            className={`cursor-pointer flex items-center justify-center py-1 ${clickedShelves.includes(String(shelf.id)) ? 'border-black border-2' : ''}`}
                                             key={shelf.id}
                                             onContextMenu={(e) => onRightClick(e, shelf)} // Add this line
                                             style={{backgroundColor: shelf.shelfCategory.color}}
@@ -293,7 +278,6 @@ const Page = () => {
                             }
                         </div>
                     </div>
-                        {/*<h2>Kategorie</h2>*/}
                     </div>
 
                     <hr className={'my-5'}/>
@@ -332,7 +316,6 @@ const Page = () => {
                                 </label>
                             </div>
                         ))}
-                        {/*<button type="submit">apply</button>*/}
                         <SubmitButton disabled={isRadioChecked} isClicked={isClicked}/>
                     </form>
 
@@ -350,8 +333,8 @@ const Page = () => {
                     }}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <p>Szuflada nr {selectedShelf.name} ({selectedShelf.size})</p>
-                        {selectedShelf.item.map((item) => {
+                    <p>Szuflada nr {selectedShelf?.name} ({selectedShelf?.size})</p>
+                    {selectedShelf && selectedShelf.item.map((item) => {
                             return (
                                 <div onClick={() => {
                                     handleItemOptionsClick(item)
@@ -359,12 +342,12 @@ const Page = () => {
                                 }} className={`flex cursor-pointer bg-blue-500 pr-4 pl-4 py-1 items-center justify-between w-full mt-1 mb-1 rounded-full text-xs text-white ${item.id === selectedItemId ? 'bg-red-500' : 'bg-blue-500'}`}
                                      key={item.id}>
                                     <div className={''}>{item.itemType.name}</div>
-                                    <div className={''}>-`&gt;</div>
+                                    <div className={''}>-&gt;</div>
                                 </div>
                             )
                         })}
                     <hr/>
-                    {selectedShelf.item.length === 0 ? <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
+                    {selectedShelf?.item.length === 0 ? <Link className={'flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'} href={'/'}>
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Wsadź</span>
                     </Link> : null}
@@ -372,7 +355,7 @@ const Page = () => {
                 </div>
             )}
 
-            {isMoveItemFormOpen && <MoveItemForm id={selectedItem.id}/>}
+            {isMoveItemFormOpen && <MoveItemForm id={selectedItem?.id}/>}
 
             {showItemOptionsModal && (
                 <div
@@ -384,11 +367,11 @@ const Page = () => {
                     }}
                     onClick={(e) => e.stopPropagation()} // This prevents the event from reaching the handleClickOutside
                 >
-                    <p className={'text-center font-semibold'}>{selectedItem.itemType.name}, id: {selectedItem.id}</p>
-                    <p className={'text-center text-gray-500 font-light my-2'}>{selectedItem.name}</p>
+                    <p className={'text-center font-semibold'}>{selectedItem?.itemType.name}, id: {selectedItem?.id}</p>
+                    <p className={'text-center text-gray-500 font-light my-2'}>{selectedItem?.name}</p>
                     <hr/>
 
-                    {selectedItem.attributeValue.map((attribute) => {
+                    {selectedItem?.attributeValue.map((attribute) => {
                         return (
                             <p key={attribute.id}>{attribute.typeAttribute.name}: {attribute.value}</p>
                         )
@@ -404,7 +387,6 @@ const Page = () => {
                     <div
                         onClick={() => setIsMoveItemFormOpen(true)}
                         className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'}
-                        // href={`/move/${selectedItem.id}`}
                     >
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Przenieś</span>
@@ -420,11 +402,8 @@ const Page = () => {
                 </div>
                 )
             }
-
         </>
     )
 }
-
-
 
 export default Page

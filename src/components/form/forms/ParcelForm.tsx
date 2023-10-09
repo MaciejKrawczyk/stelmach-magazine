@@ -12,7 +12,7 @@ import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Parcel, ParcelSchema} from "@/src/types/zod/Parcel";
-import {useCompanies} from "@/src/components/hooks/useCompanies";
+import {useCompanies} from "@/src/hooks/useCompanies";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import axios from "axios";

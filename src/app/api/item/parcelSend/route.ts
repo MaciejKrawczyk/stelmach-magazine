@@ -2,7 +2,7 @@ import {db} from "@/src/lib/db/db";
 import {NextResponse} from "next/server";
 
 
-export async function PUT(req) {
+export async function PUT(req: Request) {
 
     try {
         const body = await req.json()

@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export const useParcelCategories = () => {
-    const [parcelCategories, setParcelCategories] = useState<any[]>([]);
+export const useParcels = () => {
+    const [parcels, setParcels] = useState<IDbResponseParcel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<null | string>(null);
 
-    const fetchParcelCategories = async () => {
+    const fetchParcels = async () => {
         try {
-            const response = await axios.get('/api/parcel-category');
+            const response = await axios.get('/api/parcel');
             if (response && response.data) {
-                setParcelCategories(response.data);
+                setParcels(response.data);
             }
         } catch (err) {
             setError(err.message || "Error fetching parcel categories");  // Capture and set error message.
@@ -20,8 +20,8 @@ export const useParcelCategories = () => {
     };
 
     useEffect(() => {
-        fetchParcelCategories();
+        fetchParcels();
     }, []);
 
-    return { parcelCategories, loading, error };
+    return { parcels, loading, error };
 }

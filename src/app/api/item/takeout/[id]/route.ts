@@ -2,7 +2,7 @@ import {db} from "@/src/lib/db/db";
 import {NextResponse} from "next/server";
 
 
-export async function PUT(request, {params}) {
+export async function PUT(request: Request, {params}: Params) {
 
     const { id } = params
 
@@ -12,7 +12,7 @@ export async function PUT(request, {params}) {
                 id: Number(id)
             },
             data: {
-                shelfId: -1,
+                shelfId: null,
                 placeId: -1,
                 status: {
                     create: {

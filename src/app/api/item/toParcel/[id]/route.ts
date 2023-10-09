@@ -2,7 +2,7 @@ import {db} from "@/src/lib/db/db";
 import {NextResponse} from "next/server";
 
 
-export async function GET(req, {params}) {
+export async function GET(req: Request, {params}: Params) {
 
     const { id } = params
 
@@ -36,7 +36,7 @@ export async function GET(req, {params}) {
 
 
 
-export async function DELETE(request, {params}) {
+export async function DELETE(request: Request, {params}: Params) {
 
     const { id } = params
 
@@ -63,7 +63,7 @@ export async function DELETE(request, {params}) {
 
 
 
-export async function PUT(request, {params}) {
+export async function PUT(request: Request, {params}: Params) {
 
 
     const { id } = params

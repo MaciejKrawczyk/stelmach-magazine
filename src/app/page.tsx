@@ -8,7 +8,7 @@ import settings from '../../public/Setting_alt_line.svg';
 import { Places } from "@/src/objects/Places";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import ItemTile from "@/src/components/ItemTile";
-import {useItems} from "@/src/components/hooks/useItems";
+import {useItems} from "@/src/hooks/useItems";
 
 export default function Home() {
 

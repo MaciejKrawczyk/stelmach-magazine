@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {Item} from "@prisma/client";
+
 
 export const useItem = (id: number) => {
-    const [item, setItem] = useState<Item>();
+    const [item, setItem] = useState<IDbResponseItem>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<null | string>(null);
 
@@ -16,9 +16,13 @@ export const useItem = (id: number) => {
                 setItem(response.data);
             }
         } catch (err) {
-            setError(err.message || "Error fetching items");  // Capture and set error message.
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Error fetching items");
+            }
         } finally {
-            setLoading(false); // Data processing is done, set loading to false.
+            setLoading(false)
         }
     };
 

@@ -2,9 +2,9 @@ import {db} from "@/src/lib/db/db";
 import {NextResponse} from "next/server";
 
 
-export async function GET(req: Request, {params}) {
+export async function GET(req: Request, {params}: Params): Promise<Response> {
 
-    const { id } = params
+    const { id } = params;
 
     try {
 
@@ -25,20 +25,20 @@ export async function GET(req: Request, {params}) {
                 shelf: true,
                 orderCategory: true
             }
-        })
+        });
 
-        return new Response( JSON.stringify(objects))
+        return new Response(JSON.stringify(objects));
 
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        // It's a good practice to return a response even in case of errors
+        return new Response("Internal server error", { status: 500 });
     }
 }
 
+export async function DELETE(request: Request, {params}: Params): Promise<Response> {
 
-
-export async function DELETE(request, {params}) {
-
-    const { id } = params
+    const { id } = params;
 
     try {
 
@@ -48,32 +48,37 @@ export async function DELETE(request, {params}) {
             },
             data: {
                 isDeleted: true,
-                shelfId: -1,
+                shelfId: null,
             }
-        })
+        });
 
-        return new Response( JSON.stringify(objects))
+        return new Response(JSON.stringify(objects));
 
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        return new Response("Internal server error", { status: 500 });
     }
-
-
 }
 
+interface PutBody {
+    shelfId?: number;
+    shelfSize?: string;
+    orderCategoryId?: number;
+    name?: string;
+    isOrder?: boolean;
+    isDeleted?: boolean;
+    to?: string;
+    from?: string;
+    parcelId?: number;
+    placeId?: number;
+}
 
+export async function PUT(request: Request, {params}: Params): Promise<NextResponse> {
 
-export async function PUT(request, {params}) {
+    const { id } = params;
+    const { shelfId, shelfSize, orderCategoryId, name, isOrder, isDeleted, to, from, parcelId, placeId }: PutBody = await request.json();
 
-
-    const { id } = params
-    let { shelfId, shelfSize, orderCategoryId, name, isOrder, isDeleted, to, from, parcelId, placeId } = await request.json()
-
-    if (!placeId) {
-        placeId = 1
-    }
-
-    console.log(shelfId)
+    const resolvedPlaceId = placeId || 1;
 
     try {
         const object = await db.item.update({
@@ -88,9 +93,9 @@ export async function PUT(request, {params}) {
                 isOrder: isOrder,
                 isDeleted: isDeleted,
                 orderCategory: {
-                  disconnect: true,
+                    disconnect: true,
                 },
-                placeId: Number(placeId),
+                placeId: Number(resolvedPlaceId),
                 shelf: shelfId !== null ? {
                     connect: {
                         id: Number(shelfId)
@@ -110,14 +115,12 @@ export async function PUT(request, {params}) {
                 shelf: true,
                 parcel: true
             }
-        })
-        return NextResponse.json({ object }, { status: 200 })
+        });
+
+        return NextResponse.json({ object });
 
     } catch (e) {
-
-        console.error(e)
-
+        console.error(e);
+        return new NextResponse("Internal server error", { status: 500 });
     }
 }
-
-

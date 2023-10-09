@@ -6,40 +6,26 @@ import MoveItemTile from "@/src/components/MoveItemTile";
 import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import SubmitButton from "@/src/components/submitButton";
 import {PlaceNameById} from "@/src/utils/PlaceNameById";
-import {Place} from "@mui/icons-material";
+import {useParcels} from "@/src/hooks/useParcels";
+import {useItems} from "@/src/hooks/useItems";
 
 const Page = () => {
-    const [itemSentCategories, setItemSentCategories] = useState([]);
     const [selectedItemSentCategory, setSelectedItemSentCategory] = useState(""); // Initialize with an empty string
-    const [items, setItems] = useState([]);
     const [selectedPlaceId, setSelectedPlaceId] = useState(3);
     const [rightSelectedPlaceId, setRightSelectedPlaceId] = useState(2)
-    const [movedItems, setMovedItems] = useState([]);
+    const [movedItems, setMovedItems] = useState<number[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const [info, setInfo] = useState({});
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const itemsResponse = await axios.get('/api/item')
-                const itemSentResponse = await axios.get('/api/parcel')
+    const {items, loading: itemsLoading, error: itemsError} = useItems()
+    const {parcels, loading: parcelsLoading, error: parcelsError} = useParcels()
 
-                setItems(itemsResponse.data);
-                setItemSentCategories(itemSentResponse.data);
-            } catch (error) {
-                console.error("Error fetching data", error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    const handleLeftChange = (e) => {
-        setSelectedItemSentCategory(Number(e.target.value));
+    const handleLeftChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedItemSentCategory(e.target.value);
     };
 
-    const handleItemClick = (itemId) => {
+    const handleItemClick = (itemId: number) => {
         setMovedItems(prevItems =>
             prevItems.includes(itemId) ?
                 prevItems.filter(id => id !== itemId) :
@@ -116,7 +102,7 @@ const Page = () => {
                                 onChange={handleLeftChange}
                             >
                                 <option value="" disabled>Wybierz paczkę</option>
-                                {itemSentCategories.map((company, index) => (
+                                {parcels.map((company, index) => (
                                     <option key={index} value={company.id}>
                                         {`${company.name} => ${company.company.name}`}
                                     </option>

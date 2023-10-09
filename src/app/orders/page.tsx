@@ -4,44 +4,20 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
-import {Places} from "@/src/objects/Places";
 import pin from "@/public/place-marker-svgrepo-com 1.svg";
 import settings from "@/public/Setting_alt_line.svg";
-import Link from "next/link";
 import ItemTile from "@/src/components/ItemTile";
+import {useOrderCategories} from "@/src/hooks/useOrderCategories";
+import {useItems} from "@/src/hooks/useItems";
 
 const Page = () => {
 
-    const [items, setItems] = useState([])
-    const [orderCategories, setOrderCategories] = useState([])
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [expandedPlace, setExpandedPlace] = useState(null);
+    const {items, loading: itemsLoading, error: itemsError} = useItems()
+    const {orderCategories, loading: orderCategoriesLoading, error: orderCategoriesError} = useOrderCategories()
 
-    useEffect(() => {
-        let isMounted = true;
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('/api/item');
-                const orderCategoriesResponse = await axios.get('/api/order-category')
-                if (isMounted) {
-                    setItems(response.data);
-                    setOrderCategories(orderCategoriesResponse.data)
-                    setLoading(false);
-                }
-            } catch (e) {
-                console.error('Failed to fetch data:', e);
-                if (isMounted) {
-                    setError(e);
-                    setLoading(false);
-                }
-            }
-        };
-        fetchData();
-        return () => { isMounted = false; };
-    }, []);
 
-    if (loading) {
+    if (itemsLoading || orderCategoriesLoading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <Image priority alt={'loading...'} src={loadingSVG} />
@@ -49,13 +25,7 @@ const Page = () => {
         );
     }
 
-    if (error) return <div>Error loading data</div>;
-
-    // const itemCount = orderCategories.reduce((acc, item) => {
-    //     acc[item.id] = (acc[item.placeId] || 0) + 1;
-    //     return acc;
-    // }, {});
-
+    if (itemsError || orderCategoriesError) return <div>Error loading data</div>;
 
     return <div className='flex justify-center'>
         <main className='w-10/12 h-auto mb-28'>
@@ -88,6 +58,8 @@ const Page = () => {
                                         company={item.company.name}
                                         date={item.status[0].createdAt}
                                         orderCategoryColor={orderCategoryColor}
+                                        shelfId={null}
+                                        shelfSize={null}
                                     />
                                 )})}
                         </section>

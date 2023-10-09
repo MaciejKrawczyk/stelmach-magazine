@@ -1,54 +1,37 @@
 'use client'
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Places } from "@/src/objects/Places";
 import axios from "axios";
 import MoveItemTile from "@/src/components/MoveItemTile";
 import SuccessModal from "@/src/components/form/modal/SuccessModal";
-import {sortTool} from "@/src/utils/sortToolShelf";
 import SubmitButton from "@/src/components/submitButton";
 import {sortToolExisting} from "@/src/utils/sortToolExisting";
 import {PlaceNameById} from "@/src/utils/PlaceNameById";
+import {useItems} from "@/src/hooks/useItems";
 
 const Page = () => {
-    const [items, setItems] = useState([]);
-    const [selectedPlaceId, setSelectedPlaceId] = useState(null);
-    const [movedItems, setMovedItems] = useState([]);
-    const [rightSelectedPlaceId, setRightSelectedPlaceId] = useState(null);  // Added this
 
+    const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
+    const [movedItems, setMovedItems] = useState<number[]>([]);
+    const [rightSelectedPlaceId, setRightSelectedPlaceId] = useState<number | null>(null);
     const [isOpen, setIsOpen] = useState(false)
     const [isClicked, setIsClicked] = useState(false)
-    const [object, setObject] = useState([])
-
-    const [isMounted, setIsMounted] = useState(false)
+    const [object, setObject] = useState<any[]>([])
     const [info, setInfo] = useState({})
-
     const [from, setFrom] = useState('')
+    const {items, loading, error} = useItems()
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const itemsResponse = await axios.get('/api/item');
-                setItems(itemsResponse.data);
-            } catch (error) {
-                console.error("Error fetching data", error);
-            }
-        };
-        fetchData();
-        setIsMounted(true)
-    }, [isMounted]);
-
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedPlaceId(Number(e.target.value));
-        setFrom(Number(e.target.value))
+        setFrom(e.target.value)
     };
 
-    const handleRightChange = (e) => { // Added this function
+    const handleRightChange = (e: React.ChangeEvent<HTMLSelectElement>) => { // Added this function
         setRightSelectedPlaceId(Number(e.target.value));
     };
 
-    const handleItemClick = (itemId) => {
-        // @ts-ignore
+    const handleItemClick = (itemId: number) => {
         setMovedItems(prevItems =>
             prevItems.includes(itemId) ?
                 prevItems.filter(id => id !== itemId) :
@@ -56,7 +39,7 @@ const Page = () => {
         );
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         try {
             setIsOpen(false);
             setIsClicked(true);
@@ -82,45 +65,32 @@ const Page = () => {
                 to: PlaceNameById(rightSelectedPlaceId)
             };
 
-            console.log(payload);
-
             if (rightSelectedPlaceId === 1) {
-                let updatedInfo = {};
+                let updatedInfo: { [key: string]: number } = {};
 
-                // Create a new async function to handle the entire process for each item
-                const processItem = async itemId => {
-                    const itemWithData = await axios.get(`/api/item/${itemId}`);
-                    // console.log('pobrane itemWithData');
-
+                const processItem = async (itemId: number): Promise<void> => {
+                    const itemWithData: { data: IDbResponseItem } = await axios.get(`/api/item/${itemId}`);
                     const shelfId = await sortToolExisting(
                         itemWithData.data.shelfSize,
                         1,
                         itemWithData.data.itemTypeId,
                         itemWithData.data.attributeValue
                     );
-                    // console.log('sortTool zrobiony');
 
                     payload.shelfId = shelfId.shelfId;
 
-                    console.log('do payloudu dodane nowy shelfId');
-
-                    const result = await axios.put(`api/item/toMagazine/${itemId}`, payload);
-                    console.log('result zroniony');
+                    await axios.put(`api/item/toMagazine/${itemId}`, payload);
 
                     updatedInfo[itemWithData.data.name] = shelfId.shelfId;
-
-                    return result;  // if needed
                 };
 
-                // Use a for...of loop to ensure sequential execution for each item
                 for (const itemId of movedItems) {
                     await processItem(itemId);
                 }
 
                 setInfo(updatedInfo);
             } else {
-                const promises = movedItems.map(itemId => {
-                    console.log('nie magazyn');
+                const promises = movedItems.map((itemId: number) => {
                     return axios.put(`api/item/move/${itemId}`, payload);
                 });
 
@@ -129,7 +99,6 @@ const Page = () => {
 
             setIsClicked(false);
             setIsOpen(true);
-            setIsMounted(false);
         } catch (e) {
             console.error(e);
         }
@@ -151,7 +120,6 @@ const Page = () => {
                 >
                     <div className={'w-full grid grid-cols-2 gap-1'}>
 
-                        {/* Left column */}
                         <div className={'h-10 bg-red-600 flex items-center flex-col'}>
 
                             <select
@@ -182,7 +150,6 @@ const Page = () => {
 
                         </div>
 
-                        {/* Right column */}
                         <div className={'h-10 bg-blue-500 flex items-center flex-col'}>
 
                             <select
@@ -199,7 +166,6 @@ const Page = () => {
                                 ))}
                             </select>
 
-
                             {filteredItems.filter(item => movedItems.includes(item.id)).map(item => (
                                 <MoveItemTile
                                     key={item.id}
@@ -211,9 +177,7 @@ const Page = () => {
                                     onClick={() => handleItemClick(item.id)}
                                 />
                             ))}
-
                             <SubmitButton isClicked={isClicked} />
-
                         </div>
                     </div>
                 </form>

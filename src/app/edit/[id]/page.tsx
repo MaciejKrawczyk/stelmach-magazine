@@ -2,7 +2,7 @@
 
 import Container from "@/src/components/Container";
 import React from "react";
-import {useItem} from "@/src/components/hooks/useItem";
+import {useItem} from "@/src/hooks/useItem";
 import {useParams} from "next/navigation";
 import ItemTypeAttributesInput from "@/src/components/form/ItemTypeAttributesInput";
 import SubmitButton from "@/src/components/form/SubmitButton";

@@ -2,7 +2,7 @@ import {db} from "@/src/lib/db/db";
 import {NextResponse} from "next/server";
 
 
-export async function PUT(request, {params}) {
+export async function PUT(request: Request, {params}: Params) {
 
     const { id } = params
     const { placeId, shelfId, from, to } = await request.json()

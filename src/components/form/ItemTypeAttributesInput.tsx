@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
-import {useItemTypes} from "@/src/components/hooks/useItemType";
+import {useItemTypes} from "@/src/hooks/useItemType";
 import {Control, Controller, useFormContext} from "react-hook-form";
 
 interface ItemTypeAttributesInputProps {

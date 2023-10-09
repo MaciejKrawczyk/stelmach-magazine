@@ -1,8 +1,9 @@
 import {db} from "@/src/lib/db/db";
 import {NextResponse} from "next/server";
+import {Request} from "next/dist/compiled/@edge-runtime/primitives";
 
 
-export async function PUT(request, {params}) {
+export async function PUT(request: Request, {params}: Params) {
 
     const { id } = params
     const { categoryId } = await request.json()
