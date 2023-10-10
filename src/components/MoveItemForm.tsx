@@ -1,32 +1,27 @@
 'use client'
 
-import React, {useState} from "react";
+import React, {FC, useState} from "react";
 import {Places} from "@/src/objects/Places";
-import {useParams, useRouter} from "next/navigation";
 import LinkModal from "@/src/components/LinkModal";
 import SubmitButton from "@/src/components/submitButton";
 import axios from "axios";
-import SuccessModal from "@/src/components/form/modal/SuccessModal";
-import config from "@/config.json";
 import SuccessModalWithoutAnimation from "@/src/components/SuccessModalWithoutAnimation";
 import {PlaceNameById} from "@/src/utils/PlaceNameById";
 import {useItem} from "@/src/hooks/useItem";
 
+interface moveItemFormProps {
+    id: number
+}
 
-const MoveItemForm = ({ id }) => {
+const MoveItemForm: FC<moveItemFormProps> = ({ id }) => {
 
-
-    // submit button
     const [isClicked, setIsClicked] = useState(false);
-    // success modal
     const [isOpen, setIsOpen] = useState(false);
     const [object, setObject] = useState([]);
-
     const [placeId, setPlaceId] = useState(5)
-
     const {item, loading, error} = useItem(id)
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         setIsClicked(true);
@@ -58,7 +53,7 @@ const MoveItemForm = ({ id }) => {
         setPlaceId(Number(e.target.value)); // Convert the string value to a number since IDs are typically numeric
     }
 
-    return loading ? ( <div>
+    return <div>
 
     <LinkModal>
         <>
@@ -109,6 +104,6 @@ const MoveItemForm = ({ id }) => {
             </div></>
     </LinkModal>
     </div>
-) : null}
+}
 
 export default MoveItemForm

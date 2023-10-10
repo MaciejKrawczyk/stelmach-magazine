@@ -4,7 +4,7 @@ interface IDbResponseItem {
     description: string
     placeId: number
     shelfId: number | null
-    shelfSize: number
+    shelfSize: string
     itemTypeId: number
     companyId: number
     isDeleted: boolean
