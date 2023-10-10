@@ -14,11 +14,9 @@ export async function PUT(request: Request, {params}: Params) {
             },
             data: {
                 placeId: Number(placeId),
-                // shelf: {
-                //     connect: {
-                //         id: shelfId
-                //     }
-                // },
+                parcel: {
+                    disconnect: true
+                },
                 shelf: {
                     disconnect: true
                 },

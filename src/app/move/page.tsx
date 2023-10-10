@@ -62,7 +62,8 @@ const Page = () => {
                 placeId: rightSelectedPlaceId,
                 shelfId: null,
                 from: PlaceNameById(from),
-                to: PlaceNameById(rightSelectedPlaceId)
+                to: PlaceNameById(rightSelectedPlaceId),
+                parcelId: null
             };
 
             if (rightSelectedPlaceId === 1) {

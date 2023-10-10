@@ -20,6 +20,9 @@ export async function PUT(request: Request, {params}: Params) {
                         id: shelfId
                     }
                 },
+                parcel: {
+                    disconnect: true
+                },
                 status: {
                     create: {
                         name: "PRZENIESIONO",

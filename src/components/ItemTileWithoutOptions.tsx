@@ -5,23 +5,18 @@ import info from "@/public/Info_alt_light.svg";
 import scan from "@/public/Scan_alt_2.svg";
 import user from "@/public/Company.svg";
 import dateIcon from "@/public/date.svg";
-import boxClosed from "@/public/Box_alt.svg";
-import boxOpen from "@/public/Box_open.svg";
-import Link from "next/link";
-import meatballs from "@/public/Meatballs_menu.svg";
-import edit from "@/public/Edit_light.svg";
-import change from "@/public/Horizontal_down_right_main_light.svg";
-import trash from "@/public/Trash_light.svg";
 import React, {useEffect, useRef, useState} from "react";
-import ItemTileModal from "@/src/components/ItemTileModal";
-import arrow from '@/public/arrow.svg'
 import {formatDate} from "@/src/utils/formatDate";
 import {useRouter} from "next/navigation";
+import arrow from '@/public/arrow-up-from-bracket-svgrepo-com.svg'
+import MoveItemForm from "@/src/components/MoveItemForm";
 
 
 const ItemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, itemId, orderCategoryColor}) => {
 
     const router = useRouter()
+
+    const [isMoveFormModal, setIsMoveFormModal] = useState(false)
 
     const [isModalVisible, setModalVisible] = useState(false);
     const modalRef = useRef(null);
@@ -45,8 +40,11 @@ const ItemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, i
 
 
     return (<div
-        className={`p-5 w-64 h-64 bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item `}
+        className={`p-5 w-64 h-80 bg-gray-100 flex flex-col border-gray-200 rounded-xl shadow-item `}
     >
+
+        {isMoveFormModal && <MoveItemForm id={itemId} />}
+
         <div
             className={'flex justify-between w-full'}>
 
@@ -67,7 +65,7 @@ const ItemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, i
             </div>
             <hr className={'my-1'}/>
             <div className={'flex'}>
-                <Image className={'mr-3'}  src={user} alt={'info'}></Image>
+                <Image className={'mr-3'} src={user} alt={'info'}></Image>
                 <span className={'text-gray-400'}>{company}</span>
             </div>
             <hr className={'my-1'}/>
@@ -76,6 +74,13 @@ const ItemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, i
                 <span className={'text-gray-400'}>{formatDate(date)}</span>
             </div>
             <hr className={'my-1'}/>
+            <div className={'flex'}>
+                <div
+                    onClick={() => setIsMoveFormModal(true)}
+                    className={'cursor-pointer flex justify-center items-center w-10 h-10 bg-white border-amber-400 border-2 text-amber-400 rounded-full'}>
+                    <Image priority src={arrow} alt={'item has returned'} />
+                </div>
+            </div>
         </div>
     </div>)
 }

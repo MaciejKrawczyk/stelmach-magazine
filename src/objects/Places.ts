@@ -12,12 +12,12 @@ export const Places = [
     {
         "id": 2,
         "workname": "sharpening",
-        "name": "w ostrzeniu"
+        "name": "wysłane"
     },
     {
         "id": 3,
         "workname": "sharpeningWaitingRoom",
-        "name": "poczekalnia ostrzenie"
+        "name": "poczekalnia do wysyłki"
     },
     {
         "id": 4,

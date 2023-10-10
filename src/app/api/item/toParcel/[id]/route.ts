@@ -83,7 +83,7 @@ export async function PUT(request: Request, {params}: Params) {
             data: {
                 parcel: {
                     connect: {
-                        id: parcelId
+                        id: Number(parcelId)
                     }
                 },
                 name: name,
@@ -103,8 +103,8 @@ export async function PUT(request: Request, {params}: Params) {
                 shelfSize: shelfSize,
                 status: {
                     create: {
-                        name: "ZREALIZOWANO",
-                        description: `zamówiony przedmiot ${from} dodane do ${to}`
+                        name: "DODANO DO PACZKI",
+                        description: `Przedmiot został dodany do paczki z id ${parcelId}`
                     }
                 }
             },

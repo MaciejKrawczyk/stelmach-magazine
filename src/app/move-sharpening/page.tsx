@@ -10,7 +10,7 @@ import {useParcels} from "@/src/hooks/useParcels";
 import {useItems} from "@/src/hooks/useItems";
 
 const Page = () => {
-    const [selectedItemSentCategory, setSelectedItemSentCategory] = useState(""); // Initialize with an empty string
+    const [selectedItemSentCategory, setSelectedItemSentCategory] = useState<number | "">(""); // Initialize with an empty string
     const [selectedPlaceId, setSelectedPlaceId] = useState(3);
     const [rightSelectedPlaceId, setRightSelectedPlaceId] = useState(2)
     const [movedItems, setMovedItems] = useState<number[]>([]);
@@ -22,7 +22,7 @@ const Page = () => {
     const {parcels, loading: parcelsLoading, error: parcelsError} = useParcels()
 
     const handleLeftChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedItemSentCategory(e.target.value);
+        setSelectedItemSentCategory(Number(e.target.value));
     };
 
     const handleItemClick = (itemId: number) => {
@@ -125,7 +125,6 @@ const Page = () => {
 
                         {/* Right column */}
                         <div className={'h-10 bg-blue-500 flex items-center flex-col'}>
-
                             {filteredItems.filter(item => movedItems.includes(item.id)).map(item => (
                                 <MoveItemTile
                                     key={item.id}
@@ -137,21 +136,17 @@ const Page = () => {
                                     onClick={() => handleItemClick(item.id)}
                                 />
                             ))}
-
                             <SubmitButton isClicked={isClicked} />
-
                         </div>
                     </div>
                 </form>
             </main>
-
             <SuccessModal
                 isOpen={isOpen}
                 text={'przedmiot został przeniesiony'}
                 objectData={info}
                 bigText={'Przeniesiono'}
             />
-
         </div>
     );
 }

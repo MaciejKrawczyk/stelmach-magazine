@@ -10,13 +10,12 @@ import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import config from "@/config.json";
 import SuccessModalWithoutAnimation from "@/src/components/SuccessModalWithoutAnimation";
 import {PlaceNameById} from "@/src/utils/PlaceNameById";
+import {useItem} from "@/src/hooks/useItem";
 
 
 const MoveItemForm = ({ id }) => {
 
-    // const { id } = props
 
-    const router = useRouter()
     // submit button
     const [isClicked, setIsClicked] = useState(false);
     // success modal
@@ -25,8 +24,7 @@ const MoveItemForm = ({ id }) => {
 
     const [placeId, setPlaceId] = useState(5)
 
-    // const params = useParams()
-    // const id = params.id
+    const {item, loading, error} = useItem(id)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,7 +38,7 @@ const MoveItemForm = ({ id }) => {
                 placeId: placeId,
                 shelfId: null,
                 to: PlaceNameById(placeId),
-                from: PlaceNameById(1)
+                from: PlaceNameById(PlaceNameById(item?.placeId))
             }
 
             const result = await axios.put(`/api/item/move/${id}`, payload)
@@ -107,13 +105,8 @@ const MoveItemForm = ({ id }) => {
                                 </div>
                             </div>
                         </div>
-
                         <SubmitButton className={'mt-10'} isClicked={isClicked} />
-                        {/*<button type={'submit'}>Przenieś</button>*/}
-
                     </form>
-
-
                 </main>
             </div></>
     </LinkModal>
