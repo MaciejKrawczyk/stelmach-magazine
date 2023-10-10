@@ -38,7 +38,7 @@ const MoveItemForm = ({ id }) => {
                 placeId: placeId,
                 shelfId: null,
                 to: PlaceNameById(placeId),
-                from: PlaceNameById(PlaceNameById(item?.placeId))
+                from: PlaceNameById(item?.placeId)
             }
 
             const result = await axios.put(`/api/item/move/${id}`, payload)
@@ -58,18 +58,16 @@ const MoveItemForm = ({ id }) => {
         setPlaceId(Number(e.target.value)); // Convert the string value to a number since IDs are typically numeric
     }
 
-    return ( <div>
+    return loading ? ( <div>
 
     <LinkModal>
         <>
-
             <SuccessModalWithoutAnimation
                 isOpen={isOpen}
                 text={'Przeniesiono przedmiot!'}
                 objectData={object}
                 bigText={'Przeniesiono!'}
             />
-
             <div className={'flex justify-center'}>
                 <main className={'w-9/12 h-auto mb-28'}>
 
@@ -111,8 +109,6 @@ const MoveItemForm = ({ id }) => {
             </div></>
     </LinkModal>
     </div>
-)
-
-}
+) : null}
 
 export default MoveItemForm
