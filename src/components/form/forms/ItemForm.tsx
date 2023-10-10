@@ -16,7 +16,7 @@ import {useCompanies} from "@/src/hooks/useCompanies";
 import {useShelfCategories} from "@/src/hooks/useShelfCategories";
 import { FormProvider, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Item, ItemSchema} from "@/src/types/zod/Item";
+import {IItem, ItemSchema} from "@/src/types/zod/Item";
 import ItemTypeAttributesInput from "@/src/components/form/ItemTypeAttributesInput";
 import {sortTool} from "@/src/utils/sortToolShelf";
 import axios from "axios";
@@ -41,7 +41,7 @@ const ItemForm = () => {
         resolver: zodResolver(ItemSchema)
     })
 
-    const onSubmit = async (data: Item) => {
+    const onSubmit = async (data: IItem) => {
         try {
             setShowErrorModal(false)
             setErrorMessage('')
@@ -77,7 +77,7 @@ const ItemForm = () => {
         }
     };
 
-    const handleChange = (e) => {
+    const handleChange = (e: any) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
         console.log(formData);

@@ -3,7 +3,7 @@ import TextInput from "@/src/components/form/TextInput";
 import InputDivider from "@/src/components/form/InputDivider";
 import TextAreaInput from "@/src/components/form/TextAreaInput";
 import SubmitButton from "@/src/components/form/SubmitButton";
-import {Company, CompanySchema} from "@/src/types/zod/Company";
+import {ICompany, CompanySchema} from "@/src/types/zod/Company";
 import ToastNotification from "@/src/components/form/notification/ToastNotification";
 import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
@@ -23,7 +23,7 @@ const CompanyForm = () => {
         handleSubmit,
         formState: { errors, isSubmitting },
         reset,
-    } = useForm<Company>({
+    } = useForm<ICompany>({
         resolver: zodResolver(CompanySchema)
     })
 

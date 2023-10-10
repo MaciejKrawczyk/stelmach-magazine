@@ -6,7 +6,7 @@ import InputDivider from "@/src/components/form/InputDivider";
 import TextAreaInput from "@/src/components/form/TextAreaInput";
 import SubmitButton from "@/src/components/form/SubmitButton";
 import ColorPickerInput from "@/src/components/form/ColorPickerInput";
-import {OrderCategory, OrderCategorySchema} from "@/src/types/zod/OrderCategory";
+import {IOrderCategory, OrderCategorySchema} from "@/src/types/zod/OrderCategory";
 import ToastNotification from "@/src/components/form/notification/ToastNotification";
 import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
@@ -28,7 +28,7 @@ const OrderCategoryForm = () => {
         control,
         formState: { errors, isSubmitting },
         reset,
-    } = useForm<OrderCategory>({
+    } = useForm<IOrderCategory>({
         resolver: zodResolver(OrderCategorySchema),
     })
 

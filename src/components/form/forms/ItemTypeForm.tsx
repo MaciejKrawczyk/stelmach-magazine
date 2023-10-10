@@ -7,7 +7,7 @@ import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import ListInput from "@/src/components/form/ListInput";
-import {ItemType, ItemTypeSchema} from "@/src/types/zod/ItemType";
+import {IItemType, ItemTypeSchema} from "@/src/types/zod/ItemType";
 import axios from "axios";
 import FormEnding from "@/src/components/form/FormEnding";
 
@@ -23,7 +23,7 @@ const ItemTypeForm = () => {
         setValue,
         formState: { errors, isSubmitting },
         reset,
-    } = useForm<ItemType>({
+    } = useForm<IItemType>({
         resolver: zodResolver(ItemTypeSchema),
     });
 

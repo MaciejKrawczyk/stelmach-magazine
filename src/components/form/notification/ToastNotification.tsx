@@ -1,8 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, HTMLAttributes, FC} from 'react';
 
-function ToastNotification({ text }) {
+interface ToastNotificationProps extends HTMLAttributes<HTMLDivElement> {
+    text: string
+}
+
+const ToastNotification: FC<ToastNotificationProps> = ({text, ...props}) => {
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
@@ -20,7 +24,7 @@ function ToastNotification({ text }) {
 
     // Only render the toast if it's visible
     return isVisible && (
-        <div className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-stone-800 text-white p-6 rounded-md flex items-center justify-between ${classes} duration-300`}>
+        <div {...props} className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-stone-800 text-white p-6 rounded-md flex items-center justify-between ${classes} duration-300`}>
             <span className="text-lg">{text}</span>
             <button className="bg-transparent border-none text-white ml-4 cursor-pointer" onClick={() => setIsVisible(false)}>Zamknij</button>
         </div>

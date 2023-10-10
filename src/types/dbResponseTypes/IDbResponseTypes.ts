@@ -11,6 +11,7 @@ interface IDbResponseItem {
     isOrder: boolean
     orderCategoryId: number | null
     parcelId: number | null
+    parcel: IDbResponseParcel
     attributeValue: IDbResponseAttributeValue[]
     company: IDbResponseCompany
     itemType: IDbResponseItemType

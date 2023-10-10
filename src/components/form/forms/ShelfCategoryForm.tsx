@@ -6,7 +6,7 @@ import TextAreaInput from "@/src/components/form/TextAreaInput";
 import SubmitButton from "@/src/components/form/SubmitButton";
 import ToastNotification from "@/src/components/form/notification/ToastNotification";
 import SuccessModal from "@/src/components/form/modal/SuccessModal";
-import {ShelfCategory, ShelfCategorySchema} from "@/src/types/zod/Shelf";
+import {IShelfCategory, ShelfCategorySchema} from "@/src/types/zod/Shelf";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -26,7 +26,7 @@ const ShelfCategoryForm = () => {
         control,
         formState: { errors, isSubmitting },
         reset,
-    } = useForm<ShelfCategory>({
+    } = useForm<IShelfCategory>({
         resolver: zodResolver(ShelfCategorySchema)
     })
 

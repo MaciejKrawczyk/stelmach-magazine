@@ -119,7 +119,7 @@ const Page = () => {
                 // setObject(objectToDisplay);
                 setIsOpen(true);
                 setIsClicked(false);
-            } catch (e) {
+            } catch (e: any) {
                 console.error(e)
                 setIsError(true)
                 setIsClicked(false);
@@ -129,7 +129,7 @@ const Page = () => {
                     setToastText('Wystąpił błąd przy dodawaniu przedmiotu do bazy')
                 }
             }
-        } catch (e) {
+        } catch (e: any) {
             setToastText('Szuflada o wybranych parametrach nie znajduje się w kategorii')
             setIsError(true)
             setIsClicked(false);
@@ -143,7 +143,7 @@ const Page = () => {
             objectData={{}}
             bigText={"zamówienie zrealizowane"}
         />
-        <ToastNotification shouldAppear={isError} text={toastText} />
+        <ToastNotification text={toastText} />
         <main className={'w-9/12 h-auto mb-28'}>
             <h1 className={'font-semibold text-3xl my-10 mx-auto '}>Przedmiot z zamówienia do magazynu nr {id}</h1>
             <form onSubmit={handleSubmit}>
@@ -202,7 +202,7 @@ const Page = () => {
                                     <div
                                         key={index}
                                         className={`w-2/5 rounded-xl flex-wrap aspect-square flex items-center justify-center p-2 border border-gray-300 my-1 cursor-pointer hover:bg-gray-100 ${formData.shelfSize === id ? "bg-gray-200" : ""}`}
-                                        onClick={() => handleDivClick(id)}
+                                        onClick={() => handleDivClick(Number(id))}
                                     >
                                         <div className={'flex justify-center items-center flex-col'}>
                                             <Image className={'mb-3'} priority src={id === 'small' ? shelfSmall : shelfBig} alt={'shelf svg'} />

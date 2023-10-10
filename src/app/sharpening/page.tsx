@@ -6,30 +6,27 @@ import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
 import pin from "@/public/place-marker-svgrepo-com 1.svg";
 import settings from "@/public/Setting_alt_line.svg";
-import ItemTile from "@/src/components/ItemTile";
 import arrow from '@/public/Arrow_right.svg'
 import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import '@/public/SuccessModal.css';
 import ItemTileWithoutOptions from "@/src/components/ItemTileWithoutOptions";
 
-const Page = () => {
-
-    const [items, setItems] = useState([]);
-    const [itemSent, setItemSent] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [expandedPlace, setExpandedPlace] = useState(null);
-
-    const [isModalOpen, setIsModalOpen] = useState(false);  // State for the modal
-    const [modalData, setModalData] = useState(null); // State to store data for the modal
+const Page: React.FC = () => {
+    const [items, setItems] = useState<IDbResponseItem[]>([]);
+    const [itemSent, setItemSent] = useState<IDbResponseParcel[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<Error | null>(null);
+    const [expandedPlace, setExpandedPlace] = useState<number | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [modalData, setModalData] = useState<any>(null);
 
     useEffect(() => {
         let isMounted = true;
         const fetchData = async () => {
             try {
                 const [itemResponse, parcelResponse] = await Promise.all([
-                    axios.get('/api/item'),
-                    axios.get('/api/parcel')
+                    axios.get<IDbResponseItem[]>('/api/item'),
+                    axios.get<IDbResponseParcel[]>('/api/parcel')
                 ]);
 
                 if (isMounted) {
@@ -37,7 +34,7 @@ const Page = () => {
                     setItemSent(parcelResponse.data);
                     setLoading(false);
                 }
-            } catch (e) {
+            } catch (e: any) {
                 console.error('Failed to fetch data:', e);
                 if (isMounted) {
                     setError(e);
@@ -52,22 +49,11 @@ const Page = () => {
         };
     }, []);
 
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <Image priority alt={'loading...'} src={loadingSVG} />
-            </div>
-        );
-    }
-
-    if (error) return <div>Error loading data</div>;
-
     async function send() {
-        // Filter items based on the expandedPlace id and extract their ids
-        const selectedItemIds = items.filter(item => item.parcelId === expandedPlace).map(item => item.id);
+        const selectedItemIds = items
+            .filter((item) => item.parcelId === expandedPlace)
+            .map((item) => item.id);
 
-        // Create the payload for the PUT request
         const payload = {
             itemIds: selectedItemIds,
             placeId: 2,
@@ -78,11 +64,21 @@ const Page = () => {
             const object = await axios.put(`/api/item/parcelSend`, payload);
             setModalData(object);
             setIsModalOpen(true);
-        } catch(e) {
+        } catch (e) {
             console.error('Failed to send:', e);
         }
-
     }
+
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Image priority alt={'loading...'} src={loadingSVG} />
+            </div>
+        );
+    }
+
+    if (error) return <div>Error loading data</div>;
 
     return (
     <div className='flex justify-center'>

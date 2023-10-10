@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      inset: {
+        '0.25': '0.25rem',
+        '0.75': '0.75rem'
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

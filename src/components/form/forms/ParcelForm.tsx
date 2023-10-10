@@ -11,7 +11,7 @@ import ToastNotification from "@/src/components/form/notification/ToastNotificat
 import SuccessModal from "@/src/components/form/modal/SuccessModal";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Parcel, ParcelSchema} from "@/src/types/zod/Parcel";
+import {IParcel, ParcelSchema} from "@/src/types/zod/Parcel";
 import {useCompanies} from "@/src/hooks/useCompanies";
 import Image from "next/image";
 import loadingSVG from "@/public/Dual Ring-1.5s-191px.svg";
@@ -34,7 +34,7 @@ const ParcelForm = () => {
         control,
         formState: { errors, isSubmitting },
         reset,
-    } = useForm<Parcel>({
+    } = useForm<IParcel>({
         resolver: zodResolver(ParcelSchema),
     })
 
@@ -47,7 +47,7 @@ const ParcelForm = () => {
 
             setShowSuccessModal(true);
             setFormData(object.data);
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof Error) {
                 setShowErrorModal(true);
                 setErrorMessage(error.message || 'Something went wrong!');

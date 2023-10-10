@@ -12,7 +12,7 @@ import {useItems} from "@/src/hooks/useItems";
 
 export default function Home() {
 
-    const [expandedPlace, setExpandedPlace] = useState(null);
+    const [expandedPlace, setExpandedPlace] = useState<number | null>(null);
 
     const { items, loading, error } = useItems()
 

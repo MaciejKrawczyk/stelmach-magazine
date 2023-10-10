@@ -14,10 +14,9 @@ import {useCompanies} from "@/src/hooks/useCompanies";
 import {FormProvider, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useOrderCategories} from "@/src/hooks/useOrderCategories";
-import {OrderSchema, Order} from "@/src/types/zod/Order";
+import {OrderSchema, IOrder} from "@/src/types/zod/Order";
 import FormEnding from "@/src/components/form/FormEnding";
 import axios from "axios";
-import {randomUUID} from "crypto";
 import {generateRandomUUID} from "@/src/utils/generateRandomUUID";
 
 const OrderForm = () => {
@@ -37,7 +36,7 @@ const OrderForm = () => {
         resolver: zodResolver(OrderSchema)
     })
 
-    const onSubmit = async (data: Order) => {
+    const onSubmit = async (data: IOrder) => {
         try {
             setShowErrorModal(false)
             setErrorMessage('')
