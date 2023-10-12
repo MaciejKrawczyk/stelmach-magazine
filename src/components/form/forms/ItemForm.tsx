@@ -33,8 +33,7 @@ const ItemForm = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({});
 
-
-
+    
     const {
         ...methods
     } = useForm({
@@ -216,9 +215,9 @@ const ItemForm = () => {
             <SubmitButton pending={methods.formState.isSubmitting} />
 
             {showErrorModal && <ToastNotification key={Date.now()} text={errorMessage} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'Success!'} bigText={'Success!'} objectData={formData} />}
-
-        </form>
+            {showSuccessModal && <SuccessModal isOpen={true} text={'Success!'} bigText={'Success!'} objectData={formData} onClose={() => setShowSuccessModal(false)} />}
+            
+            </form>
         </FormProvider>
         )
     );

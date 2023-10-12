@@ -106,12 +106,12 @@ const ItemTile = ({placeId, itemType, name, company, date, shelfSize, shelfId, i
                     />
                 )}
             </div>
-            <Link
-                className={'p-2 aspect-square bg-gray-300 rounded-full transform transition-transform duration-300 hover:scale-110'}
-                href={`/edit/${itemId}`}
+            {placeId === 1 ? null : ( <Link
+              className={'p-2 aspect-square bg-gray-300 rounded-full transform transition-transform duration-300 hover:scale-110'}
+              href={`/edit/${itemId}`}
             >
                 <Image src={edit} alt={'info'}></Image>
-            </Link>
+            </Link>)}
 
             { orderCategoryColor === null ? (
                 <Link

@@ -117,8 +117,8 @@ const ParcelForm = () => {
             <SubmitButton pending={isSubmitting} />
 
             {showErrorModal && <ToastNotification key={Date.now()} text={errorMessage} />}
-            {showSuccessModal && <SuccessModal isOpen={true} text={'Success!'} bigText={'Success!'} objectData={formData} />}
-
+            {showSuccessModal && <SuccessModal isOpen={true} text={'Success!'} bigText={'Success!'} objectData={formData} onClose={() => setShowSuccessModal(false)} />}
+        
         </form>
     );
 }

@@ -30,8 +30,7 @@ export default function Home() {
     }
 
     if (error) return <div>Error loading data</div>;
-
-
+  
   return (
       <div className='flex justify-center'>
         <main className='w-10/12 h-auto mb-28'>

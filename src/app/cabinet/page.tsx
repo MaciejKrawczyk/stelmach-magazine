@@ -391,6 +391,13 @@ const Page: React.FC = () => {
                         <Image priority src={tool} alt={'stelmach logo'} />
                         <span className="ml-4">Przenieś</span>
                     </div>
+                    <div
+                      onClick={() => {}}
+                      className={'cursor-pointer flex items-center pl-8 pr-16 pt-4 pb-4 transition-colors duration-200 hover:bg-gray-200'}
+                    >
+                        <Image priority src={tool} alt={'stelmach logo'} />
+                        <span className="ml-4">zmień szufladę</span>
+                    </div>
                     <hr/>
                     <div
                         onClick={() => deleteItem()}

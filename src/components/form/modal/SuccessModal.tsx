@@ -9,9 +9,10 @@ interface SuccessModalProps {
     objectData: {
         [key: string]: string | object;
     };
+    onClose: any;
 }
 
-const SuccessModal: FC<SuccessModalProps> = ({ text, bigText, isOpen, objectData }) => {
+const SuccessModal: FC<SuccessModalProps> = ({ text, bigText, isOpen, objectData, onClose }) => {
     const router = useRouter();
 
     // Use local state to manage modal visibility
@@ -20,11 +21,13 @@ const SuccessModal: FC<SuccessModalProps> = ({ text, bigText, isOpen, objectData
     useEffect(() => {
         setIsVisible(isOpen);
     }, [isOpen]);
-
-    const onClose = () => {
+    
+    const onCloseHandler = () => {
         setIsVisible(false);
-        router.refresh()
+        router.refresh();
+        if (onClose) onClose();  // Adjusted line
     }
+
 
     const onRedirect = () => {
         router.push('/');
@@ -67,7 +70,7 @@ const SuccessModal: FC<SuccessModalProps> = ({ text, bigText, isOpen, objectData
 
 
                 <div className={'flex justify-between'} >
-                    <button onClick={onClose} type="button" className="m-2 px-4 py-2 bg-blue-500 text-white rounded-md">OK</button>
+                    <button onClick={onCloseHandler} type="button" className="m-2 px-4 py-2 bg-blue-500 text-white rounded-md">OK</button>
                     <button onClick={onRedirect} type="button" className="m-2 px-4 py-2 bg-gray-300 rounded-md">wróć do menu</button>
                 </div>
             </dialog>
