@@ -27,5 +27,6 @@ const shelfSchema = z.object({
 type IShelf = z.infer<typeof shelfSchema>;
 type IShelfCategory = z.infer<typeof ShelfCategorySchema>;
 
-export {ShelfCategorySchema, shelfSchema};    export type { IShelfCategory, IShelf };
+export {ShelfCategorySchema, shelfSchema};
+export type { IShelfCategory, IShelf };
 

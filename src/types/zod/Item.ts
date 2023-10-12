@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const ItemSchema = z.object({
+    id: z.number().optional(), // UWAGA!
     // id: z.number().optional().refine(value => value > 0, {
     //     message: "ID should be a positive number"
     // }), // TODO TO JEST PROBLEM
