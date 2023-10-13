@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios"; // AxiosResponse imported for better typing
 
+axios.defaults.headers = {
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+}
+
 export const useShelfCategories = () => {
     const [shelfCategories, setShelfCategories] = useState<IDbResponseShelfCategory[]>([]);
     const [loading, setLoading] = useState<boolean>(true);

@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 
+axios.defaults.headers = {
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+}
+
 export const useItem = (id: number) => {
     const [item, setItem] = useState<IDbResponseItem>();
     const [loading, setLoading] = useState<boolean>(true);

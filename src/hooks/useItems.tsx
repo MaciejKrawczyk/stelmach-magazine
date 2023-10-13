@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 
+axios.defaults.headers = {
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+}
 
 export const useItems = () => {
     const [items, setItems] = useState<IDbResponseTypes[]>([]);

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+axios.defaults.headers = {
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+}
 export const useParcels = () => {
     const [parcels, setParcels] = useState<IDbResponseParcel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
