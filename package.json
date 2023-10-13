@@ -7,7 +7,6 @@
   "license": "Apache-2.0",
   "author": "Maciej Krawczyk <kontakt.maciejkrawczyk@gmail.com>",
   "scripts": {
-    "postinstall": "npx prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
