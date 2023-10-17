@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios"; // AxiosResponse imported for better typing
 
-axios.defaults.headers = {
-    'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-}
 
 export const useShelves = () => {
     const [shelves, setShelves] = useState<IDbResponseShelf[]>([]);
@@ -15,9 +10,13 @@ export const useShelves = () => {
     const fetchShelves = async (): Promise<void> => {
         try {
             setLoading(true);  // Start by setting loading to true each time fetchShelves is called.
-            const response: AxiosResponse = await axios.get('/api/shelf');
-            if (response && response.data) {
-                setShelves(response.data);
+            // const response: AxiosResponse = await axios.get('/api/shelf');
+            const response = await fetch('/api/shelf', {
+                cache: "no-cache"
+            })
+            if (response.ok) {
+                const shelves = await response.json()
+                setShelves(shelves);
             }
         } catch (err: any) {
             setError(err.message || "Error fetching shelf categories");  // Capture and set error message.

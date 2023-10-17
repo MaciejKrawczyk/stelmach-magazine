@@ -1,14 +1,5 @@
-'use client'
 
 import { useEffect, useState } from "react";
-import axios from "axios";
-
-
-axios.defaults.headers = {
-    'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-}
 
 export const useItem = (id: number) => {
     const [item, setItem] = useState<IDbResponseItem>();
@@ -17,9 +8,10 @@ export const useItem = (id: number) => {
 
     const fetchItems = async () => {
         try {
-            const response = await axios.get(`/api/item/${id}`);
-            if (response && response.data) {
-                setItem(response.data);
+            const response = await fetch(`/api/item/${id}`);
+            if (response.ok) {
+                const item = await response.json()
+                setItem(item);
             }
         } catch (err) {
             if (err instanceof Error) {

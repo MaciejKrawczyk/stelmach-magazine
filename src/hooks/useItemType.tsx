@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-axios.defaults.headers = {
-    'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-}
 
 export const useItemTypes = () => {
     const [itemTypes, setItemTypes] = useState<any[]>([]);
@@ -14,9 +9,12 @@ export const useItemTypes = () => {
 
     const fetchItemTypes = async () => {
         try {
-            const response = await axios.get('/api/item-type');
-            if (response && response.data) {
-                setItemTypes(response.data);
+            const response = await fetch('/api/item-type', {
+                cache: "no-cache"
+            });
+            if (response.ok) {
+                const itemTypes = await response.json()
+                setItemTypes(itemTypes);
             }
         } catch (err) {
             setError(err.message || "Error fetching items");  // Capture and set error message.

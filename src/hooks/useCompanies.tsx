@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 export const useCompanies = () => {
     const [companies, setCompanies] = useState<any[]>([]);
@@ -8,9 +7,12 @@ export const useCompanies = () => {
 
     const fetchCompanies = async () => {
         try {
-            const response = await axios.get('/api/company');
-            if (response && response.data) {
-                setCompanies(response.data);
+            const response = await fetch('/api/company', {
+                cache: "no-cache"
+            });
+            if (response.ok) {
+                const companies = await response.json()
+                setCompanies(companies);
             }
         } catch (err) {
             setError(err.message || "Error fetching companies");  // Capture and set error message.

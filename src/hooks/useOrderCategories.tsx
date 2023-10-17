@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 
-axios.defaults.headers = {
-    'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-}
 export const useOrderCategories = () => {
     const [orderCategories, setOrderCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -13,9 +7,12 @@ export const useOrderCategories = () => {
 
     const fetchOrderCategories = async () => {
         try {
-            const response = await axios.get('/api/order-category');
-            if (response && response.data) {
-                setOrderCategories(response.data);
+            const response = await fetch('/api/order-category', {
+                cache: "no-cache"
+            });
+            if (response.ok) {
+                const orderCategories = await response.json()
+                setOrderCategories(orderCategories);
             }
         } catch (err) {
             setError(err.message || "Error fetching order categories");  // Capture and set error message.

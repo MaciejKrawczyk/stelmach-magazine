@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-axios.defaults.headers = {
-    'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-}
+
 export const useParcels = () => {
     const [parcels, setParcels] = useState<IDbResponseParcel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -13,9 +9,12 @@ export const useParcels = () => {
 
     const fetchParcels = async () => {
         try {
-            const response = await axios.get('/api/parcel');
-            if (response && response.data) {
-                setParcels(response.data);
+            const response = await fetch('/api/parcel', {
+                cache: "no-cache"
+            });
+            if (response.ok) {
+                const parcels = await response.json()
+                setParcels(parcels);
             }
         } catch (err) {
             setError(err.message || "Error fetching parcel categories");  // Capture and set error message.

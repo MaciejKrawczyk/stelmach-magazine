@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 
-axios.defaults.headers = {
-    'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-}
 
 export const useItems = () => {
     const [items, setItems] = useState<IDbResponseTypes[]>([]);
@@ -15,9 +10,12 @@ export const useItems = () => {
     const fetchItems = async (): Promise<void> => {
         try {
             setLoading(true);  // Start by setting loading to true each time fetchItems is called.
-            const response: AxiosResponse = await axios.get('/api/item');
-            if (response && response.data) {
-                setItems(response.data);
+            const response = await fetch('/api/item', {
+                cache: "no-cache"
+            });
+            if (response.ok) {
+                const items = await response.json()
+                setItems(items);
             }
         } catch (err: any) {
             setError(err.message || "Error fetching items");

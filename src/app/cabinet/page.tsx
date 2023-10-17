@@ -35,13 +35,10 @@ const Page: React.FC = () => {
     const [object, setObject] = useState<any[]>([]); // Please replace 'any' with a more specific type
     const [isMoveItemFormOpen, setIsMoveItemFormOpen] = useState<boolean>(false);
     const itemOptionsModalRef = useRef<HTMLDivElement | null>(null);
-
     
-
     const { items, loading: itemsLoading, error: itemsError, refetch: refetchItems } = useItems();
     const { shelves, loading: shelvesLoading, error: shelvesError, refetch: refetchShelves } = useShelves();
     const { shelfCategories: categories, loading: categoriesLoading, error: categoriesError, refetch: refetchCategories } = useShelfCategories();
-
 
     useEffect(() => {
         setIsClicked(false)
