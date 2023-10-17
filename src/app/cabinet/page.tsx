@@ -36,6 +36,7 @@ const Page: React.FC = () => {
     const [isMoveItemFormOpen, setIsMoveItemFormOpen] = useState<boolean>(false);
     const itemOptionsModalRef = useRef<HTMLDivElement | null>(null);
 
+    
 
     const { items, loading: itemsLoading, error: itemsError, refetch: refetchItems } = useItems();
     const { shelves, loading: shelvesLoading, error: shelvesError, refetch: refetchShelves } = useShelves();
