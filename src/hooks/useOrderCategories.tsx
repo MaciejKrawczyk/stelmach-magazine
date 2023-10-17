@@ -8,7 +8,11 @@ export const useOrderCategories = () => {
     const fetchOrderCategories = async () => {
         try {
             const response = await fetch('/api/order-category', {
-                cache: "no-cache"
+                method: "get",
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
             });
             if (response.ok) {
                 const orderCategories = await response.json()

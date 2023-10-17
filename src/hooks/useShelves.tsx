@@ -12,7 +12,11 @@ export const useShelves = () => {
             setLoading(true);  // Start by setting loading to true each time fetchShelves is called.
             // const response: AxiosResponse = await axios.get('/api/shelf');
             const response = await fetch('/api/shelf', {
-                cache: "no-cache"
+                method: "get",
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
             })
             if (response.ok) {
                 const shelves = await response.json()

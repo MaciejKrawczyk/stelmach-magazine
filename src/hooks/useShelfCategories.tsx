@@ -11,7 +11,11 @@ export const useShelfCategories = () => {
         try {
             setLoading(true);  // Start by setting loading to true each time fetchShelfCategories is called.
             const response = await fetch('/api/shelf-category', {
-                cache: "no-cache"
+                method: "get",
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
             });
             if (response.ok) {
                 const shelfCategories = await response.json()

@@ -11,7 +11,11 @@ export const useItems = () => {
         try {
             setLoading(true);  // Start by setting loading to true each time fetchItems is called.
             const response = await fetch('/api/item', {
-                cache: "no-cache"
+                method: "get",
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
             });
             if (response.ok) {
                 const items = await response.json()

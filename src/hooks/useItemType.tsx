@@ -10,7 +10,11 @@ export const useItemTypes = () => {
     const fetchItemTypes = async () => {
         try {
             const response = await fetch('/api/item-type', {
-                cache: "no-cache"
+                method: "get",
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
             });
             if (response.ok) {
                 const itemTypes = await response.json()

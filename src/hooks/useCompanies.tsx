@@ -8,7 +8,11 @@ export const useCompanies = () => {
     const fetchCompanies = async () => {
         try {
             const response = await fetch('/api/company', {
-                cache: "no-cache"
+                method: "get",
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
             });
             if (response.ok) {
                 const companies = await response.json()

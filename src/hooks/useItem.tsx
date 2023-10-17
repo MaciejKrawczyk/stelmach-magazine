@@ -8,7 +8,13 @@ export const useItem = (id: number) => {
 
     const fetchItems = async () => {
         try {
-            const response = await fetch(`/api/item/${id}`);
+            const response = await fetch(`/api/item/${id}`, {
+                method: "get",
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
             if (response.ok) {
                 const item = await response.json()
                 setItem(item);
